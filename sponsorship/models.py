@@ -19,5 +19,10 @@ class Sponsor(models.Model):
     lan_rep = models.CharField(max_length=20)
     notes = models.TextField()
 
+class Prize(models.Model):
+    sponsor = models.ForeignKey(Sponsor)
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+
     
     
