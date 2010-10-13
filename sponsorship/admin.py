@@ -8,8 +8,9 @@ class PrizeAdminForm(forms.ModelForm):
         model = Prize
      
     def clean_sponsor(self):
-        if self.cleaned_data['sponsor'].status is not 'CONF':
+        if self.cleaned_data['sponsor'].status != 'CONF':
             raise forms.ValidationError("Sponsor must be confirmed before prizes can be added.")
+        return self.cleaned_data['sponsor']
 
 # class PrizeInline(admin.StackedInline):
 #     form = PrizeAdminForm
