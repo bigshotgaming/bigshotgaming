@@ -12,11 +12,6 @@ class PrizeAdminForm(forms.ModelForm):
             raise forms.ValidationError("Sponsor must be confirmed before prizes can be added.")
         return self.cleaned_data['sponsor']
 
-# class PrizeInline(admin.StackedInline):
-#     form = PrizeAdminForm
-#     model = Prize
-#     extra = 0
-
 class SponsorAdmin(admin.ModelAdmin):
     fieldsets = [
         ('Contact Information', {'fields': ['name', 'contact_name',
