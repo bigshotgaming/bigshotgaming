@@ -1,6 +1,7 @@
 from sponsorship.models import Sponsor
 from sponsorship.models import Prize
 from django.contrib import admin
+from django.contrib.auth.models import User 
 from django import forms
 
 class PrizeAdminForm(forms.ModelForm):
@@ -21,8 +22,15 @@ class SponsorAdmin(admin.ModelAdmin):
     ]
     
     list_display = ('name', 'status', 'lan_rep')
-    list_filter = ('status',)
+    list_filter = ('status', 'lan_rep',)
     search_fields = ('name',)
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs): 
+        if db_field.name == 'lan_rep': 
+            kwargs['queryset'] = User.objects.all() 
+            kwargs['initial'] = request.user.id 
+            return db_field.formfield(**kwargs) 
+        return super(SponsorAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
 class PrizeAdmin(admin.ModelAdmin):
     form = PrizeAdminForm
