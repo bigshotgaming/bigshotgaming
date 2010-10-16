@@ -34,7 +34,7 @@ class SponsorAdmin(admin.ModelAdmin):
 
 class PrizeAdmin(admin.ModelAdmin):
     form = PrizeAdminForm
-    fields = ('sponsor', 'name', 'description')
+    fields = ('sponsor', 'name', 'description', 'raffle_prize')
     list_display = ('name', 'sponsor')
     search_fields = ('name', 'sponsor')
 
