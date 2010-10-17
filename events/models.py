@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.localflavor.us.models import USStateField
+from django.contrib.auth.models import User
 
 class Event(models.Model):
 
@@ -14,6 +15,7 @@ class Event(models.Model):
     participant_limit = models.IntegerField()
     contact_email = models.EmailField()
     other_details = models.TextField()
+    # participants = models.ForeignKey('Participant', blank=True)
 
     
 class Venue(models.Model):
@@ -26,5 +28,9 @@ class Venue(models.Model):
     city = models.CharField(max_length=30)
     state = USStateField()
     zipcode = models.CharField(max_length=10)
-        
-        
+    
+class Participant(models.Model):
+    def __unicode__(self):
+        return self.name
+    
+    user = models.OneToOneField(User)
