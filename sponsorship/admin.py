@@ -8,11 +8,6 @@ import datetime
 class PrizeAdminForm(forms.ModelForm):
     class Meta:
         model = Prize
-     
-    def clean_sponsor(self):
-        if self.cleaned_data['sponsor'].status != 'c':
-            raise forms.ValidationError("Sponsor must be confirmed before prizes can be added.")
-        return self.cleaned_data['sponsor']
     
     def clean_event(self):
         if self.cleaned_data['event'].end_date < datetime.datetime.now():

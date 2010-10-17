@@ -45,7 +45,7 @@ class Prize(models.Model):
         return self.name
         
     event = models.ForeignKey('events.Event')
-    sponsor = models.ForeignKey(Sponsor)
+    sponsor = models.ForeignKey(Sponsor, limit_choices_to = {'status':'c'})
     name = models.CharField(max_length=100, verbose_name="Prize Name")
     description = models.TextField(blank=True)
     raffle_prize = models.BooleanField(verbose_name="Raffle Prize?")
