@@ -24,7 +24,16 @@ class SponsorAdmin(admin.ModelAdmin):
     list_display = ('name', 'status', 'lan_rep')
     list_filter = ('status', 'lan_rep',)
     search_fields = ('name',)
-
+    actions = ['set_followup', 'reset_sponsors']
+    
+    def set_followup(self, request, queryset):
+        queryset.update(status="r")
+    set_followup.short_description = "Set sponsors to Follow-Up Required"
+    
+    def reset_sponsors(self, request, queryset):
+        queryset.update(status="n")
+    reset_sponsors.short_description = "Reset sponsors for new event"
+    
     def formfield_for_foreignkey(self, db_field, request, **kwargs): 
         if db_field.name == 'lan_rep': 
             kwargs['queryset'] = User.objects.all() 

@@ -9,19 +9,20 @@ class Sponsor(models.Model):
         return self.name
         
     STATUS_TYPES = (
-        ('CONF', 'Confirmed'),
-        ('DENY', 'Denied'),
-        ('PEND', 'Pending Confirmation'),
-        ('CONT', 'Contacted'),
-        ('FOLL', 'Followed-Up'),
-        ('NOCO', 'Not Contacted'),
-        ('DEAD', 'Dead Contact'),
+        ('c', 'Confirmed'),
+        ('d', 'Denied'),
+        ('p', 'Pending Confirmation'),
+        ('t', 'Contacted'),
+        ('r', 'Follow-Up Required'),
+        ('f', 'Followed-Up'),
+        ('n', 'Not Contacted'),
+        ('d', 'Dead Contact'),
     )
     name = models.CharField(max_length=100, verbose_name="Sponsor Name")
     contact_name = models.CharField(max_length=50, blank=True)
     contact_email = models.EmailField(blank=True)
     contact_phone = PhoneNumberField(blank=True)
-    status = models.CharField(max_length=4, choices=STATUS_TYPES, default='NOCO')
+    status = models.CharField(max_length=1, choices=STATUS_TYPES, default='n')
     # will have to change this later
     lan_rep = models.ForeignKey(User, verbose_name="LAN Representative")
     notes = models.TextField(blank=True)
