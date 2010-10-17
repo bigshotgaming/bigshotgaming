@@ -1,0 +1,3 @@
+Greetings and welcome to {{ site }}. You have {{ expiration_days }} days to activate your account.
+
+Go to http://{{ site }}{% url registration_activate activation_key=activation_key %} to activate your account.
