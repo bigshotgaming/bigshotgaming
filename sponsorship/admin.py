@@ -9,7 +9,7 @@ class PrizeAdminForm(forms.ModelForm):
         model = Prize
      
     def clean_sponsor(self):
-        if self.cleaned_data['sponsor'].status != 'CONF':
+        if self.cleaned_data['sponsor'].status != 'c':
             raise forms.ValidationError("Sponsor must be confirmed before prizes can be added.")
         return self.cleaned_data['sponsor']
 
