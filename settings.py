@@ -97,5 +97,6 @@ INSTALLED_APPS = (
     'events',
     'sponsorship',
     'registration',
+    'attendeereg',
     'south',
 )
