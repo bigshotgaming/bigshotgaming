@@ -7,11 +7,25 @@ from django.contrib.auth.models import User
 #         return super(SponsorManager, self).get_query_set().annotate(prizecount=models.Count('prize'))
 
 class Sponsor(models.Model):
-    # TODO: Add support for Events.
     
     def __unicode__(self):
         return self.name
-        
+    
+    name = models.CharField(max_length=100, verbose_name="Sponsor Name")
+    contact_name = models.CharField(max_length=50, blank=True)
+    contact_email = models.EmailField(blank=True)
+    contact_phone = PhoneNumberField(blank=True)
+    lan_rep = models.ForeignKey(User, verbose_name="LAN Representative")
+    notes = models.TextField(blank=True)
+    event = models.ManyToManyField('events.Event', through='EventSponsor')
+    # objects = SponsorManager()
+    
+    # def count(self):
+    #     return self.prizecount
+    # count.admin_order_field = 'prizecount'
+
+class EventSponsor(models.Model):
+    
     STATUS_TYPES = (
         ('c', 'Confirmed'),
         ('d', 'Denied'),
@@ -20,21 +34,15 @@ class Sponsor(models.Model):
         ('r', 'Follow-Up Required'),
         ('f', 'Followed-Up'),
         ('n', 'Not Contacted'),
-        ('d', 'Dead Contact'),
+        ('e', 'Dead Contact'),
     )
-    name = models.CharField(max_length=100, verbose_name="Sponsor Name")
-    contact_name = models.CharField(max_length=50, blank=True)
-    contact_email = models.EmailField(blank=True)
-    contact_phone = PhoneNumberField(blank=True)
-    status = models.CharField(max_length=1, choices=STATUS_TYPES, default='n')
-    lan_rep = models.ForeignKey(User, verbose_name="LAN Representative")
-    notes = models.TextField(blank=True)
-    event = models.ManyToManyField('events.Event')
-    # objects = SponsorManager()
     
-    # def count(self):
-    #     return self.prizecount
-    # count.admin_order_field = 'prizecount'
+    def __unicode__(self):
+        return self.sponsor.name
+        
+    sponsor = models.ForeignKey(Sponsor)
+    event = models.ForeignKey('events.Event')
+    status = models.CharField(max_length=1, choices=STATUS_TYPES, default='n')
     
 
 class Prize(models.Model):
@@ -44,8 +52,12 @@ class Prize(models.Model):
     def __unicode__(self):
         return self.name
         
-    event = models.ForeignKey('events.Event')
-    sponsor = models.ForeignKey(Sponsor, limit_choices_to = {'status':'c'})
+    def get_event_name(self):
+      return self.eventsponsor.event.name
+      
+    get_event_name.short_description = 'Event Name'
+
+    eventsponsor = models.ForeignKey(EventSponsor, limit_choices_to = {'status':'c'}, verbose_name="Sponsor/Event")
     name = models.CharField(max_length=100, verbose_name="Prize Name")
     description = models.TextField(blank=True)
     raffle_prize = models.BooleanField(verbose_name="Raffle Prize?")
