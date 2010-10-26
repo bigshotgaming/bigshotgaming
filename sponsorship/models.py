@@ -15,7 +15,7 @@ class Sponsor(models.Model):
     contact_name = models.CharField(max_length=50, blank=True)
     contact_email = models.EmailField(blank=True)
     contact_phone = PhoneNumberField(blank=True)
-    lan_rep = models.ForeignKey(User, verbose_name="LAN Representative")
+    lan_rep = models.ForeignKey(User, limit_choices_to={ 'is_staff': False }, verbose_name="LAN Representative")
     notes = models.TextField(blank=True)
     event = models.ManyToManyField('events.Event', through='EventSponsor')
     # objects = SponsorManager()
@@ -38,7 +38,7 @@ class EventSponsor(models.Model):
     )
     
     def __unicode__(self):
-        return self.sponsor.name
+        return '%s - %s' % (self.sponsor.name, self.event.name)
         
     sponsor = models.ForeignKey(Sponsor)
     event = models.ForeignKey('events.Event')
@@ -54,10 +54,15 @@ class Prize(models.Model):
         
     def get_event_name(self):
       return self.eventsponsor.event.name
-      
+     
+    def get_sponsor_name(self):
+        return self.eventsponsor.sponsor.name
+    
     get_event_name.short_description = 'Event Name'
+    get_event_name.admin_order_field = 'eventsponsor__event__name'
+    get_sponsor_name.short_description = 'Sponsor Name'
 
-    eventsponsor = models.ForeignKey(EventSponsor, limit_choices_to = {'status':'c'}, verbose_name="Sponsor/Event")
+    eventsponsor = models.ForeignKey(EventSponsor, limit_choices_to={'status':'c'}, verbose_name="Sponsor/Event")
     name = models.CharField(max_length=100, verbose_name="Prize Name")
     description = models.TextField(blank=True)
     raffle_prize = models.BooleanField(verbose_name="Raffle Prize?")
