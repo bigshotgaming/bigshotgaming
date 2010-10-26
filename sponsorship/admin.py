@@ -18,7 +18,9 @@ class PrizeAdminForm(forms.ModelForm):
 class EventSponsorInline(admin.TabularInline):
     model = EventSponsor
     extra = 0
-        
+    template = 'sponsor_tabular.html'
+
+            
 class SponsorAdmin(admin.ModelAdmin):
     fieldsets = [
         ('Contact Information', {'fields': ['name', 'contact_name',
