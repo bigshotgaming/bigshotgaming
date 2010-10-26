@@ -19,6 +19,8 @@ class EventSponsorInline(admin.TabularInline):
     model = EventSponsor
     extra = 0
     template = 'sponsor_tabular.html'
+    verbose_name = 'Sponsored Event'
+    verbose_name_plural = 'Sponsored Events'
 
             
 class SponsorAdmin(admin.ModelAdmin):
