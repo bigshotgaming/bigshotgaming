@@ -45,7 +45,7 @@ class SponsorAdmin(admin.ModelAdmin):
     
     def formfield_for_foreignkey(self, db_field, request, **kwargs): 
         if db_field.name == 'lan_rep': 
-            kwargs['queryset'] = User.objects.all() 
+            kwargs['queryset'] = User.objects.filter(is_staff=True) 
             kwargs['initial'] = request.user.id 
             return db_field.formfield(**kwargs)
         return super(SponsorAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)

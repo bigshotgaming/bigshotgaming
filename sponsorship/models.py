@@ -15,7 +15,7 @@ class Sponsor(models.Model):
     contact_name = models.CharField(max_length=50, blank=True)
     contact_email = models.EmailField(blank=True)
     contact_phone = PhoneNumberField(blank=True)
-    lan_rep = models.ForeignKey(User, limit_choices_to={ 'is_staff': False }, verbose_name="LAN Representative")
+    lan_rep = models.ForeignKey(User, verbose_name="LAN Representative")
     notes = models.TextField(blank=True)
     event = models.ManyToManyField('events.Event', through='EventSponsor')
     # objects = SponsorManager()
