@@ -1,6 +1,7 @@
 from sponsorship.models import Sponsor
 from sponsorship.models import Prize
 from sponsorship.models import EventSponsor
+from events.models import Event
 from django.contrib import admin
 from django.contrib.auth.models import User 
 from django import forms
@@ -31,7 +32,7 @@ class SponsorAdmin(admin.ModelAdmin):
         ('Other Information',   { 'fields': ['lan_rep', 'notes']}),
     ]
     
-    list_display = ('name', 'lan_rep',)
+    list_display = ('name', 'lan_rep', 'get_upcoming_event_status')
     list_filter = ('lan_rep',)
     search_fields = ('name',)
     inlines = (EventSponsorInline,)
@@ -44,6 +45,16 @@ class SponsorAdmin(admin.ModelAdmin):
     # def reset_sponsors(self, request, queryset):
     #     queryset.update(status="n")
     # reset_sponsors.short_description = "Reset sponsors for new event"
+    
+    def get_upcoming_event_status(self, obj):
+        edate = Event.objects.filter(start_date__gt=datetime.datetime.today()).order_by('start_date')[0]
+        curobj = EventSponsor.objects.filter(event=edate, sponsor=obj)
+        if curobj.count() > 0:
+            return curobj[0].get_status_display()
+        return 'Not Contacted'
+
+    get_upcoming_event_status.short_description = 'Upcoming Event Status'
+        
     
     def formfield_for_foreignkey(self, db_field, request, **kwargs): 
         if db_field.name == 'lan_rep': 
