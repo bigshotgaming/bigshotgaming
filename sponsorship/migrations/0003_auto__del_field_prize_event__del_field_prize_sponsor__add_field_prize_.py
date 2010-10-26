@@ -20,11 +20,13 @@ class Migration(SchemaMigration):
 
     def backwards(self, orm):
         
-        # Adding field 'Prize.event'
-        db.add_column('sponsorship_prize', 'event', self.gf('django.db.models.fields.related.ForeignKey')(default=3, to=orm['events.Event']), keep_default=False)
+        # We cannot add back in field 'Prize.event'
+        raise RuntimeError(
+            "Cannot reverse this migration. 'Prize.event' and its values cannot be restored.")
 
-        # Adding field 'Prize.sponsor'
-        db.add_column('sponsorship_prize', 'sponsor', self.gf('django.db.models.fields.related.ForeignKey')(default=1, to=orm['sponsorship.Sponsor']), keep_default=False)
+        # We cannot add back in field 'Prize.sponsor'
+        raise RuntimeError(
+            "Cannot reverse this migration. 'Prize.sponsor' and its values cannot be restored.")
 
         # Deleting field 'Prize.eventsponsor'
         db.delete_column('sponsorship_prize', 'eventsponsor_id')
