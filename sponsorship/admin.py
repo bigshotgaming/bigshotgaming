@@ -54,7 +54,7 @@ class SponsorAdmin(admin.ModelAdmin):
         return "Invalid data"
 
     get_upcoming_event_status.short_description = 'Upcoming Event Status'
-    get_upcoming_event_status.admin_order_field = 'eventsponsor__event_status'
+    get_upcoming_event_status.admin_order_field = 'eventsponsor__status'
         
     
     def formfield_for_foreignkey(self, db_field, request, **kwargs): 
