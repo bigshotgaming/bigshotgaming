@@ -51,9 +51,10 @@ class SponsorAdmin(admin.ModelAdmin):
         curobj = EventSponsor.objects.filter(event=edate, sponsor=obj)
         if curobj.count() > 0:
             return curobj[0].get_status_display()
-        return 'Not Contacted'
+        return "Invalid data"
 
     get_upcoming_event_status.short_description = 'Upcoming Event Status'
+    get_upcoming_event_status.admin_order_field = 'eventsponsor__event_status'
         
     
     def formfield_for_foreignkey(self, db_field, request, **kwargs): 
