@@ -1,0 +1,122 @@
+body {
+	background: #000000 url("../images/background.jpg") repeat-x;
+	font-family: Verdana, Arial, sans-serif;
+	color: white;
+	font-size: 0.8125em;
+}
+a {
+	text-decoration: none;
+	color: #7cded4;
+}
+a:hover {
+	color: #ffffff;
+}
+#wrapper {
+	text-align: left;
+	margin: 0px auto;
+	padding: 0px;
+	border:0;
+	width: 960px;
+	background: url("../images/transparent.png") repeat;
+}
+
+#header {
+	margin: 0;
+	background: url("../images/header.png") no-repeat;
+	height: 150px;
+	margin-left: auto;
+	margin-right: auto;
+	width: 960px;
+}
+
+#side-a {
+	float: left;
+	width: 170px;
+	padding: 0px 15px 0px 15px;
+	background: url("../images/frame_l.png") no-repeat;
+}
+#side-a ul, #side-b ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+#side-a a {
+	display: block;
+	}
+#side-a a:hover {
+	background: #000000;
+}
+
+#side-b {
+	float: right;
+	width: 170px;
+	padding: 0px 15px 0px 15px;
+	background: url("../images/frame_r.png") no-repeat top right;
+}
+
+#content { 
+	float: left;
+	width: 530px;
+	padding: 0px 15px 0px 15px;
+	line-height: 1.5em;
+	background: url("../images/frame.png") no-repeat;
+	margin-top: 0px;
+}
+#content p.time_stamp {
+	font-size: 75%;
+	color: #7cded4;
+	line-height: 0.25em;
+}
+#footer {
+	clear: both;
+	height: 200px;
+	/*background: #A2A2A2;*/
+}
+#login input {
+	padding: 0;
+	/*margin: 5px 0px 5px 0px;*/
+	background: #000000;
+	color: #FFFFFF;
+}
+input[type="password"], input[type="text"] {
+	width: 124px;
+	border: 1px solid #7cded4;
+}
+input[type=checkbox] {
+	margin-right: 10px;
+	margin-left: 0px;
+}
+#login {
+		margin-right: 36px;
+		float: right;
+}
+
+#login ul {
+	list-style-type: none;
+}
+.login_help {
+	font-size: 66%;
+}
+img {
+	border: 1px solid #7cded4;
+}
+#side-b img {
+	margin: 0 auto;
+	display: block;
+	margin-top: 20px;
+	}
+#footer img {
+	vertical-align: middle;
+	margin: 15px;
+}
+#header h1 {
+	text-indent: -9999px;
+	margin: 0px;
+	padding: 0px;
+	float: left;
+}
+#header a h1 {
+	display: block;
+	width: 550px;
+	height: 150px;
+}
