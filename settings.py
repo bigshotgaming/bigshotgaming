@@ -99,4 +99,5 @@ INSTALLED_APPS = (
     'registration',
     'attendeereg',
     'south',
+    'pages',
 )
