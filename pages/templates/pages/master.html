@@ -7,7 +7,7 @@
 </head>
 <body>
     <div id="header">
-        <h1><a href="index.html" title="Home">Big Shot Gaming</a></h1>
+        <h1><a href="{% url pages_index %}" title="Home">Big Shot Gaming</a></h1>
         <div id="login">
             <ul>
                 <li>Username</li>
@@ -52,22 +52,18 @@
                 </ol>
             </div>
             <div id="content">
-                <h3>Pre-Registration Raffle</h3>
-                <p class="time_stamp">Wednesday, 13 October 2010 14:18</p>
-                <p>Hey, Big Shot Gamers!</p>
-                <p>Seems like I'm making a post almost daily now, but I got some great news for you! If you're preregistered and paid before the event, you'll automatically be entered into a raffle for a 320GB Iomega portable HD courtesy of our friends at EMC! Depending on how many weeks before the event you registered and paid, you get more or less chances to win - one ticket per week, so there's definitely an incentive to get paid up really quickly! If you've already preregistered and paid, you don't have to do anything; we're already tracking your tickets for you. If you've got any questions, feel free to ask in the shoutbox or post in the forums.</p>
-                <p>Seems like I'm making a post almost daily now, but I got some great news for you! If you're preregistered and paid before the event, you'll automatically be entered into a raffle for a 320GB Iomega portable HD courtesy of our friends at EMC! Depending on how many weeks before the event you registered and paid, you get more or less chances to win - one ticket per week, so there's definitely an incentive to get paid up really quickly! If you've already preregistered and paid, you don't have to do anything; we're already tracking your tickets for you. If you've got any questions, feel free to ask in the shoutbox or post in the forums.</p>
-                <p>-Tom and the BSG Admin Crew</p>
+                {% block content %}
+                {% endblock %}
             </div>
             <div id="side-b">
 
-                <img src="images/danger_den_small.jpg" alt="Danger Den" />
-                <img src="images/hiper_small.jpg" alt="Hiper" />
-                <img src="images/geeks.jpg" alt="Hiper" />
+                <img src="{{ MEDIA_URL}}images/danger_den_small.jpg" alt="Danger Den" />
+                <img src="{{ MEDIA_URL}}images/hiper_small.jpg" alt="Hiper" />
+                <img src="{{ MEDIA_URL}}images/geeks.jpg" alt="Hiper" />
             </div>
             <div id="footer">
-                <img src="images/danger_den_large.jpg" alt="Danger Den" />
-                <img src="images/trendnet.jpg" alt="Trendnet" />
+                <img src="{{ MEDIA_URL}}images/danger_den_large.jpg" alt="Danger Den" />
+                <img src="{{ MEDIA_URL}}images/trendnet.jpg" alt="Trendnet" />
             </div>
         </div>
     </div>
