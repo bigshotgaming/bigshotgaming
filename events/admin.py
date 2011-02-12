@@ -4,8 +4,8 @@ from events.models import Venue
 
 class EventAdmin(admin.ModelAdmin):
     fields = (
-        'name', 'description', 'start_date', 'end_date', 'venue',
-        'participant_limit', 'contact_email', 'other_details'
+        'name', 'start_date', 'end_date', 'venue',
+        'participant_limit', 'other_details',
     )
     
     list_display = ('name', 'start_date', 'end_date', 'venue')

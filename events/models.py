@@ -9,14 +9,13 @@ class Event(models.Model):
         return self.name
     
     name = models.CharField(max_length=100, verbose_name='Event Name')
-    description = models.TextField(verbose_name='Event Description')
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
     venue = models.ForeignKey('Venue')
     participant_limit = models.IntegerField()
-    contact_email = models.EmailField()
     other_details = models.TextField()
-    participants = models.ManyToManyField('attendeereg.Attendee', blank=True)
+    is_active = models.BooleanField()
+    #participants = models.ManyToManyField('attendeereg.Attendee', blank=True)
     
 class Venue(models.Model):
     
