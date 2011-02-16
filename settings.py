@@ -16,9 +16,9 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'bsg.db',                      # Or path to database file if using sqlite3.
-        'USER': '',                      # Not used with sqlite3.
+        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'bigshotgaming',                      # Or path to database file if using sqlite3.
+        'USER': 'bigshotgaming',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
@@ -119,6 +119,8 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
     os.path.join(PROJECT_ROOT, 'templates'),
 )
+
+ACCOUNT_ACTIVATION_DAYS = 7
 
 INSTALLED_APPS = (
     'django.contrib.auth',
