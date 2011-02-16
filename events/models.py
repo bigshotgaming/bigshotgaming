@@ -14,7 +14,7 @@ class Event(models.Model):
     venue = models.ForeignKey('Venue')
     participant_limit = models.IntegerField()
     other_details = models.TextField()
-    is_active = models.BooleanField()
+    #is_active = models.BooleanField()
     #participants = models.ManyToManyField('attendeereg.Attendee', blank=True)
     
 class Venue(models.Model):
