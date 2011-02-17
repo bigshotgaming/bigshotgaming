@@ -1,0 +1,7 @@
+<form action='/ticketing/signup' method='POST'>
+{% csrf_token %}
+{% for field in form %}
+{{ field }}
+{% endfor %}
+<input type="submit" value="SUBM!t" />
+</form>
