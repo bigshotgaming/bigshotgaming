@@ -17,7 +17,7 @@ for i, rurl in enumerate(authopenid_urlpatterns):
 #                                                  'backend': 'registration.backends.default.DefaultBackend'})
 #    elif rurl.name == 'registration_activate':
 #                authopenid_urlpatterns[i].default_args = {'backend': 'registration.backends.default.DefaultBackend'}
-
+from pages.views import NewsFeed
 admin.autodiscover()
 
 sitemaps = {
@@ -51,5 +51,6 @@ if (settings.DEBUG):
     )
 
 urlpatterns += patterns('',
+    (r'^rss/', NewsFeed()),
     (r'^$', include('pages.urls'))
 )
