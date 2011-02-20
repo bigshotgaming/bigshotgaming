@@ -54,8 +54,8 @@
                 <img src="{{ MEDIA_URL}}images/geeks.jpg" alt="Hiper" />
             </div>
             <div id="footer">
-                <img src="{{ MEDIA_URL}}images/danger_den_large.jpg" alt="Danger Den" />
-                <img src="{{ MEDIA_URL}}images/trendnet.jpg" alt="Trendnet" />
+                {% load banner %}
+                {% get_banner %}
             </div>
         </div>
     </div>
