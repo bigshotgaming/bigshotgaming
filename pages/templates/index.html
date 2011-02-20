@@ -5,7 +5,7 @@
 <h3>{{ topic.name }}</h3>
 <h4>Written by {{ post.user }}</h4>
 <h5>{% if post.updated %}{{ post.updated }}{% else %}{{ post.created }}{% endif %}</h5>
-<p>{{ post.body_html }}</p>
+<p>{{ post.body_html|safe }}</p>
 <p><a href="{{ topic.get_absolute_url }}">Comment on this news post</a></p>
 {% if not forloop.last %}<hr />{% endif %}
 {% endwith %}
