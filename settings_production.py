@@ -136,6 +136,7 @@ INSTALLED_APPS = (
     'events',
     'sponsorship',
     'ticketing',
+    'pages',
 )
 
 try:
