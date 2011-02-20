@@ -1,3 +1,9 @@
-Greetings and welcome to {{ site }}. You have {{ expiration_days }} days to activate your account.
+{% load i18n %}
 
-Go to http://{{ site }}{% url registration_activate activation_key=activation_key %} to activate your account.
+{% blocktrans %}
+Hi,
+
+Thank you for your registration. To activate your account click on the link below :
+{% endblocktrans %}
+
+http://{{ site.domain }}{% url registration_activate activation_key %}

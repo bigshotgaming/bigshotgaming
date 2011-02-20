@@ -1,6 +1,4 @@
-from sponsorship.models import Sponsor
-from sponsorship.models import Prize
-from sponsorship.models import EventSponsor
+from sponsorship.models import Sponsor, Prize, EventSponsor
 from events.models import Event
 from django.contrib import admin
 from django.contrib.auth.models import User 
@@ -12,9 +10,10 @@ class PrizeAdminForm(forms.ModelForm):
         model = Prize
     
     def clean_event(self):
-        if self.cleaned_data['event'].end_date < datetime.datetime.now():
+        print self.cleaned_data
+        if self.cleaned_data['eventsponsor__event'].end_date < datetime.datetime.now():
             raise forms.ValidationError("Prizes cannot be added to events in the past.")
-        return self.cleaned_data['event']
+        return self.cleaned_data['eventsponsor__event']
         
 class EventSponsorInline(admin.TabularInline):
     model = EventSponsor
@@ -32,30 +31,21 @@ class SponsorAdmin(admin.ModelAdmin):
         ('Other Information',   { 'fields': ['lan_rep', 'notes']}),
     ]
     
-    list_display = ('name', 'lan_rep', 'get_upcoming_event_status')
-    list_filter = ('lan_rep',)
+    list_display = ('name', 'lan_rep',)
+    list_filter = ('lan_rep', 'eventsponsor__status', 'eventsponsor__event')
     search_fields = ('name',)
     inlines = (EventSponsorInline,)
-    #actions = ['set_followup', 'reset_sponsors']
+    actions = ['reset_sponsors']
     
     # def set_followup(self, request, queryset):
     #     queryset.update(status="r")
     # set_followup.short_description = "Set sponsors to Follow-Up Required"
     # 
-    # def reset_sponsors(self, request, queryset):
-    #     queryset.update(status="n")
-    # reset_sponsors.short_description = "Reset sponsors for new event"
-    
-    def get_upcoming_event_status(self, obj):
-        edate = Event.objects.filter(start_date__gt=datetime.datetime.today()).order_by('start_date')[0]
-        curobj = EventSponsor.objects.filter(event=edate, sponsor=obj)
-        if curobj.count() > 0:
-            return curobj[0].get_status_display()
-        return "Invalid data"
-
-    get_upcoming_event_status.short_description = 'Upcoming Event Status'
-    get_upcoming_event_status.admin_order_field = 'eventsponsor__status'
+    def reset_sponsors(self, request, queryset):
+        for obj in queryset:
+            es = EventSponsor.objects.get_or_create(sponsor=obj, event=Event.objects.filter(start_date__gt=datetime.datetime.today()).order_by('start_date')[0], status='n')
         
+    reset_sponsors.short_description = "Reset sponsors for new event"
     
     def formfield_for_foreignkey(self, db_field, request, **kwargs): 
         if db_field.name == 'lan_rep': 
@@ -74,7 +64,7 @@ class PrizeAdmin(admin.ModelAdmin):
     form = PrizeAdminForm
     fields = ('name', 'description', 'raffle_prize', 'eventsponsor')
     list_display = ('name', 'get_sponsor_name', 'get_event_name')
-    list_filter = ()
+    list_filter = ('eventsponsor__event',)
     search_fields = ('name',)
     
 #    inlines = (EventSponsorInline,)

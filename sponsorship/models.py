@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.db import models
 from django.contrib.localflavor.us.models import PhoneNumberField
 from django.contrib.auth.models import User
@@ -62,7 +63,7 @@ class Prize(models.Model):
     get_event_name.admin_order_field = 'eventsponsor__event__name'
     get_sponsor_name.short_description = 'Sponsor Name'
 
-    eventsponsor = models.ForeignKey(EventSponsor, limit_choices_to={'status':'c'}, verbose_name="Sponsor/Event")
+    eventsponsor = models.ForeignKey(EventSponsor, limit_choices_to={'status':'c', 'event__start_date__gte':datetime.now}, verbose_name="Sponsor/Event")
     name = models.CharField(max_length=100, verbose_name="Prize Name")
     description = models.TextField(blank=True)
     raffle_prize = models.BooleanField(verbose_name="Raffle Prize?")
