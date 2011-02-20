@@ -1,5 +1,5 @@
 from django import template
-from sponsorship import Sponsor, EventSponsor
+from sponsorship.models import Sponsor, EventSponsor
 
 register = template.Library()
 
