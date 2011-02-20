@@ -107,4 +107,4 @@ class JSONField(models.TextField):
             return None
         if isinstance(value, dict):
             value = json.dumps(value, cls=DjangoJSONEncoder)
-        return super(JSONField, self).get_db_prep_save(value, connection)
+        return super(JSONField, self).get_db_prep_save(value, connection=connection)
