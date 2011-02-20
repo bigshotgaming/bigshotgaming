@@ -40,16 +40,8 @@
                     <li><a href="" title="Lan Info Page Link">Lan Info</a></li>
                     <li><a href="" title="Image Gallery Page Link">Image Gallery</a></li>
                 </ul>
-                <h3>Who's Online</h3>
-                <p>We have 6 guests and 6 members online</p>
-                <ol>
-                    <li>slayer2942</li>
-                    <li>hew488</li>
-                    <li>predatoryboot</li>
-                    <li>Hunter</li>
-                    <li>Boyne7</li>
-                    <li>tom</li>
-                </ol>
+                {% load online %}
+                {% online_users %}
             </div>
             <div id="content">
                 {% block content %}
