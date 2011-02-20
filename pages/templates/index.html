@@ -9,5 +9,8 @@
 <p><a href="{{ topic.get_absolute_url }}">Comment on this news post</a></p>
 {% if not forloop.last %}<hr />{% endif %}
 {% endwith %}
+{% empty %}
+<h3>No news</h3>
+<p>Sorry!</h3>
 {% endfor %}
 {% endblock %}
