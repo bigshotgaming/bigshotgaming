@@ -5,11 +5,11 @@ from events.models import Event
 
 PAYMENT_TYPES = (('O','Online'),('A','At The Door'))
 class Ticket(models.Model):
-    user         = models.OneToOneField(User)
-    alias        = models.CharField(max_length=100)
-    event        = models.ForeignKey(Event)
-    seat         = models.ForeignKey(Seat, blank=True)
-    byoc         = models.BooleanField(default=False, verbose_name='bringing own computer')
+    user = models.OneToOneField(User)
+    alias = models.CharField(max_length=100)
+    event = models.ForeignKey(Event)
+    seat = models.ForeignKey(Seat, blank=True)
+    byoc = models.BooleanField(default=False, verbose_name='bringing own computer')
     payment_type = models.CharField(max_length=1, choices=PAYMENT_TYPES)
-    is_paid      = models.BooleanField(default=False)
-    paypal_id    = models.CharField(max_length=50, blank=True, default=None, null=True)
+    is_paid = models.BooleanField(default=False)
+    paypal_id = models.CharField(max_length=50, blank=True, default=None, null=True)
