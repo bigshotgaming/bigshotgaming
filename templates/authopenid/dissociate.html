@@ -15,6 +15,7 @@
 <div class="login">
 
 <form name="fopenid" action="" method="post">
+    {% csrf_token %}
     <input type="hidden" name="next" value="{{ next }}" />
 	{{ form.openid_url }}
 	<fieldset>
