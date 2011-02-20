@@ -1,7 +1,8 @@
 <h3>Who's Online</h3>
 <p>We have {{ online_guests|length }} guest{{ online_guests|length|pluralize }} and {{ online_members|length }} member{{ online_members|length|pluralize }} online</p>
-<ol>
+{% if online_members|length > 0 %}<ol>
     {% for member in online_members  %}
     <li>{{ member.username }}</li>
     {% endfor %}
 </ol>
+{% endif %}
