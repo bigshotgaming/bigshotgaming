@@ -1,5 +1,13 @@
 {% extends "pages/master.html" %}
 {% block content %}
-<h3>Placeholder stuff</h3>
-<p>Hello friends</p>
+{% for topic in news_posts %}
+{% with topic.posts.all.0 as post %}
+<h3>{{ topic.name }}</h3>
+<h4>Written by {{ post.user }}</h4>
+<h5>{% if post.updated %}{{ post.updated }}{% else %}{{ post.created }}{% endif %}</h5>
+<p>{{ post.body_html }}</p>
+<p><a href="{{ topic.get_absolute_url }}">Comment on this news post</a></p>
+{% if not forloop.last %}<hr />{% endif %}
+{% endwith %}
+{% endfor %}
 {% endblock %}
