@@ -108,6 +108,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.transaction.TransactionMiddleware',
     'djangobb_forum.middleware.LastLoginMiddleware',
     'djangobb_forum.middleware.UsersOnline',
+    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 )
 
 ROOT_URLCONF = 'urls'
@@ -124,6 +125,7 @@ ACCOUNT_ACTIVATION_DAYS = 7
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
+    'django.contrib.flatpages',
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.sitemaps',
