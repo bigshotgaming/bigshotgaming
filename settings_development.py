@@ -139,6 +139,7 @@ INSTALLED_APPS = (
     'events',
     'sponsorship',
     'ticketing',
+    'paypal.standard.ipn',
     'pages',
 )
 
@@ -180,6 +181,8 @@ LOGIN_URL = '/forum/account/signin/'
 
 #Cache settings
 CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
+
+PAYPAL_RECEIVER_EMAIL = 'bigshot@bigshotgaming.com'
 
 try:
     from local_settings import *
