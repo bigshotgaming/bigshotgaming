@@ -4,16 +4,22 @@ from django.conf import settings
 from django.contrib import admin
 
 from sitemap import SitemapForum, SitemapTopic
-from forms import RegistrationFormUtfUsername
+from pages.forms import RegistrationForm
 from djangobb_forum import settings as forum_settings
 
-# HACK for add default_params with RegistrationFormUtfUsername and backend to registration urlpattern
-# Must be changed after django-authopenid #50 (signup-page-does-not-work-whih-django-registration)
-# will be fixed
+import functools
+
+def add_remoteip(function, request):
+    form = functools.partial(RegistrationForm, remote_ip=request.META['REMOTE_ADDR'])
+    return function(request, form_class=form)
+
+# This is a total hack that decorates the register view. It allows us to provide a dynamic parameter (remote IP address)
+# to the registration form.
+
 from django_authopenid.urls import urlpatterns as authopenid_urlpatterns
 for i, rurl in enumerate(authopenid_urlpatterns):
     if rurl.name == 'registration_register':
-        authopenid_urlpatterns[i].default_args.update({'form_class': RegistrationFormUtfUsername})
+        authopenid_urlpatterns[i]._callback = functools.partial(add_remoteip, authopenid_urlpatterns[i]._callback)
 #                                                  'backend': 'registration.backends.default.DefaultBackend'})
 #    elif rurl.name == 'registration_activate':
 #                authopenid_urlpatterns[i].default_args = {'backend': 'registration.backends.default.DefaultBackend'}
