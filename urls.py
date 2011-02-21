@@ -58,5 +58,5 @@ if (settings.DEBUG):
 
 urlpatterns += patterns('',
     (r'^rss/', NewsFeed()),
-    (r'^$', include('pages.urls'))
+    (r'^', include('pages.urls'))
 )

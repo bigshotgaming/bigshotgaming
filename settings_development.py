@@ -139,6 +139,7 @@ INSTALLED_APPS = (
     'events',
     'sponsorship',
     'ticketing',
+    'paypal.standard.ipn',
     'pages',
 )
 
@@ -146,8 +147,11 @@ try:
     import mailer
     INSTALLED_APPS += ('mailer',)
     EMAIL_BACKEND = "mailer.backend.DbBackend"
+    MAILER_EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 except ImportError:
     pass
+
+
 
 try:
     import south
@@ -183,6 +187,8 @@ CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
 
 RECAPTCHA_PUBLIC_KEY = '6Lfgv8ESAAAAAOCwstLnTDgClcfGBVoKuc6pypfu'
 RECAPTCHA_PRIVATE_KEY = '6Lfgv8ESAAAAAHbUjSt1YGoLQgSnX4VYzEJHIvwT'
+
+PAYPAL_RECEIVER_EMAIL = 'bigshot@bigshotgaming.com'
 
 try:
     from local_settings import *
