@@ -9,16 +9,23 @@
     <div id="header">
         <h1><a href="{% url pages_index %}" title="Home">Big Shot Gaming</a></h1>
         <div id="login">
-            <ul>
-                <li>Username</li>
-                <li><input id="username" type="text" value="Username" /></li>
-                <li>Password</li>
-                <li><input type="password" id="password" /></li>
-                <li><input type="checkbox" id="remember" />Remember Me</li>
-                <li class="login_help"><a href="" title="">Forgot your password?</a></li>
-                <li class="login_help"><a href="" title="">Forgot your username?</a></li>
-                <li class="login_help"><a href="" title="">Create an account</a></li>	
-            </ul>	
+            {% if not user.is_authenticated %}
+            <form action="{% url user_signin %}?next={{ request.path }}" method="post">
+                {% csrf_token %}
+                <ul>
+                    <li>Username</li>
+                    <li><input id="username" type="text" value="Username" name="username" /></li>
+                    <li>Password</li>
+                    <li><input type="password" id="password" name="password" /></li>
+                    <li><input type="submit" value="Login" /></li>
+                    <li class="login_help"><a href="{% url auth_password_reset %}" title="">Forgot your password?</a></li>
+                    <li class="login_help"><a href="{% url registration_register %}" title="">Create an account</a></li>	
+                </ul>
+            </form>
+            {% else %}
+            <h5>Signed in as {{ user.username }}<h5>
+            <a href="{% url user_signout %}?next={{ request.path }}">Sign Out</a>
+            {% endif %}
             <!-- end login -->				
         </div>
         <!-- end header -->
