@@ -181,6 +181,9 @@ LOGIN_URL = '/forum/account/signin/'
 #Cache settings
 CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
 
+RECAPTCHA_PUBLIC_KEY = None
+RECAPTCHA_PRIVATE_KEY = None
+
 try:
     from local_settings import *
 except ImportError:

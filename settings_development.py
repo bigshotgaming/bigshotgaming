@@ -185,6 +185,9 @@ LOGIN_URL = '/forum/account/signin/'
 #Cache settings
 CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
 
+RECAPTCHA_PUBLIC_KEY = '6Lfgv8ESAAAAAOCwstLnTDgClcfGBVoKuc6pypfu'
+RECAPTCHA_PRIVATE_KEY = '6Lfgv8ESAAAAAHbUjSt1YGoLQgSnX4VYzEJHIvwT'
+
 PAYPAL_RECEIVER_EMAIL = 'bigshot@bigshotgaming.com'
 
 try:
