@@ -1,0 +1,5 @@
+{% if sponsor|length %}
+{% with sponsor|random as selectedsponsor %}
+<img src="{{ selectedsponsor.banner.url }}" alt="{{ selectedsponsor.name }}" />
+{% endwith %}
+{% endif %}

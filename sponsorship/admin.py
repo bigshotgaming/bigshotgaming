@@ -26,9 +26,9 @@ class EventSponsorInline(admin.TabularInline):
 class SponsorAdmin(admin.ModelAdmin):
     fieldsets = [
         ('Contact Information', {'fields': ['name', 'contact_name',
-            'contact_email', 'contact_phone']}),
+            'contact_email', 'contact_phone', 'url',]}),
             
-        ('Other Information',   { 'fields': ['lan_rep', 'notes']}),
+        ('Other Information',   { 'fields': ['lan_rep', 'notes', 'banner',]}),
     ]
     
     list_display = ('name', 'lan_rep',)
