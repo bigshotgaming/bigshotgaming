@@ -44,6 +44,15 @@
 						{{ form.email }}<br /></label>
 					</div>
 				</fieldset>
+				<div class="inform">
+				    <fieldset>
+				        <legend>Captcha</legend>
+				        <div class="infldset">
+    				        {{ form.captcha.errors }}
+    				        {{ form.captcha }}
+    				    </div>
+				    </fieldset>
+				</div>
 			</div>
             <p><input type="submit" value="{% trans "Register" %}" /></p>
 		</form>
