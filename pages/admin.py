@@ -18,6 +18,7 @@ class ExtendedCreationForm(UserCreationForm):
 class ExtendedUserAdmin(UserAdmin):
     form = ExtendedChangeForm
     add_form = ExtendedCreationForm
+    list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'is_active')
     
 site.unregister(User)
 site.register(User, ExtendedUserAdmin)
