@@ -1,7 +1,7 @@
 from django.contrib.admin import site
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
-from django.contrib.auth.admin import UserAdmin
+from djangobb_forum.admin import UserAdmin
 from django import forms
 
 class ExtendedChangeForm(UserChangeForm):
