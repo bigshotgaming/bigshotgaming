@@ -14,6 +14,8 @@ class Event(models.Model):
     venue = models.ForeignKey('Venue')
     participant_limit = models.IntegerField()
     other_details = models.TextField()
+    description = models.CharField(max_length=100)
+    contact_email = models.EmailField()
     #is_active = models.BooleanField()
     #participants = models.ManyToManyField('attendeereg.Attendee', blank=True)
     
