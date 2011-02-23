@@ -1,0 +1,22 @@
+<html>
+<head>
+    <title>Seatmap</title>
+	<link rel="stylesheet" type="text/css" href="/static/seatmap/css/seatmap.css" title="default" media="Screen" />
+	<script type="text/javascript" src="jquery.js"></script>
+	<script type="text/javascript">
+	
+	</script>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<body>
+    <table id="seatmap">
+    {% for row, columns in grid.items %}
+        <tr class="{{ row }}">
+        {% for column, object in columns.items %}
+            <td id="{{ row }} {{ column }}" class="{{ row }} {{ object.status }}">{% if object == None %}{% else %}<a href="/seatmap/seat/{{ column }}/{{ row }}"><img src="/static/seatmap/images/blank.png" /></a>{% endif %}</td>
+        {% endfor %}
+        </tr>
+    {% endfor %}
+    </table>
+</body>
+</html>
