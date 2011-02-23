@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User, check_password
+from django.contrib.auth.models import User, check_password, get_hexdigest
 from django.contrib.auth.backends import ModelBackend
 from django.utils.encoding import smart_str
 from django.utils.hashcompat import md5_constructor, sha_constructor
