@@ -1,0 +1,32 @@
+table#seatmap {
+    margin:0;
+    padding:0;
+    border-collapse:collapse;
+}
+table#seatmap tr {
+    height:20px;
+    margin:0;
+    padding:0;
+}
+table#seatmap td {
+    width:20px;
+    margin:0;
+    padding:0;
+    border:1px solid #333333;
+}
+table#seatmap .O {
+    background-color:#00CC00;
+}
+table#seatmap .T {
+    background-color:#CC0000;
+}
+table#seatmap .A {
+    background-color:#0000CC;
+}
+table#seatmap a {
+    width:20px;
+    height:20px;
+}
+table#seatmap img {
+    border:0;
+}

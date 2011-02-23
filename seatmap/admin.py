@@ -1,9 +1,13 @@
 from seatmap.models import SeatMap, Row, Seat
+from events.models import Event
+from django.contrib import admin
 from django.shortcuts import render_to_response
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 
-def seatmap_display(request):
+def seatmap_display(request, sm=None):
+    size = 30 if sm is None else sm.size
+    
     y = {}
     
     for yy in range(30):
@@ -33,3 +37,7 @@ def seat_display(request, x, y):
     
     
     return render_to_response('seatmap/seat.html', {'seat':seat, 'user':user, 'status':seat.get_status_display()})
+
+admin.site.register(SeatMap)
+#admin.site.register(Row)
+#admin.site.register(Seat)
