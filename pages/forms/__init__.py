@@ -9,10 +9,14 @@ class RegistrationForm(RegistrationFormUniqueEmail):
     Allowed UTF8 logins with space, along with a recaptcha field.
     '''
 
+    username = forms.RegexField(regex=r'^[\w\s_\-+@.\[\]]+$',
+                                max_length=30,
+                                widget=forms.TextInput(attrs={'class': 'required'}),
+                                label=u'username')
+
     def __init__(self, *args, **kwargs):
         remote_ip = kwargs.pop('remote_ip')
         super(RegistrationForm, self).__init__(*args, **kwargs)
-        self.fields['username'].regex = re.compile(r"^[\w\s-]+$", re.UNICODE)
         self.fields['captcha'] = ReCaptchaField(remote_ip=remote_ip)
 
 class ContactForm(forms.Form):

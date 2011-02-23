@@ -1,0 +1,23 @@
+from django.contrib.admin import site
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserChangeForm, UserCreationForm
+from django.contrib.auth.admin import UserAdmin
+from django import forms
+
+class ExtendedChangeForm(UserChangeForm):
+    username = forms.RegexField(regex=r'^[\w\s_\-+@.\[\]]+$',
+                                max_length=30,
+                                label=u'Username')
+
+
+class ExtendedCreationForm(UserCreationForm):
+    username = forms.RegexField(regex=r'^[\w\s_\-+@.\[\]]+$',
+                                max_length=30,
+                                label=u'Username')
+                                
+class ExtendedUserAdmin(UserAdmin):
+    form = ExtendedChangeForm
+    add_form = ExtendedCreationForm
+    
+site.unregister(User)
+site.register(User, ExtendedUserAdmin)
