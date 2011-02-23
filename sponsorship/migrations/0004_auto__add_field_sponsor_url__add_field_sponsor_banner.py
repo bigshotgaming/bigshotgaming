@@ -12,7 +12,7 @@ class Migration(SchemaMigration):
         db.add_column('sponsorship_sponsor', 'url', self.gf('django.db.models.fields.URLField')(default='', max_length=200, blank=True), keep_default=False)
 
         # Adding field 'Sponsor.banner'
-        db.add_column('sponsorship_sponsor', 'banner', self.gf('django.db.models.fields.files.ImageField')(max_length=100, null=True), keep_default=False)
+        db.add_column('sponsorship_sponsor', 'banner', self.gf('django.db.models.fields.files.ImageField')(max_length=100, blank=True), keep_default=False)
 
 
     def backwards(self, orm):
