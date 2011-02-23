@@ -21,7 +21,6 @@ def _new_hexdigest(algorithm, salt, raw_password):
         return crypt.crypt(raw_password, salt)
 
     if algorithm == 'md5':
-        print md5_constructor(raw_password + salt).hexdigest()
         return md5_constructor(raw_password + salt).hexdigest()
     elif algorithm == 'sha1':
         return sha_constructor(raw_password + salt).hexdigest()
