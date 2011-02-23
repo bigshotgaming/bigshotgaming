@@ -111,6 +111,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 )
 
+AUTHENTICATION_BACKENDS = ('auth.backends.LegacyPasswordBackend',)
+
 ROOT_URLCONF = 'urls'
 
 TEMPLATE_DIRS = (
