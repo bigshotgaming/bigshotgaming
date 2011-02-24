@@ -6,6 +6,7 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from djangobb_forum.models import Category
 from pages.forms import ContactForm
+from sponsorship.models import Sponsor
 
 
 #TODO: Possibly switch these to a generic view in the future, if we decide that's the right way to go.
@@ -22,6 +23,12 @@ def reviews(request):
     except ObjectDoesNotExist:
         posts = None
     return render_to_response('index.html', {'news_posts':posts}, context_instance=RequestContext(request))
+
+def sponsors(request):
+    sponsors = Sponsor.objects.filter(event=1, eventsponsor__status='c').exclude(banner='')
+    print sponsors
+
+    return render_to_response('sponsors.html', {'sponsors':sponsors}, context_instance=RequestContext(request))
 
 @login_required
 def contact(request):

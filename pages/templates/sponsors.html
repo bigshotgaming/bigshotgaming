@@ -1,0 +1,10 @@
+{% extends "pages/master.html" %}
+{% block content %}
+<h3>Our sponsors for the upcoming LAN party!</h3>
+{% for sponsor in sponsors %}
+    <center><img src="{{ sponsor.banner.url }}" alt="{{ sponsor.name }}" height=200 /></center>
+    <br>
+{% endfor %}
+<h3>Some of our previous LAN party sponsors...</h3>
+    <center><img src="{{ sponsor.banner.url }}" alt="{{ sponsor.name }}" height=200 /></center>
+{% endblock %}
