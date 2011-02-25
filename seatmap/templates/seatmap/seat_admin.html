@@ -1,0 +1,30 @@
+<html>
+<head>
+    <title>{{ status }} Seat</title>
+	<link rel="stylesheet" type="text/css" href="/static/seatmap/css/seatmap.css" title="default" media="Screen" />
+	<script type="text/javascript" src="jquery.js"></script>
+	<script type="text/javascript">
+	
+	</script>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<body>
+    <form action="/seatmap/admin/edit/{{ column }}/{{ row }}/" method="POST">
+        {% csrf_token %}
+        Status:<select name="status">
+            <option {% if seat.status == "Open" %}selected="selected"{% endif %} value="O">Open</option>
+            <option {% if seat.status == "Taken" %}selected="selected"{% endif %} value="T">Taken</option>
+            <option {% if seat.status == "Admin" %}selected="selected"{% endif %} value="A">Admin</option>
+        </select>
+        <br />
+        User:<select name="usr">
+            <option value="">None</option>
+            {% for user in users %}
+            <option value="{{ user.pk }}">{{ user }}</option>
+            {% endfor %}
+        </select>
+        <br />
+        <input type="submit" value="Change" /> <input type="submit" name="delete" value="Delete" /> <a href="/seatmap/admin/">Cancel</a>
+    </form>
+</body>
+</html>

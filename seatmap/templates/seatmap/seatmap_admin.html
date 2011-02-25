@@ -1,0 +1,81 @@
+<html>
+<head>
+    <title>Seatmap Admin</title>
+	<link rel="stylesheet" type="text/css" href="/static/seatmap/css/seatmap.css" title="default" media="Screen" />
+	<script type="text/javascript" src="/static/seatmap/js/jquery.js"></script>
+	<script type="text/javascript">
+         $(document).ready(function(){
+         freeze = false;
+         $('#editing').hide();
+         $('#seatmap a').hover(function(event) {
+             event.preventDefault();
+             if(!freeze) {
+             $.ajax({
+                url: "/seatmap/info/" + this.title,
+                success: function(html){
+                $("#info").html(html);
+                }
+            });}
+         });
+         $('#seatmap a').click(function(event) {
+              event.preventDefault();
+              if(!freeze) {
+              $('#editing').show("fast");
+              $.ajax({
+                 url: "/seatmap/info/" + this.title,
+                 success: function(html){
+                 $("#info").html(html);
+                 }
+             });}
+             freeze = true;
+          });
+          $('a.done').click(function(event) {
+                event.preventDefault();
+                freeze = false;
+                $('#editing').hide("fast");
+            });
+    	 });
+    	 $('a.add').click(function(event) {
+                 event.preventDefault();
+                 freeze = false;
+                 $('#editing').hide("fast");
+                 $.ajax({
+                      url: "/seatmap/add/" + this.title,
+                      success: function(html){
+                      $("#info").html('Seat Added');
+                      }
+                  });
+     	 });
+     	 $('a.remove').click(function(event) {
+                 event.preventDefault();
+                 freeze = false;
+                 $('#editing').hide("fast");
+                 $.ajax({
+                      url: "/seatmap/remove/" + this.title,
+                      success: function(html){
+                      $("#info").html('Seat Removed');
+                      }
+                  });
+     	 });
+    </script>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<body>
+    <div id="controls">
+        <h3>Seat Properties</h3>
+        <div id="editing">Editing... <a href="" class="done">done</a></div>
+        <div id="info">
+        Select a seat for information and controls.
+        </div>
+    </div>
+    <table id="seatmap">
+    {% for row, columns in grid.items %}
+        <tr class="{{ row }}">
+        {% for column, object in columns.items %}
+            <td id="{{ row }} {{ column }}" class="{{ object.status }}">{% if object == None %}<a title="{{ column }}/{{ row}}/" href=""><img src="/static/seatmap/images/blank.png" /></a>{% else %}<a title="{{ column }}/{{ row}}/" href=""><img src="/static/seatmap/images/blank.png" /></a>{% endif %}</td>
+        {% endfor %}
+        </tr>
+    {% endfor %}
+    </table>
+</body>
+</html>
