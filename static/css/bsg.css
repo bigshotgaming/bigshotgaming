@@ -3,6 +3,7 @@ body {
 	font-family: Verdana, Arial, sans-serif;
 	color: white;
 	font-size: 0.8125em;
+	background-attachment: fixed;
 }
 a {
 	text-decoration: none;
