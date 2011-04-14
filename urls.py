@@ -50,7 +50,7 @@ if (forum_settings.PM_SUPPORT):
     import messages.urls as messages_urls
     for p in messages_urls.urlpatterns:
         if p.name == 'messages_compose_to':
-            p.regex = re.compile(r'^compose/(?P<recipient>[\w\s_\-+@.\[\]]+)/$')
+            p.regex = re.compile(r'^compose/(?P<recipient>[\w\s_\-+@.\[\]\$]+)/$')
 
     urlpatterns += patterns('',
         (r'^forum/pm/', include(messages_urls)),
