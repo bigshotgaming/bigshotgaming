@@ -60,7 +60,7 @@ ATTACHMENT_UPLOAD_TO = get('DJANGOBB_ATTACHMENT_UPLOAD_TO', 'forum/attachments')
 ATTACHMENT_SIZE_LIMIT = get('DJANGOBB_ATTACHMENT_SIZE_LIMIT', 1024 * 1024)
 
 # SMILE Extension
-SMILES_SUPPORT = get('DJANGOBB_SMILES_SUPPORT', True)
+SMILES_SUPPORT = get('DJANGOBB_SMILES_SUPPORT', False)
 EMOTION_SMILE = get('DJANGOBB_EMOTION_SMILE', '<img src="%sforum/img/smilies/smile.png">' % settings.MEDIA_URL)
 EMOTION_NEUTRAL = get('DJANGOBB_EMOTION_NEUTRAL', '<img src="%sforum/img/smilies/neutral.png">' % settings.MEDIA_URL)
 EMOTION_SAD = get('DJANGOBB_EMOTION_SAD', '<img src="%sforum/img/smilies/sad.png">' % settings.MEDIA_URL)
