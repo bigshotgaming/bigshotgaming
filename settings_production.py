@@ -59,17 +59,21 @@ USE_I18N = True
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = '/var/www/bigshotgaming/static'
+MEDIA_ROOT = '/var/www/bigshotgaming/media/'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = 'http://bsg.tomthebomb.net/static/'
+MEDIA_URL = 'http://www.bigshotgaming.com/media/'
+
+STATIC_ROOT = '/var/www/bigshotgaming/static/'
+STATIC_URL = 'http://www.bigshotgaming.com/static/'
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = 'http://bsg.tomthebomb.net/admin/media/'
+ADMIN_MEDIA_PREFIX = STATIC_URL+'admin/'
+
 
 # Make this unique, and don't share it with anybody.
 
@@ -133,6 +137,7 @@ INSTALLED_APPS = (
     'django.contrib.sitemaps',
     'django.contrib.admin',
     'django.contrib.admindocs',
+    'django.contrib.staticfiles',
     'registration',
     'django_authopenid',
     'djangobb_forum',
@@ -142,6 +147,7 @@ INSTALLED_APPS = (
     'sponsorship',
     'ticketing',
     'pages',
+    'gunicorn',
 )
 
 try:
@@ -166,6 +172,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.i18n',
     'django.core.context_processors.media',
     'django.core.context_processors.request',
+    'django.core.context_processors.static',
     'django_authopenid.context_processors.authopenid',
     'djangobb_forum.context_processors.forum_settings',
 )
@@ -185,6 +192,9 @@ CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
 
 RECAPTCHA_PUBLIC_KEY = None
 RECAPTCHA_PRIVATE_KEY = None
+
+SERVER_EMAIL = 'bigshot@bigshotgaming.com'
+DEFAULT_FROM_EMAIL = 'bigshot@bigshotgaming.com'
 
 try:
     from local_settings import *
