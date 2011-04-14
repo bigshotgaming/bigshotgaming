@@ -5,13 +5,13 @@ from djangobb_forum.admin import UserAdmin
 from django import forms
 
 class ExtendedChangeForm(UserChangeForm):
-    username = forms.RegexField(regex=r'^[\w\s_\-+@.\[\]]+$',
+    username = forms.RegexField(regex=r'^[\w\s_\-+@.\[\]\$\*]+$',
                                 max_length=30,
                                 label=u'Username')
 
 
 class ExtendedCreationForm(UserCreationForm):
-    username = forms.RegexField(regex=r'^[\w\s_\-+@.\[\]]+$',
+    username = forms.RegexField(regex=r'^[\w\s_\-+@.\[\]\$\*]+$',
                                 max_length=30,
                                 label=u'Username')
                                 
