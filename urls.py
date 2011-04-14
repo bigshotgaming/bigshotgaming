@@ -8,6 +8,7 @@ from pages.forms import RegistrationForm
 from djangobb_forum import settings as forum_settings
 
 import functools
+import re
 
 def add_remoteip(function, request):
     form = functools.partial(RegistrationForm, remote_ip=request.META['REMOTE_ADDR'])
@@ -46,8 +47,13 @@ urlpatterns = patterns('',
 
 # PM Extension
 if (forum_settings.PM_SUPPORT):
+    import messages.urls as messages_urls
+    for p in messages_urls.urlpatterns:
+        if p.name == 'messages_compose_to':
+            p.regex = re.compile(r'^compose/(?P<recipient>[\w\s_\-+@.\[\]]+)/$')
+
     urlpatterns += patterns('',
-        (r'^forum/pm/', include('messages.urls')),
+        (r'^forum/pm/', include(messages_urls)),
    )
 
 if (settings.DEBUG):
