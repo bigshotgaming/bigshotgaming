@@ -9,5 +9,6 @@ django-haystack>=1.1.0
 Markdown==2.0
 django-messages==0.4.4
 whoosh
+setproctitle
 -e git://github.com/jtauber/django-mailer.git#egg=django-mailer
 -e git://github.com/dcramer/django-paypal.git#egg=django-paypal
