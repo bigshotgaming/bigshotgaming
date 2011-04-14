@@ -9,7 +9,7 @@ class RegistrationForm(RegistrationFormUniqueEmail):
     Allowed UTF8 logins with space, along with a recaptcha field.
     '''
 
-    username = forms.RegexField(regex=r'^[\w\s_\-+@.\[\]]+$',
+    username = forms.RegexField(regex=r'^[\w\s_\-+@.\[\]\$]+$',
                                 max_length=30,
                                 widget=forms.TextInput(attrs={'class': 'required'}),
                                 label=u'username')
