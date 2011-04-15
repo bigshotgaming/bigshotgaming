@@ -1,7 +1,9 @@
 {% extends "pages/master.html" %}
 {% block content %}
 <form action="/contact/" method="post">{% csrf_token %}
-{{ form.as_p }}
-<input type="submit" value="Submit" />
+<table>
+    {{ form.as_table }}
+    <tr><td><input type="submit" value="Submit" /></td></tr>
+</table>
 </form>
 {% endblock %}
