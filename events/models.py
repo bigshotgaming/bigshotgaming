@@ -13,10 +13,8 @@ class Event(models.Model):
     end_date = models.DateTimeField()
     venue = models.ForeignKey('Venue')
     participant_limit = models.IntegerField()
-    other_details = models.TextField()
     description = models.CharField(max_length=100)
-    contact_email = models.EmailField()
-    #is_active = models.BooleanField()
+    is_active = models.BooleanField()
     #participants = models.ManyToManyField('attendeereg.Attendee', blank=True)
     
 class Venue(models.Model):
