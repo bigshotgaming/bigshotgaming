@@ -19,7 +19,8 @@ class Sponsor(models.Model):
     lan_rep = models.ForeignKey(User, limit_choices_to={'is_staff':True}, verbose_name="LAN Representative")
     notes = models.TextField(blank=True)
     event = models.ManyToManyField('events.Event', through='EventSponsor')
-    url = models.URLField(blank=True, verbose_name='Sponsor URL')
+    contact_form_url = models.URLField(blank=True, verbose_name='Contact Form URL')
+    banner_url = models.URLField(blank=True, verbose_name='Banner URL')
     banner = models.ImageField(blank=True, upload_to='sponsor/banners/')
 
     # objects = SponsorManager()
