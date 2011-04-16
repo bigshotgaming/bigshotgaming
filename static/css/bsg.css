@@ -114,8 +114,9 @@ img {
 	margin-top: 20px;
 	}
 #footer img {
-	vertical-align: middle;
-	margin: 12px;
+    display: block;
+	margin-left: auto;
+	margin-right: auto;
 }
 #header h1 {
 	text-indent: -9999px;
