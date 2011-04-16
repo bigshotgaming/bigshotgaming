@@ -45,4 +45,12 @@ def _user_check_password(self, raw_password):
 User.check_password = _user_check_password
 
 class LegacyPasswordBackend(ModelBackend):
-    pass
+    
+    # Authenticate taken from http://djangosnippets.org/snippets/1368/
+    def authenticate(self, username=None, password=None):
+        try:
+            user = User.objects.get(username__iexact=username)
+            if user.check_password(password):
+                return user
+        except User.DoesNotExist:
+            return None
