@@ -69,6 +69,16 @@ MEDIA_URL = 'http://www.bigshotgaming.com/media/'
 STATIC_ROOT = '/var/www/bigshotgaming/static/'
 STATIC_URL = 'http://www.bigshotgaming.com/static/'
 
+STATICFILES_DIRS = (
+    os.path.join(PROJECT_ROOT, 'static/'),
+)
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+)
+
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
