@@ -1,3 +1,4 @@
+import datetime
 from django.shortcuts import render_to_response
 from django.core.exceptions import ObjectDoesNotExist
 from django.template import RequestContext
@@ -7,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from djangobb_forum.models import Category
 from pages.forms import ContactForm
 from sponsorship.models import Sponsor
+from events.models import Event
 
 
 #TODO: Possibly switch these to a generic view in the future, if we decide that's the right way to go.
@@ -25,9 +27,16 @@ def reviews(request):
     return render_to_response('index.html', {'news_posts':posts}, context_instance=RequestContext(request))
 
 def sponsors(request):
-    sponsors = Sponsor.objects.filter(event=1, eventsponsor__status='c').exclude(banner='')
-    print sponsors
-
+    ''' 
+    This is how we determine who's been sponsoring us lately.
+    If no events are currently active, we grab the most recent event.
+    No more than one event can be active concurrently at this time.
+    '''
+    try:
+        event = Event.objects.get(is_active=True)
+    except ObjectDoesNotExist:
+        event = Event.objects.filter(end_date__lte=datetime.datetime.now())
+    sponsors = Sponsor.objects.filter(event=event, eventsponsor__status__in=['p', 'c', 'r', 'f']).exclude(banner='')
     return render_to_response('sponsors.html', {'sponsors':sponsors}, context_instance=RequestContext(request))
 
 @login_required
