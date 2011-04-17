@@ -35,7 +35,7 @@ def sponsors(request):
     try:
         event = Event.objects.get(is_active=True)
     except ObjectDoesNotExist:
-        event = Event.objects.filter(end_date__lte=datetime.datetime.now())
+        event = Event.objects.filter(end_date__lte=datetime.datetime.now()).latest('end_date')
     sponsors = Sponsor.objects.filter(event=event, eventsponsor__status__in=['p', 'c', 'r', 'f']).exclude(banner='')
     return render_to_response('sponsors.html', {'sponsors':sponsors}, context_instance=RequestContext(request))
 
