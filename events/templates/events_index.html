@@ -1,0 +1,9 @@
+{% extends "pages/master.html" %}
+{% block content %}
+{% if event %}
+<h3>{{ event.name }}</h3>
+{% else %}
+<h3>There is no active event.</h3>
+<h3>wtc</h3>
+{% endif %}
+{% endblock %}
