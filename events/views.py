@@ -8,4 +8,4 @@ def index(request):
         event = Event.objects.get(is_active=True)
     except ObjectDoesNotExist:
         event = None
-    return render_to_response('events_index.html', {'event':event}, context_instance=RequestContext(request))
+    return render_to_response('events/index.html', {'event':event}, context_instance=RequestContext(request))
