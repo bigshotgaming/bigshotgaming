@@ -109,14 +109,14 @@ img {
 	border: 1px solid #9e9e9e;
 }
 #side-b img {
-	margin: 0 auto;
-	display: block;
-	margin-top: 20px;
+	margin: 15px auto;
+/*	display: block;*/
+	display: inline;
 	}
 #footer img {
-    display: block;
-	margin-left: auto;
-	margin-right: auto;
+	display: block;
+	left: 215px;
+	position: relative;
 }
 #header h1 {
 	text-indent: -9999px;
@@ -126,6 +126,18 @@ img {
 }
 #header a h1 {
 	display: block;
-	width: 550px;
+	width: 750px;
 	height: 150px;
+}
+#social_media, #side-b-ads {
+	width: 126px;
+	position: relative;
+	margin: 0 auto;
+	clear: both;
+}
+#social_media img {
+	border: none;
+	float: left;
+	padding-right: 6px;
+	display: inline;
 }
