@@ -141,3 +141,6 @@ img {
 	padding-right: 6px;
 	display: inline;
 }
+#content a img {
+	border-bottom: none;
+}
