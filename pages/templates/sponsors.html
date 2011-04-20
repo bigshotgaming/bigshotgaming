@@ -2,7 +2,7 @@
 {% block content %}
 <h3>Please take a moment to visit our sponsors!</h3>
 {% for sponsor in sponsors %}
-    <center><a href="{{ sponsor.banner_url }}" target="_blank"><img src="{{ sponsor.banner.url }}" alt="{{ sponsor.name }}"></a></center>
+    <a href="{{ sponsor.banner_url }}" target="_blank"><img src="{{ sponsor.banner.url }}" alt="{{ sponsor.name }}"></a>
     <br>
 {% endfor %}
 {% endblock %}
