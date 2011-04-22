@@ -144,3 +144,8 @@ img {
 #content a img {
 	border-bottom: none;
 }
+.lan_info {
+    border: 1px solid #FFFFFF;
+    padding: 0 1em;
+    margin-top: 1em;
+}
