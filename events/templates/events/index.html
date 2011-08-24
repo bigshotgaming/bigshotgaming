@@ -7,6 +7,7 @@
 <p>Event starts at: {{ event.start_date }}</p>
 <p>Event ends at: {{ event.end_date }}</p>
 <p>Participant limit: {{ event.participant_limit }}</p>
+<a href={% url events_register event.id %}>Register for this event</a>
 {% else %}
 <h3>No events are active at this time.</h3>
 {% endif %}

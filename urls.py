@@ -42,7 +42,7 @@ urlpatterns = patterns('',
     # Apps
     (r'^forum/account/', include(authopenid_urlpatterns)),
     (r'^forum/', include('djangobb_forum.urls', namespace='djangobb')),
-    (r'^ticketing/', include('ticketing.urls')),
+    (r'^events/', include('events.urls')),
 )
 
 # PM Extension
@@ -65,5 +65,4 @@ if (settings.DEBUG):
 urlpatterns += patterns('',
     (r'^rss/', NewsFeed()),
     (r'^', include('pages.urls')),
-    (r'^events/', include('events.urls')),
 )
