@@ -155,7 +155,6 @@ INSTALLED_APPS = (
     'messages',
     'events',
     'sponsorship',
-    'ticketing',
     'pages',
     'gunicorn',
 )
