@@ -27,3 +27,22 @@ class Venue(models.Model):
     city = models.CharField(max_length=30)
     state = USStateField()
     zipcode = models.CharField(max_length=10)
+
+class Participant(models.Model):
+    
+    def __unicode__(self):
+        return self.user.username
+    
+    user = models.OneToOneField(User)
+
+class Ticket(models.Model):
+    
+    def __unicode__(self):
+        return '%s - %s' % (self.participant.user.username, self.event)
+
+    
+    is_paid = models.BooleanField()
+    participant = models.ForeignKey(Participant)
+    event = models.ForeignKey(Event)
+    
+    

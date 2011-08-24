@@ -1,6 +1,5 @@
 from django.contrib import admin
-from events.models import Event
-from events.models import Venue
+from events.models import Event, Venue, Participant, Ticket
 
 class EventAdmin(admin.ModelAdmin):
     fields = (
@@ -17,3 +16,6 @@ class EventAdmin(admin.ModelAdmin):
     
 admin.site.register(Event, EventAdmin)
 admin.site.register(Venue)
+admin.site.register(Participant)
+admin.site.register(Ticket)
+
