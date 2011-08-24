@@ -42,6 +42,7 @@ urlpatterns = patterns('',
     # Apps
     (r'^forum/account/', include(authopenid_urlpatterns)),
     (r'^forum/', include('djangobb_forum.urls', namespace='djangobb')),
+    (r'^ticketing/', include('ticketing.urls')),
 )
 
 # PM Extension
