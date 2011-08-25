@@ -6,20 +6,14 @@ from django.http import HttpResponseRedirect
 from events.models import Participant, Ticket
 
 class RegisterForm1(forms.Form):
-    registration_type = forms.ChoiceField(choices=(
-        #('cc', 'Coupon Code Redemption'),
-        ('tr', 'Ticket Registration'),
+    payment_type = forms.ChoiceField(choices=(
+        ('pp', 'PayPal'),
+        ('ad', 'Pay at-the-door'),
     ), widget=forms.RadioSelect)
     
 class RegisterForm2(forms.Form):
-    ticket_quantity = forms.IntegerField(min_value=1, max_value=100)
+    ticket_quantity = forms.IntegerField(min_value=1, max_value=10)
 
-class RegisterForm3(forms.Form):
-    payment_type = forms.ChoiceField(choices=(
-        ('pp', 'PayPal'),
-        ('pl', 'Pay later'),
-        ('ad', 'Pay at-the-door'),
-    ), widget=forms.RadioSelect)
 
 class RegisterWizard(FormWizard):
     
@@ -27,28 +21,26 @@ class RegisterWizard(FormWizard):
         self.eventid = args[0]
     
     def process_step(self, request, form, step):
-        print request
+        #print request
         print self.eventid
-        if step == 1:
-            qty = form.cleaned_data['ticket_quantity']
-            pass
-        elif step == 2:
+        #print form.cleaned_data
+        if step == 0:
+            participant = Participant.objects.get_or_create(user=request.user, event_id=self.eventid)[0]
+            print form.cleaned_data
             if form.cleaned_data['payment_type'] == 'pp':
                 print "PayPal detected"
-            else:
-                print form.cleaned_data['payment_type']
+            elif form.cleaned_data['payment_type'] == 'ad':
+                print "At-the-door payment"
+                del self.form_list[1]
+        elif step == 2:
+            qty = form.cleaned_data['ticket_quantity']
 
     def done(self, request, form_list):
         data = {}
         for form in form_list:
             data.update(form.cleaned_data)
-        try:
-            participant = Participant.objects.get(user__username=request.user)
-        except Participant.DoesNotExist:
-            participant = Participant.objects.create(user__username=request.user)
-            participant.save()
-        ticket = Ticket.objects.create(event_id=self.eventid, participant=participant)
-        ticket.save()
+        #ticket = Ticket.objects.create(event_id=self.eventid, participant=participant)
+        #ticket.save()
 
         return HttpResponseRedirect('/')
     

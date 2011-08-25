@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.localflavor.us.models import USStateField
 from django.contrib.auth.models import User
 from django.forms import ModelForm
+import uuid
 
 class Event(models.Model):
 
@@ -31,18 +32,32 @@ class Venue(models.Model):
 class Participant(models.Model):
     
     def __unicode__(self):
-        return self.user.username
+        return '%s - %s' % (self.user.username, self.event)
     
-    user = models.OneToOneField(User)
+    user = models.ForeignKey(User)
+    event = models.ForeignKey(Event)
+
+class Coupon(models.Model):
+    
+    def __unicode__(self):
+        return self.uuid
+           
+    def make_uuid():
+        return str(uuid.uuid4())
+        
+    uuid = models.CharField(max_length=36, primary_key=True, default=make_uuid, editable=False)
+    
 
 class Ticket(models.Model):
     
     def __unicode__(self):
-        return '%s - %s' % (self.participant.user.username, self.event)
+        return '%s - %s' % (self.participant.user.username, self.participant.event)
+
+    participant = models.ForeignKey(Participant)
+    #event = models.ForeignKey(Event)
+    coupon = models.OneToOneField(Coupon, null=True)
 
     
-    is_paid = models.BooleanField()
-    participant = models.ForeignKey(Participant)
-    event = models.ForeignKey(Event)
+    
     
     
