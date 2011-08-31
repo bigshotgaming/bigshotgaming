@@ -61,6 +61,7 @@ class EventAdmin(admin.ModelAdmin):
     fields = (
         'name', 'start_date', 'end_date', 'venue',
         'participant_limit', 'description', 'is_active',
+        'prepay_price', 'atd_price'
     )
     
     list_display = ('name', 'start_date', 'end_date', 'venue',

@@ -2,6 +2,9 @@ from django.db import models
 from django.contrib.localflavor.us.models import USStateField
 from django.contrib.auth.models import User
 from django.forms import ModelForm
+from django.dispatch import receiver
+from paypal.standard.ipn.signals import payment_was_successful, payment_was_flagged
+from paypal.standard.ipn.models import PayPalIPN
 import uuid
 
 class Event(models.Model):
@@ -16,6 +19,9 @@ class Event(models.Model):
     participant_limit = models.IntegerField()
     description = models.CharField(max_length=100)
     is_active = models.BooleanField()
+    prepay_price = models.DecimalField(max_digits=4, decimal_places=2)
+    atd_price = models.DecimalField(max_digits=4, decimal_places=2, verbose_name='At-the-Door price')
+    
     #participants = models.ManyToManyField('attendeereg.Attendee', blank=True)
     
 class Venue(models.Model):
@@ -46,6 +52,7 @@ class Coupon(models.Model):
         return str(uuid.uuid4())
         
     uuid = models.CharField(max_length=36, primary_key=True, default=make_uuid, editable=False)
+    transaction = models.ForeignKey(PayPalIPN, blank=True, null=True, editable=False)
     
 
 class Ticket(models.Model):
@@ -56,6 +63,19 @@ class Ticket(models.Model):
     participant = models.ForeignKey(Participant)
     #event = models.ForeignKey(Event)
     coupon = models.OneToOneField(Coupon, null=True)
+    
+#@receiver(payment_was_successful)
+
+def payment_complete(sender, **kwargs):
+    Coupon()
+    print sender
+    print "We got some money, bitches!"
+payment_was_successful.connect(payment_complete)
+
+@receiver(payment_was_flagged)
+def payment_flagged(sender, **kwargs):
+    print sender
+    print "Something went wrong..."
 
     
     
