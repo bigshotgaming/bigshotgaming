@@ -7,6 +7,7 @@ PROJECT_ROOT = os.path.dirname(os.path.realpath(__file__))
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+DEBUG_PROPAGATE_EXCEPTIONS = DEBUG
 
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),

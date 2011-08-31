@@ -70,9 +70,16 @@ class EventAdmin(admin.ModelAdmin):
     
     list_filter = ('venue',)
     search_fields= ('name',)
+
+class CouponAdmin(admin.ModelAdmin):
+    readonly_fields = ('uuid', 'transaction',)
+    
+    list_display = ('uuid', 'transaction', 'activated')
+    
     
 admin.site.register(Event, EventAdmin)
 admin.site.register(Venue)
 admin.site.register(Participant, ParticipantAdmin)
 admin.site.register(Ticket)
+admin.site.register(Coupon, CouponAdmin)
 
