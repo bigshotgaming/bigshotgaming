@@ -7,6 +7,7 @@ from events.models import Event, Participant
 from events.forms import RegisterForm
 from paypal.standard.forms import PayPalPaymentsForm
 from django.views.decorators.csrf import csrf_exempt
+import uuid
 
 def index(request):
     try:
@@ -44,8 +45,8 @@ def payment(request):
         "business": "wiede1_1297892766_biz@cmich.edu",
         "amount": "15.00",
         "item_name": "thing",
-        "invoice": "9010",
-        "notify_url": "http://24.236.128.202:8000/events/ppnotification/",
+        "invoice": uuid.uuid4(),
+        "notify_url": "http://141.209.5.27/events/ppnotification",
         "return_url": "http://bsg.tomthebomb.net/registration/thanks/",
         "cancel_return": "http://bsg.tomthebomb.net/registration/thanks/",
     }
