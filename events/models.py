@@ -4,11 +4,9 @@ from django.contrib.auth.models import User
 from django.forms import ModelForm
 from django.dispatch import receiver
 from django.template import loader, Context
-from django.core.mail import send_mail
-# if we ever get rid of django-mailer change this
-#from mailer import send_mail
 from paypal.standard.ipn.signals import payment_was_successful, payment_was_flagged
 from paypal.standard.ipn.models import PayPalIPN
+from mailer import send_mail
 import uuid
 
 class Event(models.Model):
@@ -34,8 +32,6 @@ class Event(models.Model):
     is_active = models.BooleanField()
     prepay_price = models.DecimalField(max_digits=4, decimal_places=2)
     atd_price = models.DecimalField(max_digits=4, decimal_places=2, verbose_name='At-the-Door price')
-    
-    #participants = models.ManyToManyField('attendeereg.Attendee', blank=True)
     
 class Venue(models.Model):
     
