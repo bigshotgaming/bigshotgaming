@@ -7,7 +7,6 @@ PROJECT_ROOT = os.path.dirname(os.path.realpath(__file__))
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
-DEBUG_PROPAGATE_EXCEPTIONS = DEBUG
 
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
@@ -160,13 +159,13 @@ INSTALLED_APPS = (
     'pages',
 )
 
-try:
-    import mailer
-    INSTALLED_APPS += ('mailer',)
-    EMAIL_BACKEND = "mailer.backend.DbBackend"
-    MAILER_EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-except ImportError:
-    pass
+# try:
+#     import mailer
+#     INSTALLED_APPS += ('mailer',)
+#     EMAIL_BACKEND = "mailer.backend.DbBackend"
+#     MAILER_EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# except ImportError:
+MAILER_EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
 

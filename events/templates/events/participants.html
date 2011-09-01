@@ -1,0 +1,9 @@
+{% extends "pages/master.html" %}
+{% block content %}
+<h1>Participant list</h1>
+<ol>
+{% for participant in participants %}
+<li>{{ participant.user.username }}</li>
+{% endfor %}
+</ol>
+{% endblock %}

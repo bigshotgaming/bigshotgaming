@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.conf.urls.defaults import patterns, include, url
 from django import forms
 from django.template import RequestContext
-from events.models import Event, Venue, Participant, Ticket, Coupon
+from events.models import Event, Venue, Participant, Coupon
 
 class ATDForm(forms.Form):
     participant = forms.ModelChoiceField(queryset=Participant.objects.all(), required=True)
@@ -24,11 +24,10 @@ class ParticipantAdmin(admin.ModelAdmin):
             if form.is_valid():
                 coupon = Coupon()
                 coupon.save()
-                
-                ticket = Ticket(participant=form.cleaned_data['participant'], coupon=coupon,)
-                ticket.save()
-                
-                
+                participant=form.cleaned_data['participant']
+                participant.coupon = coupon
+                participant.save()
+    
                 #form.cleaned_data['participant'].is_paid = True
                 #form.cleaned_data['participant'].save()
                 
@@ -80,6 +79,6 @@ class CouponAdmin(admin.ModelAdmin):
 admin.site.register(Event, EventAdmin)
 admin.site.register(Venue)
 admin.site.register(Participant, ParticipantAdmin)
-admin.site.register(Ticket)
+
 admin.site.register(Coupon, CouponAdmin)
 

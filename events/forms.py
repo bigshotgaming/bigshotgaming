@@ -2,7 +2,7 @@ from django import forms
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
-from events.models import Participant, Ticket
+from events.models import Participant
 from paypal.standard.forms import PayPalPaymentsForm
 
 class RegisterForm(forms.Form):
@@ -11,7 +11,7 @@ class RegisterForm(forms.Form):
         ('ad', 'Pay at-the-door'),
     ), widget=forms.RadioSelect)
 
-    ticket_quantity = forms.IntegerField(min_value=1, max_value=10)
+    ticket_quantity = forms.IntegerField(min_value=1, max_value=10, required=False)
 
 #     
 #     def process_step(self, request, form, step):
