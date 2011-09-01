@@ -156,6 +156,7 @@ INSTALLED_APPS = (
     'events',
     'sponsorship',
     'pages',
+    'paypal.standard.ipn',
     'gunicorn',
 )
 
