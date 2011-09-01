@@ -1,5 +1,7 @@
-<!-- payment.html -->
-<h1>Show me the money!</h1>
-<!-- writes out the form tag automatically -->
-{{ form.sandbox }}
-
+{% extends "pages/master.html" %}
+{% block content %}
+<h1>Payment</h1>
+<p>You will be sent a confirmation email once your payment has been processed. This may take up to ten minutes.</p>
+<p>If you have purchased multiple tickets, links to activate those tickets will be included in the email.</p>
+{{ form.render }}
+{% endblock %}

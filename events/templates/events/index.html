@@ -1,14 +1,15 @@
 {% extends "pages/master.html" %}
 {% block content %}
 {% if event %}
-<h3>{{ event.name }}</h3>
-<h4>Venue: {{ event.venue }}</h4>
+<h1>{{ event.name }}</h1>
+<p>Venue: {{ event.venue }}</p>
 <p>Description: {{ event.description }}</p>
 <p>Event starts at: {{ event.start_date }}</p>
 <p>Event ends at: {{ event.end_date }}</p>
 <p>Participant limit: {{ event.participant_limit }}</p>
-<a href={% url events_register event.id %}>Register for this event</a>
+<p><a href={% url events_register event.id %}>Register for this event</a></p>
+<p><a href={% url events_participants event.id %}>View participants for this event</a></p>
 {% else %}
-<h3>No events are active at this time.</h3>
+<h2>No events are active at this time.</h2>
 {% endif %}
 {% endblock %}

@@ -4,10 +4,11 @@ from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-from events.models import Event, Participant, Coupon, Ticket, activate_coupon_and_ticket
+from django.conf import settings
+from events.models import Event, Participant, Coupon, activate_coupon
 from events.forms import RegisterForm
 from paypal.standard.forms import PayPalPaymentsForm
-from django.views.decorators.csrf import csrf_exempt
+
 import uuid
 
 def index(request):
@@ -15,9 +16,34 @@ def index(request):
         event = Event.objects.get(is_active=True)
     except ObjectDoesNotExist:
         event = None
-    return render_to_response('events/index.html', {'event':event}, context_instance=RequestContext(request))
+    try:
+        participant = Participant.objects.get(user=request.user, event=event)
+        print "Yahoo!"
+    except ObjectDoesNotExist:
+        participant = None
 
-@csrf_exempt
+    return render_to_response('events/index.html', {
+        'event':event,
+        'participant':participant,
+
+        }, context_instance=RequestContext(request))
+
+def participants(request, eventid):
+    try:
+        event = Event.objects.get(is_active=True)
+    except ObjectDoesNotExist:
+        event = None
+    try:
+        participants = Participant.objects.filter(event=event)
+    except ObjectDoesNotExist:
+        participants = None
+        
+    return render_to_response('events/participants.html', {
+        'participants':participants,
+
+        }, context_instance=RequestContext(request))
+
+@login_required
 def register(request, eventid):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
@@ -26,54 +52,49 @@ def register(request, eventid):
             participant = Participant.objects.get_or_create(user=request.user, event_id=eventid)[0]
             if form.cleaned_data['payment_type'] == 'pp':
                 request.session['qty'] = form.cleaned_data['ticket_quantity']
-                print eventid
                 request.session['participant'] = participant.id
-                print request.session['participant']
                 return HttpResponseRedirect(reverse('events_payment'))   
             elif form.cleaned_data['payment_type'] == 'ad':
                 print 'At-the-door payment detected'
-                return HttpResponseRedirect('/durf/')
+                return HttpResponseRedirect('/events/thanks')
+        print "wtf"
     else:
         form = RegisterForm()
         return render_to_response('events/register.html', {
             'form': form,
-        })
+        }, context_instance=RequestContext(request))
 
 def payment(request):
     # hm, not sure if this was the best idea
     # could do it the opposite way since it's easy to get the participant object
     event = Participant.objects.get(id=request.session['participant']).event
-    print request.session['qty']
     paypal_dict = {
-        "business": "wiede1_1297892766_biz@cmich.edu",
+        "business": settings.PAYPAL_RECEIVER_EMAIL,
         "amount": event.prepay_price,
         "item_name": '%s ticket' % event.name,
         "invoice": uuid.uuid4(),
         "quantity": request.session['qty'],
         "custom": request.session['participant'],
-        "notify_url": "http://141.209.5.37/events/ppnotification",
-        "return_url": "http://bsg.tomthebomb.net/registration/thanks/",
+        "notify_url": "http://www.bigshotgaming.com/events/ppnotification",
+        "return_url": "http://www.bigshotgaming.com/",
         "cancel_return": "http://bsg.tomthebomb.net/registration/thanks/",
     }
     form = PayPalPaymentsForm(initial=paypal_dict)
-    context = {"form": form}
-    return render_to_response("events/payment.html", context)
+    return render_to_response("events/payment.html", {
+        "form": form,
+    }, context_instance=RequestContext(request))
 
 @login_required    
 def activate(request, eventid, uuid):
     # create a participant since these people will be signing up ONLY via coupon
     # if they were dumb enough to try and signup manually, this'll still catch em
-    participant = Participant.objects.get_or_create(user=request.user, event_id=eventid)[0]
+    event = Event.objects.get(event_id=eventid)
+    participant = Participant.objects.get_or_create(user=request.user, event=event)[0]
     coupon = Coupon.objects.get(uuid=uuid)
-    activate_coupon_and_ticket(participant, coupon)
-    return render_to_response('events/activated.html', {}, context_instance=RequestContext(request))
+    activate_coupon(participant, coupon)
+    return render_to_response('events/activated.html', {
+        'event':event
+    }, context_instance=RequestContext(request))
     
-    
-# def signup(request):
-#     try:
-#         event = Event.objects.get(is_active=True)
-#     except ObjectDoesNotExist:
-#         event = None
-#     return render_to_response('events/signup.html', {'event':event}, context_instance=RequestContext(request))
     
     

@@ -15,6 +15,15 @@ class Event(models.Model):
 
     def __unicode__(self):
         return self.name
+        
+    def number_pending(self):
+        return self.participant_set.filter(coupon__isnull=True).count()
+    
+    def number_paid(self):
+        return self.participant_set.filter(coupon__isnull=False).count()
+        
+    def number_remaining(self):
+        return self.participant_limit - self.number_paid()
     
     name = models.CharField(max_length=100, verbose_name='Event Name')
     start_date = models.DateTimeField()
@@ -46,6 +55,7 @@ class Participant(models.Model):
     
     user = models.ForeignKey(User)
     event = models.ForeignKey(Event)
+    coupon = models.OneToOneField('Coupon', blank=True, null=True)
 
 class Coupon(models.Model):
     
@@ -63,16 +73,6 @@ class Coupon(models.Model):
     transaction = models.ForeignKey(PayPalIPN, blank=True, null=True, editable=False)
     activated = models.BooleanField()
     
-
-class Ticket(models.Model):
-    
-    def __unicode__(self):
-        return '%s - %s' % (self.participant.user.username, self.participant.event)
-
-    participant = models.ForeignKey(Participant)
-    #event = models.ForeignKey(Event)
-    coupon = models.OneToOneField(Coupon, null=True)
-    
 @receiver(payment_was_successful)
 def payment_complete(sender, **kwargs):
     # we do this so that the Coupon objects actually have their correct types
@@ -83,7 +83,7 @@ def payment_complete(sender, **kwargs):
     # We pop the last coupon off the list to activate the ticket for the original payer
     participant = Participant.objects.get(id=sender.custom)
     coupon = coupons.pop()
-    activate_coupon_and_ticket(participant, coupon)
+    activate_coupon(participant, coupon)
     # We need to dispatch off an email...
     email_confirmation(participant=participant, coupons=coupons)
 
@@ -92,10 +92,10 @@ def payment_flagged(sender, **kwargs):
     print sender
     print "Something went wrong..."
     
-def activate_coupon_and_ticket(participant, coupon):
-    ticket = Ticket(participant=participant, coupon=coupon)
+def activate_coupon(participant, coupon):
+    participant.coupon = coupon
     coupon.activate()
-    ticket.save()
+    participant.save()
     
 def email_confirmation(**kwargs):
     t = loader.get_template('events/email.txt')
