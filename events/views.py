@@ -14,12 +14,11 @@ import uuid
 def index(request):
     try:
         event = Event.objects.get(is_active=True)
-    except ObjectDoesNotExist:
+    except (TypeError, ObjectDoesNotExist):
         event = None
     try:
         participant = Participant.objects.get(user=request.user, event=event)
-        print "Yahoo!"
-    except ObjectDoesNotExist:
+    except (TypeError, ObjectDoesNotExist):
         participant = None
 
     return render_to_response('events/index.html', {
@@ -31,11 +30,11 @@ def index(request):
 def participants(request, eventid):
     try:
         event = Event.objects.get(is_active=True)
-    except ObjectDoesNotExist:
+    except (TypeError, ObjectDoesNotExist):
         event = None
     try:
         participants = Participant.objects.filter(event=event)
-    except ObjectDoesNotExist:
+    except (TypeError, ObjectDoesNotExist):
         participants = None
         
     return render_to_response('events/participants.html', {
@@ -55,15 +54,14 @@ def register(request, eventid):
                 request.session['participant'] = participant.id
                 return HttpResponseRedirect(reverse('events_payment'))   
             elif form.cleaned_data['payment_type'] == 'ad':
-                print 'At-the-door payment detected'
                 return HttpResponseRedirect('/events/thanks')
-        print "wtf"
     else:
         form = RegisterForm()
         return render_to_response('events/register.html', {
             'form': form,
         }, context_instance=RequestContext(request))
 
+@login_required
 def payment(request):
     # hm, not sure if this was the best idea
     # could do it the opposite way since it's easy to get the participant object
@@ -76,8 +74,8 @@ def payment(request):
         "quantity": request.session['qty'],
         "custom": request.session['participant'],
         "notify_url": "http://www.bigshotgaming.com/events/ppnotification",
-        "return_url": "http://www.bigshotgaming.com/",
-        "cancel_return": "http://bsg.tomthebomb.net/registration/thanks/",
+        "return_url": "http://www.bigshotgaming.com/events/thanks",
+        "cancel_return": "http://www.bigshotgaming.com",
     }
     form = PayPalPaymentsForm(initial=paypal_dict)
     return render_to_response("events/payment.html", {

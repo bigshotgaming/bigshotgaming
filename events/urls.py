@@ -12,5 +12,4 @@ urlpatterns = patterns('events.views',
     (r'^payment/', 'payment', {}, 'events_payment'),
     (r'^activate/(\d+)/([\w]{8}-[\w]{4}-[\w]{4}-[\w]{4}-[\w]{12})/', 'activate', {}, 'events_activate'),
     (r'^ppnotification', include('paypal.standard.ipn.urls')), 
-    #(r'^register/(\d{1})/$', RegisterWizard([RegisterForm1, RegisterForm2, RegisterForm3], initial=initial), {}, 'events_register'),
 )
