@@ -1,6 +1,7 @@
 {% if event %}
 <div class='lan_info'>
     <h2>{{ event.name }}</h2>
-    <a href={% url events_index %}><p>Sign up for this event</p></a>
+	<p>Current status: {{event.number_paid }} seats paid - {{ event.number_pending }} seats pending - {{ event.number_remaining }} seats remaining
+    <a href={% url events_index %}><p>Event information</p></a>
 </div>
 {% endif %}

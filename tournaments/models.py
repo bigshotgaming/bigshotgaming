@@ -1,7 +1,7 @@
 from django.db import models
 from events.models import Event
 from sponsorship.models import Sponsor, Prize
-from registration.models import Ticket
+#from registration.models import Ticket
 
 PLATFORM_CHOICES = (('P','PC'),('C','Console'))
 class Game(models.Model):
