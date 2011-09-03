@@ -1,4 +1,15 @@
 {% extends "pages/master.html" %}
+{% block header %}
+<script type="text/javascript">
+function showQuantity() {
+  document.getElementByID("quantity").style = "display:block;";
+}
+function showQuantity() {
+  document.getElementByID("quantity").style = "display:none;";
+  document.getElementByID("id_ticket_quantity").value = 1;
+}
+</script>
+{% endblock %}
 {% block content %}
 <h1>Event Registration</h1>
 <form action="." method="post">
