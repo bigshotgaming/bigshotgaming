@@ -109,7 +109,7 @@ def email_confirmation(**kwargs):
     
     subj = '%s registration confirmation' % event.name
     fr = 'Big Shot Gaming <bigshot@bigshotgaming.com>'
-    send_mail(subj, t.render(c), fr, ['tom@bigshotgaming.com'])
+    send_mail(subj, t.render(c), fr, [user.email])
     
     
     
