@@ -8,6 +8,7 @@ from paypal.standard.ipn.signals import payment_was_successful, payment_was_flag
 from paypal.standard.ipn.models import PayPalIPN
 from mailer import send_mail
 import uuid
+import datetime
 
 class Event(models.Model):
 
@@ -52,6 +53,7 @@ class Participant(models.Model):
     user = models.ForeignKey(User)
     event = models.ForeignKey(Event)
     coupon = models.OneToOneField('Coupon', blank=True, null=True)
+    signup_time = models.DateTimeField(auto_now_add=True)
 
 class Coupon(models.Model):
     
@@ -63,11 +65,14 @@ class Coupon(models.Model):
     
     def activate(self):
         self.activated = True
+        self.activated_time = datetime.datetime.now()
         self.save()
         
     uuid = models.CharField(max_length=36, primary_key=True, default=make_uuid, editable=False)
     transaction = models.ForeignKey(PayPalIPN, blank=True, null=True, editable=False)
     activated = models.BooleanField()
+    created_time = models.DateTimeField(auto_now_add=True)
+    activated_time = models.DateTimeField(null=True, blank=True)
     
 @receiver(payment_was_successful)
 def payment_complete(sender, **kwargs):

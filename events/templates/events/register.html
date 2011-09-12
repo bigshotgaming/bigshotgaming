@@ -11,14 +11,19 @@ function hideQuantity() {
 </script>
 {% endblock %}
 {% block content %}
-<h1>Event Registration</h1>
-<form action="." method="post">
-{% csrf_token %}
-<p><label for="id_payment_type_0">Payment type:</label> <ul> 
-  <li><label for="id_payment_type_0"><input type="radio" id="id_payment_type_0" value="pp" name="payment_type" onclick="showQuantity();" /> PayPal</label></li> 
-  <li><label for="id_payment_type_1"><input type="radio" id="id_payment_type_1" value="ad" name="payment_type" onclick="hideQuantity();" /> Pay at-the-door</label></li> 
-</ul></p> 
-<div id="quantity"><p><label for="id_ticket_quantity">Ticket quantity:</label> <input type="text" name="ticket_quantity" id="id_ticket_quantity" /></p></div>
-<input type="submit" value="Submit" />
-</form>
+{% if event.is_active %}
+	<h1>Event Registration</h1>
+	<form action="." method="post">
+	{% csrf_token %}
+	<p><label for="id_payment_type_0">Payment type:</label> <ul> 
+	  <li><label for="id_payment_type_0"><input type="radio" id="id_payment_type_0" value="pp" name="payment_type" onclick="showQuantity();" /> PayPal</label></li> 
+	  <li><label for="id_payment_type_1"><input type="radio" id="id_payment_type_1" value="ad" name="payment_type" onclick="hideQuantity();" /> Pay at-the-door</label></li> 
+	</ul></p> 
+	<div id="quantity"><p><label for="id_ticket_quantity">Ticket quantity:</label> <input type="text" name="ticket_quantity" id="id_ticket_quantity" /></p></div>
+	<input type="submit" value="Submit" />
+	</form>
+{% else %}
+	<h1>Event closed</h1>
+	<p>Sorry, this event's registration is currently closed.</p>
+{% endif %}
 {% endblock %}
