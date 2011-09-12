@@ -54,6 +54,8 @@ class ParticipantAdmin(admin.ModelAdmin):
             'form': form,
             'media': self.media,
         }, context_instance=context)
+    readonly_fields = ('signup_time',)
+    list_display = ('user', 'event', 'coupon',)
     
 
 class EventAdmin(admin.ModelAdmin):
@@ -71,9 +73,9 @@ class EventAdmin(admin.ModelAdmin):
     search_fields= ('name',)
 
 class CouponAdmin(admin.ModelAdmin):
-    readonly_fields = ('uuid', 'transaction',)
+    readonly_fields = ('uuid', 'transaction', 'created_time')
     
-    list_display = ('uuid', 'transaction', 'activated')
+    list_display = ('uuid', 'transaction', 'activated', 'created_time', 'activated_time')
     
     
 admin.site.register(Event, EventAdmin)

@@ -44,6 +44,7 @@ def participants(request, eventid):
 
 @login_required
 def register(request, eventid):
+    # we need to add a bit of validation here
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
@@ -58,6 +59,7 @@ def register(request, eventid):
     else:
         form = RegisterForm()
         return render_to_response('events/register.html', {
+            'event': Event.objects.get(id=eventid),
             'form': form,
         }, context_instance=RequestContext(request))
 
