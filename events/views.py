@@ -58,9 +58,17 @@ def register(request, eventid):
                 return HttpResponseRedirect('/events/thanks')
     else:
         form = RegisterForm()
+        # we do this here because we need a participant for the context
+        # need to be able to check if they're paid or not
+        # to render the template differently
+        try: 
+            participant = Participant.objects.get(user=request.user, event__id=eventid)
+        except ObjectDoesNotExist:
+            participant = None
         return render_to_response('events/register.html', {
             'event': Event.objects.get(id=eventid),
             'form': form,
+            'participant': participant,
         }, context_instance=RequestContext(request))
 
 @login_required
