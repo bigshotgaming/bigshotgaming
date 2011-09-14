@@ -6,6 +6,8 @@
 <p>Description: {{ event.description }}</p>
 <p>Event starts at: {{ event.start_date }}</p>
 <p>Event ends at: {{ event.end_date }}</p>
+<p>Prepay price: {{ event.prepay_price }}</p>
+<p>At-the-Door price: {{ event.atd_price }}</p>
 <p>Participant limit: {{ event.participant_limit }}</p>
 <p><a href={% url events_register event.id %}>Register for this event</a></p>
 <p><a href={% url events_participants event.id %}>View participants for this event</a></p>
