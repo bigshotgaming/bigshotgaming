@@ -11,7 +11,7 @@ class RegisterForm(forms.Form):
         ('ad', 'Pay at-the-door'),
     ), widget=forms.RadioSelect)
 
-    ticket_quantity = forms.IntegerField(min_value=1, max_value=10, required=False)
+    ticket_quantity = forms.IntegerField(min_value=1, max_value=15, required=False)
 
 #     
 #     def process_step(self, request, form, step):
