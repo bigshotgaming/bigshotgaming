@@ -1,9 +1,10 @@
 {% extends "pages/master.html" %}
+{% block title %} - Events - Participants {% endblock %}
 {% block content %}
 <h1>Participant list</h1>
 <ol>
 {% for participant in participants %}
-<li>{{ participant.user.username }}</li>
+<li>{{ participant.user.username }} {% if participant.coupon %}[paid]{% endif %}</li>
 {% endfor %}
 </ol>
 {% endblock %}
