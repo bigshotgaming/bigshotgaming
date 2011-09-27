@@ -43,6 +43,7 @@ urlpatterns = patterns('',
     (r'^forum/account/', include(authopenid_urlpatterns)),
     (r'^forum/', include('djangobb_forum.urls', namespace='djangobb')),
     (r'^events/', include('events.urls')),
+    (r'^seatmap/', include('seatmap.urls')),
 )
 
 # PM Extension
