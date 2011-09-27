@@ -49,7 +49,7 @@ def seat_display(request, seat):
     
     paid = coup.activated
     
-    if request.POST:
+    if  request.method == "POST":
         seat.status = 'T'
         seat.participant = part
         seat.save()
