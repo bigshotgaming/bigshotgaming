@@ -1,15 +1,8 @@
-<html>
-<head>
-    <title>{{ status }} Seat</title>
-	<link rel="stylesheet" type="text/css" href="/static/seatmap/css/seatmap.css" title="default" media="Screen" />
-	<script type="text/javascript" src="jquery.js"></script>
-	<script type="text/javascript">
-	
-	</script>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-</head>
-<body>
-    {{ seat }}<br />
-    {{ seat.ticket_set }}
-</body>
-</html>
+{% extends "pages/master.html" %}
+{% block content %}
+<h1>Event Registration</h1>
+<form method="post">
+{% csrf_token %}
+<div id="seatconfirm"><p><label for="seatconfirm">Is this seat okay?</label><input name="seatconfirm" type="submit" value="Yes" /><input type="button" value="No" /></p></div>
+</form>
+{% endblock %}

@@ -1,4 +1,4 @@
-from seatmap.models import SeatMap, Row, Seat
+from seatmap.models import SeatMap, Seat, Table
 from events.models import Event
 from django.contrib import admin
 from django.shortcuts import render_to_response
@@ -39,5 +39,5 @@ def seat_display(request, x, y):
     return render_to_response('seatmap/seat.html', {'seat':seat, 'user':user, 'status':seat.get_status_display()})
 
 admin.site.register(SeatMap)
-#admin.site.register(Row)
-#admin.site.register(Seat)
+admin.site.register(Seat)
+admin.site.register(Table)

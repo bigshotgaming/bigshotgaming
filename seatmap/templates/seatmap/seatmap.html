@@ -2,21 +2,163 @@
 <head>
     <title>Seatmap</title>
 	<link rel="stylesheet" type="text/css" href="/static/seatmap/css/seatmap.css" title="default" media="Screen" />
-	<script type="text/javascript" src="jquery.js"></script>
+	<link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/base/jquery-ui.css" />
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js"></script>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
 	<script type="text/javascript">
+	$('#close-window').click(function(){
+        window.close();
+    });
 	
-	</script>
+	window.onload = function() {
+	    seats = Array();
+        function ev_mousedown(ev) {
+            var x, y;
+
+            if (ev.layerX || ev.layerX == 0) { // Firefox
+                x = ev.layerX;
+                y = ev.layerY;
+            } else if (ev.offsetX || ev.offsetX == 0) { // Opera
+                x = ev.offsetX;
+                y = ev.offsetY;
+            }
+            x = Math.floor(x / {{ seat_size }}) * {{ seat_size }};
+            y = Math.floor(y / {{ seat_size }}) * {{ seat_size }};
+            
+            for(s in seats) {
+                s = seats[s];
+                if(x == s.x && y == s.y) {
+                    var hi = $('<div style="position:absolute; zindex:10; background:transparent; border:2px solid #FFFF00; top:' + (s.y - 1) + '; left:' + (s.x - 1) + '; width:' + ({{ seat_size }} - 1) + '; height:' + ({{ seat_size }} - 1) + '"></div>').appendTo('body');
+                    var url = "/seatmap/seat/" + s.id + "/";
+                    $.get(url, {},
+                    function (responseText, textStatus, XMLHttpRequest) {
+                        if(responseText == 'confirm') {
+                            var dialogg = $('<div style="display:none; overflow:hidden;">Is the highlighted seat okay?</div>').appendTo('body');
+                            dialogg.dialog({ 'title':"Confirm Seat", 'modal':true, 'resizable':false, 'width':550, 'height':150, close:function(){location.reload(true)},
+                                buttons: [
+                                {
+                                    text: "Yes, reserve this seat.",
+                                    click: function() { $.ajax({
+                                    type: 'POST',
+                                    url: url,
+                                    success: function(data){location.reload(true);}
+                                    });}
+                                },
+                                {
+                                    text: "No, pick a different seat.",
+                                    click: function() { location.reload(true); }
+                                }
+                                ]
+                            });
+                        } else if (responseText == 'already') {
+                            var dialogg = $('<div style="display:none; overflow:hidden;">Sorry, you seem to have already reserved a seat.</div>').appendTo('body');
+                            dialogg.dialog({ 'title':"Oops!", 'modal':true, 'resizable':false, 'width':550, 'height':150, close:function(){location.reload(true)},
+                                buttons: [
+                                {
+                                    text: "Never mind.",
+                                    click: function() { location.reload(true); }
+                                }
+                                ]
+                            });
+                        } else if (responseText == 'notpaid') {
+                            var dialogg = $('<div style="display:none; overflow:hidden;">Sorry, you have to prepay to be able to reserve a seat.</div>').appendTo('body');
+                            dialogg.dialog({ 'title':"Oops!", 'modal':true, 'resizable':false, 'width':550, 'height':150, close:function(){location.reload(true)},
+                                buttons: [
+                                {
+                                    text: "Pay now!",
+                                    click: function() { location.href = '/events/register/'; }
+                                },
+                                {
+                                    text: "Never mind.",
+                                    click: function() { location.reload(true); }
+                                }
+                                ]
+                            });
+                        }
+                    });
+                }
+            }
+        }
+        
+        function seat(id, x, y) {
+            this.id = id;
+            this.x = x;
+            this.y = y;
+        }
+        
+        var canvas=document.getElementById('seatmap');
+        canvas.addEventListener('mousedown', ev_mousedown, false);
+        var ctx=canvas.getContext('2d');
+        ctx.textAlign = "center";
+        ctx.font = "22pt Calibri";
+        ctx.textBaseline = "middle";
+        {% for table in tables %}
+            ctx.fillStyle='#220303';
+            grd = ctx.createLinearGradient({{ table.x }} + {{ table.w }} / 2, {{ table.y }}, {{ table.x }} + {{ table.w }} / 2, {{ table.y }} + {{ table.h }});
+            grd.addColorStop(0, "#454545");
+            grd.addColorStop(.5, "#000000");
+            grd.addColorStop(1, "#454545");
+            ctx.fillStyle = grd;
+            ctx.beginPath();
+            ctx.rect({{ table.x }}, {{ table.y }}, {{ table.w }}, {{ table.h }});
+            ctx.fill();
+            ctx.closePath();
+            ctx.fillStyle='#FFFFFF';
+            ctx.fillText("{{ table.name }}", ({{ table.x }} + {{ table.w }} / 2), ({{ table.y }} + {{ table.h }} / 2));
+        {% endfor %}
+        
+        //ctx.textBaseline = "top";
+        var i = 0;
+        
+        ctx.font = "6pt Verdana";
+        {% for seat in seats %}
+            grd = ctx.createLinearGradient({{ seat.x }} + {{ seat_size }} / 2, {{ seat.y }}, {{ seat.x }} + {{ seat_size }} / 2, {{ seat.y }} + {{ seat_size }});
+            {% if seat.status == 'O' %}
+                grd.addColorStop(0, "#00FF00");
+                grd.addColorStop(1, "#009900");
+            {% else %}
+                {%if seat.status == 'T' %}
+                    grd.addColorStop(0, "#FF0000");
+                    grd.addColorStop(1, "#990000");
+                {% else %}
+                    grd.addColorStop(0, "#0000FF");
+                    grd.addColorStop(1, "#000099");
+                {% endif %}
+            {% endif %}
+            ctx.fillStyle = grd;
+            ctx.beginPath();
+            ctx.rect({{ seat.x }}, {{ seat.y }}, {{ seat_size }}, {{ seat_size }});
+            ctx.fill();
+            ctx.closePath();
+            {% if seat.status == 'O' %}
+                seats[i] = new seat({{ seat.id }}, {{ seat.x }}, {{ seat.y }});
+                i++;
+            {% endif %}
+            ctx.fillStyle='#000000';
+            ctx.fillText("{%if seat.status == 'T' or seat.status == 'A' %}{{ seat.participant.user.username }}{% else %}({{ seat.status_full }}){% endif %}", (1 + {{ seat.x }} + {{ seat_size }} / 2), ({{ seat.y }} + {{ seat_size }} / 2) + 1, 40);
+            ctx.fillStyle='#FFFFFF';
+            ctx.fillText("{%if seat.status == 'T' or seat.status == 'A' %}{{ seat.participant.user.username }}{% else %}({{ seat.status_full }}){% endif %}", ({{ seat.x }} + {{ seat_size }} / 2), ({{ seat.y }} + {{ seat_size }} / 2), 40);
+        {% endfor %}
+    }
+    </script>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 </head>
-<body>
-    <table id="seatmap">
-    {% for row, columns in grid.items %}
-        <tr class="{{ row }}">
-        {% for column, object in columns.items %}
-            <td id="{{ row }} {{ column }}" class="{{ row }} {{ object.status }}">{% if object == None %}{% else %}<a href="/seatmap/seat/{{ column }}/{{ row }}"><img src="/static/seatmap/images/blank.png" /></a>{% endif %}</td>
-        {% endfor %}
-        </tr>
-    {% endfor %}
-    </table>
+<body style="background:#CCCCCC; position: absolute; top: 0; left: 0; padding: 0;">
+    <canvas id="seatmap" width=800 height=600 style="cursor: hand;">
+    <p>Unfortunately, your browser does not support the canvas tag, which is required to use this feature.</p>
+    <p>Supported browsers:<ul>
+        <li><a href="http://www.google.com/chrome">Chrome</a></li>
+        <li><a href="http://www.opera.com">Opera</a></li>
+        <li><a href="http://www.mozilla.com">Firefox</a></li>
+        <li><a href="http://www.apple.com/safari">Safari</a></li>
+        <li><a  href="http://www.konqueror.org">Konqueror</a></li>
+    </ul></p>
+    </canvas>
+    <br />
+    <div class="ui-dialog-buttonset">
+        <button type="button" id="close-window" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" aria-disabled="false">
+            <span class="ui-button-text">Close</span>
+        </button>
+    </div>
 </body>
 </html>
