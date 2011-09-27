@@ -155,6 +155,7 @@ INSTALLED_APPS = (
     'messages',
     'events',
     'sponsorship',
+    'seatmap',
     'paypal.standard.ipn',
     'pages',
 )
