@@ -79,10 +79,7 @@ class Coupon(models.Model):
 def one_active(sender, **kwargs):
     instance = kwargs['instance']
     if instance.is_active is True:
-        for ev in Event.objects.all():
-            if ev is not instance:
-                ev.is_active = False;
-                ev.save()
+        Event.objects.exclude(pk=instance.pk).update(is_active=False)
     
 @receiver(payment_was_successful)
 def payment_complete(sender, **kwargs):
