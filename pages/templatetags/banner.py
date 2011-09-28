@@ -19,4 +19,4 @@ def get_banner():
         # we do this so that if no events are returned, the below code does not throw an exception
         event = None
     sponsors = Sponsor.objects.filter(event=event, eventsponsor__status__in=['p', 'c', 'r', 'f']).exclude(banner='')
-    return {'sponsor': list(sponsors)}
+    return {'sponsors': list(sponsors)}

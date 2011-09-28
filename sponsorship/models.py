@@ -22,7 +22,8 @@ class Sponsor(models.Model):
     contact_form_url = models.URLField(blank=True, verbose_name='Contact Form URL')
     banner_url = models.URLField(blank=True, verbose_name='Banner URL')
     banner = models.ImageField(blank=True, upload_to='sponsor/banners/')
-
+    featured_sponsor = models.BooleanField()
+    featured_banner = models.ImageField(blank=True, upload_to='sponsor/featured/')
     # objects = SponsorManager()
     
     # def count(self):
