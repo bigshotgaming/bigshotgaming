@@ -28,7 +28,9 @@ class SponsorAdmin(admin.ModelAdmin):
         ('Contact Information', {'fields': ['name', 'contact_name',
             'contact_email', 'contact_phone', 'contact_form_url',]}),
             
-        ('Other Information',   { 'fields': ['lan_rep', 'notes', 'banner_url', 'banner',]}),
+        ('Other Information',   { 'fields': ['lan_rep', 'notes', 'banner_url', 'banner',
+            'featured_sponsor', 'featured_banner',]}),
+
     ]
     
     list_display = ('name', 'lan_rep',)

@@ -1,0 +1,6 @@
+{% if sponsors|length %}
+	{% for sponsor in sponsors %}
+		<a href="{{ sponsor.banner_url }}" target="_blank"><img src="{{ sponsor.featured_banner.url }}" alt="{{ sponsor.name }}" /></a>
+	{% endfor %}
+{% endif %}
+
