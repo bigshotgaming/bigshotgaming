@@ -1,5 +1,6 @@
 {% extends "pages/master.html" %}
 {% block title %} - Sponsors{% endblock %}
+{% block content %}
 <h3>Please take a moment to visit our sponsors!</h3>
 {% for sponsor in sponsors %}
     <a href="{{ sponsor.banner_url }}" target="_blank"><img src="{{ sponsor.banner.url }}" alt="{{ sponsor.name }}"></a>
