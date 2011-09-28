@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.localflavor.us.models import USStateField
 from django.contrib.auth.models import User
 from django.forms import ModelForm
+from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.template import loader, Context
 from paypal.standard.ipn.signals import payment_was_successful, payment_was_flagged
@@ -73,6 +74,15 @@ class Coupon(models.Model):
     activated = models.BooleanField()
     created_time = models.DateTimeField(auto_now_add=True)
     activated_time = models.DateTimeField(null=True, blank=True)
+
+@receiver(post_save, sender=Event)
+def one_active(sender, **kwargs):
+    instance = kwargs['instance']
+    if instance.is_active is True:
+        for ev in Event.objects.all():
+            if ev is not instance:
+                ev.is_active = False;
+                ev.save()
     
 @receiver(payment_was_successful)
 def payment_complete(sender, **kwargs):
