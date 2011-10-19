@@ -96,7 +96,7 @@ def payment(request):
 def activate(request, eventid, uuid):
     # create a participant since these people will be signing up ONLY via coupon
     # if they were dumb enough to try and signup manually, this'll still catch em
-    event = Event.objects.get(event_id=eventid)
+    event = Event.objects.get(id=eventid)
     participant = Participant.objects.get_or_create(user=request.user, event=event)[0]
     coupon = Coupon.objects.get(uuid=uuid)
     activate_coupon(participant, coupon)
