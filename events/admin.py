@@ -11,7 +11,7 @@ mark_as_paid.short_description = "Mark selected participants as paid"
 
 class ParticipantAdmin(admin.ModelAdmin):    
     readonly_fields = ('signup_time',)
-    list_display = ('user', 'event', 'coupon', 'signup_time')
+    list_display = ('user', 'event', 'coupon', 'signup_time', 'checkin_time')
     list_filter = ('event',)
     actions = [mark_as_paid]
     

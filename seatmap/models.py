@@ -8,7 +8,7 @@ class SeatMap(models.Model):
     def __unicode__(self):
         return 'Seatmap for %s' % self.event
 
-STATUS_LIST = (('O','Open'),('T','Taken'),('A','Admin'),('N', 'None'))
+STATUS_LIST = (('O','Open'),('T','Taken'),('C', 'Checked In'),('A','Admin'),('N', 'None'))
 class Seat(models.Model):
     seatmap = models.ForeignKey(SeatMap)
     x = models.SmallIntegerField()

@@ -104,6 +104,16 @@
                                     }
                                 },
                                 {
+                                    text: "Check In.",
+                                    click: function() { 
+                                        $.ajax({
+                                        type: 'PUT',
+                                        url: url,
+                                        success: function(data){ location.reload(true); }
+                                        });
+                                    }
+                                },
+                                {
                                     text: "Never mind.",
                                     click: function() { location.reload(true); }
                                 }
@@ -224,8 +234,13 @@
                     grd.addColorStop(0, "#FF0000");
                     grd.addColorStop(1, "#990000");
                 {% else %}
-                    grd.addColorStop(0, "#0000FF");
-                    grd.addColorStop(1, "#000099");
+                    {%if seat.status == 'C' %}
+                        grd.addColorStop(0, "#FFD700");
+                        grd.addColorStop(1, "#DDA300");
+                    {% else %}
+                        grd.addColorStop(0, "#0000FF");
+                        grd.addColorStop(1, "#000099");
+                    {% endif %}
                 {% endif %}
             {% endif %}
             ctx.fillStyle = grd;
@@ -236,9 +251,9 @@
             seats[i] = new seat({{ seat.id }}, {{ seat.x }}, {{ seat.y }});
             i++;
             ctx.fillStyle='#000000';
-            ctx.fillText("{%if seat.status == 'T' or seat.status == 'A' %}{{ seat.participant.user.username }}{% else %}({{ seat.status_full }}){% endif %}", (1 + {{ seat.x }} + {{ seat_size }} / 2), ({{ seat.y }} + {{ seat_size }} / 2) + 1, 40);
+            ctx.fillText("{%if seat.status == 'T' or seat.status == 'A' or seat.status == 'C' %}{{ seat.participant.user.username }}{% else %}({{ seat.status_full }}){% endif %}", (1 + {{ seat.x }} + {{ seat_size }} / 2), ({{ seat.y }} + {{ seat_size }} / 2) + 1, 40);
             ctx.fillStyle='#FFFFFF';
-            ctx.fillText("{%if seat.status == 'T' or seat.status == 'A' %}{{ seat.participant.user.username }}{% else %}({{ seat.status_full }}){% endif %}", ({{ seat.x }} + {{ seat_size }} / 2), ({{ seat.y }} + {{ seat_size }} / 2), 40);
+            ctx.fillText("{%if seat.status == 'T' or seat.status == 'A' or seat.status == 'C' %}{{ seat.participant.user.username }}{% else %}({{ seat.status_full }}){% endif %}", ({{ seat.x }} + {{ seat_size }} / 2), ({{ seat.y }} + {{ seat_size }} / 2), 40);
         {% endfor %}
     }
     </script>
@@ -255,11 +270,5 @@
         <li><a  href="http://www.konqueror.org">Konqueror</a></li>
     </ul></p>
     </canvas>
-    <br />
-    <div class="ui-dialog-buttonset">
-        <button type="button" id="close-window" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" aria-disabled="false">
-            <span class="ui-button-text">Close</span>
-        </button>
-    </div>
 </body>
 </html>

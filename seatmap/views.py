@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
+from datetime import datetime
 
 @login_required
 def seatmap_display(request, event=None):
@@ -80,8 +81,6 @@ def seat_admin(request, seat):
         seat = Seat.objects.get(pk=seat)
     except Seat.DoesNotExist:
         return HttpResponse('Seat not found', status=404)
-        
-    parts = Participant.objects.filter(event=seat.seatmap.event)
     
     if request.method == 'POST':
         seat.x = request.POST['x-edit']
@@ -96,7 +95,14 @@ def seat_admin(request, seat):
     elif request.method == 'DELETE':
         seat.delete()
         return HttpResponse('success')
+    elif request.method == 'PUT':
+        seat.status = 'C'
+        seat.save()
+        seat.participant.checkin_time = datetime.now()
+        seat.participant.save()
+        return HttpResponse('success')
     else:
+        parts = Participant.objects.filter(event=seat.seatmap.event)
         return render_to_response('seatmap/seat_admin.html', {'seat':seat, 'parts':parts, 'statuses':STATUS_LIST})
         
 @csrf_exempt
