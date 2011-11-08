@@ -55,6 +55,7 @@ class Participant(models.Model):
     event = models.ForeignKey(Event)
     coupon = models.OneToOneField('Coupon', blank=True, null=True)
     signup_time = models.DateTimeField(auto_now_add=True)
+    checkin_time = models.DateTimeField(blank=True, null=True)
 
 class Coupon(models.Model):
     
