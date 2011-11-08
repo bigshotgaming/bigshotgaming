@@ -9,10 +9,10 @@ def mark_as_paid(modeladmin, request, queryset):
         participant.save()
 mark_as_paid.short_description = "Mark selected participants as paid"
 
-class ParticipantAdmin(admin.ModelAdmin):    
+class ParticipantAdmin(admin.ModelAdmin):
     readonly_fields = ('signup_time',)
     list_display = ('user', 'event', 'coupon', 'signup_time', 'checkin_time')
-    list_filter = ('event',)
+    list_filter = ('event', 'checked_in')
     actions = [mark_as_paid]
     
 class EventAdmin(admin.ModelAdmin):

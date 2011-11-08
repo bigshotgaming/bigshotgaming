@@ -98,6 +98,7 @@ def seat_admin(request, seat):
     elif request.method == 'PUT':
         seat.status = 'C'
         seat.save()
+        seat.participant.checked_in = True
         seat.participant.checkin_time = datetime.now()
         seat.participant.save()
         return HttpResponse('success')
