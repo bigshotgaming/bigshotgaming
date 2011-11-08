@@ -50,7 +50,7 @@ def register(request, eventid):
         if form.is_valid():
             # we need to break out if the event is full
             event = Event.objects.get(is_active=True)
-            if event.number_remaining() =< 0:
+            if event.number_remaining() <= 0:
                 # and I need to make this better later
                 return HttpResponseRedirect('/events/full')
             else:
@@ -105,9 +105,9 @@ def activate(request, eventid, uuid):
     event = Event.objects.get(id=eventid)
     participant = Participant.objects.get_or_create(user=request.user, event=event)[0]
     if participant.coupon:
-        return render_to_response('events/already_activated.html') {
+        return render_to_response('events/already_activated.html', {
             'event':event
-        }
+        }, context_instance=RequestContext(request))
     else:
         coupon = Coupon.objects.get(uuid=uuid)
         activate_coupon(participant, coupon)
