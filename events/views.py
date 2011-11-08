@@ -48,14 +48,20 @@ def register(request, eventid):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
-            # we create a participant regardless of what people want to do
-            participant = Participant.objects.get_or_create(user=request.user, event_id=eventid)[0]
-            if form.cleaned_data['payment_type'] == 'pp':
-                request.session['qty'] = form.cleaned_data['ticket_quantity']
-                request.session['participant'] = participant.id
-                return HttpResponseRedirect(reverse('events_payment'))   
-            elif form.cleaned_data['payment_type'] == 'ad':
-                return HttpResponseRedirect('/events/thanks')
+            # we need to break out if the event is full
+            event = Event.objects.get(is_active=True)
+            if event.number_remaining() =< 0:
+                # and I need to make this better later
+                return HttpResponseRedirect('/events/full')
+            else:
+                # we create a participant regardless of what people want to do
+                participant = Participant.objects.get_or_create(user=request.user, event_id=eventid)[0]
+                if form.cleaned_data['payment_type'] == 'pp':
+                    request.session['qty'] = form.cleaned_data['ticket_quantity']
+                    request.session['participant'] = participant.id
+                    return HttpResponseRedirect(reverse('events_payment'))   
+                elif form.cleaned_data['payment_type'] == 'ad':
+                    return HttpResponseRedirect('/events/thanks')
     else:
         form = RegisterForm()
         # we do this here because we need a participant for the context
@@ -98,11 +104,16 @@ def activate(request, eventid, uuid):
     # if they were dumb enough to try and signup manually, this'll still catch em
     event = Event.objects.get(id=eventid)
     participant = Participant.objects.get_or_create(user=request.user, event=event)[0]
-    coupon = Coupon.objects.get(uuid=uuid)
-    activate_coupon(participant, coupon)
-    return render_to_response('events/activated.html', {
-        'event':event
-    }, context_instance=RequestContext(request))
+    if participant.coupon:
+        return render_to_response('events/already_activated.html') {
+            'event':event
+        }
+    else:
+        coupon = Coupon.objects.get(uuid=uuid)
+        activate_coupon(participant, coupon)
+        return render_to_response('events/activated.html', {
+            'event':event
+        }, context_instance=RequestContext(request))
     
     
     
