@@ -20,7 +20,7 @@ class Event(models.Model):
         return self.participant_set.filter(coupon__isnull=True).count()
     
     def number_paid(self):
-        return self.participant_set.filter(coupon__isnull=False).count()
+        return self.coupon_set.all().count()
         
     def number_remaining(self):
         return self.participant_limit - self.number_paid()
@@ -72,6 +72,7 @@ class Coupon(models.Model):
         self.save()
         
     uuid = models.CharField(max_length=36, primary_key=True, default=make_uuid, editable=False)
+    event = models.ForeignKey(Event)
     transaction = models.ForeignKey(PayPalIPN, blank=True, null=True, editable=False)
     activated = models.BooleanField()
     created_time = models.DateTimeField(auto_now_add=True)
@@ -86,7 +87,7 @@ def one_active(sender, **kwargs):
 @receiver(payment_was_successful)
 def payment_complete(sender, **kwargs):
     # we do this so that the Coupon objects actually have their correct types
-    coupons = [Coupon(transaction=sender) for i in xrange(sender.quantity)]
+    coupons = [Coupon(transaction=sender, event=Event.objects.get(is_active=True)) for i in xrange(sender.quantity)]
     for coupon in coupons:
         coupon.save()
     # I cannot see a better way to do this at the moment, so here we are

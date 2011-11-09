@@ -11,9 +11,18 @@ mark_as_paid.short_description = "Mark selected participants as paid"
 
 class ParticipantAdmin(admin.ModelAdmin):
     readonly_fields = ('signup_time',)
-    list_display = ('user', 'event', 'coupon', 'signup_time', 'checkin_time')
+    list_display = ('user', 'event', 'coupon', 'signup_time', 'checkin_time', 'user_has_seat')
     list_filter = ('event', 'checked_in')
+    search_fields = ['user', 'coupon']
     actions = [mark_as_paid]
+    
+    def user_has_seat(self, obj):
+        if obj.seat_set.all():
+            return True
+        else:
+            return False
+    user_has_seat.short_description = "Has seat?"
+    user_has_seat.boolean = True
     
 class EventAdmin(admin.ModelAdmin):
     fields = (
@@ -32,6 +41,8 @@ class EventAdmin(admin.ModelAdmin):
 class CouponAdmin(admin.ModelAdmin):
     readonly_fields = ('uuid', 'transaction', 'created_time')
     list_display = ('uuid', 'transaction', 'activated', 'created_time', 'activated_time')
+    list_filter = ('event', 'activated')
+    search_fields = ['uuid', 'transaction']
     
     
 admin.site.register(Event, EventAdmin)
