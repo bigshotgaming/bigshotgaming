@@ -4,7 +4,7 @@ from events.models import Event, Venue, Participant, Coupon
 
 def mark_as_paid(modeladmin, request, queryset):
     for participant in queryset:
-        participant.coupon = Coupon()
+        participant.coupon = Coupon(event=Event.objects.get(is_active=True))
         participant.coupon.activate()
         participant.save()
 mark_as_paid.short_description = "Mark selected participants as paid"
