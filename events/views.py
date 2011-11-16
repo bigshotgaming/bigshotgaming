@@ -1,6 +1,5 @@
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.core.exceptions import ObjectDoesNotExist
-from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
@@ -20,12 +19,11 @@ def index(request):
         participant = Participant.objects.get(user=request.user, event=event)
     except (TypeError, ObjectDoesNotExist):
         participant = None
-
-    return render_to_response('events/index.html', {
+    
+    return render(request, 'events/index.html', {
         'event':event,
         'participant':participant,
-
-        }, context_instance=RequestContext(request))
+    })
 
 def participants(request, eventid):
     try:
@@ -36,11 +34,10 @@ def participants(request, eventid):
         participants = Participant.objects.filter(event=event)
     except (TypeError, ObjectDoesNotExist):
         participants = None
-        
-    return render_to_response('events/participants.html', {
+    
+    return render(request, 'events/participants.html', {
         'participants':participants,
-
-        }, context_instance=RequestContext(request))
+    })
 
 @login_required
 def register(request, eventid):
@@ -71,11 +68,12 @@ def register(request, eventid):
             participant = Participant.objects.get(user=request.user, event__id=eventid)
         except ObjectDoesNotExist:
             participant = None
-        return render_to_response('events/register.html', {
+            
+        return render(request, 'events/register.html', {
             'event': Event.objects.get(id=eventid),
-            'form': form,
             'participant': participant,
-        }, context_instance=RequestContext(request))
+            'form': form,
+        })
 
 @login_required
 def payment(request):
@@ -94,9 +92,9 @@ def payment(request):
         "cancel_return": "http://www.bigshotgaming.com",
     }
     form = PayPalPaymentsForm(initial=paypal_dict)
-    return render_to_response("events/payment.html", {
+    return render(request, "events/payment.html", {
         "form": form,
-    }, context_instance=RequestContext(request))
+    })
 
 @login_required    
 def activate(request, eventid, uuid):
@@ -105,15 +103,15 @@ def activate(request, eventid, uuid):
     event = Event.objects.get(id=eventid)
     participant = Participant.objects.get_or_create(user=request.user, event=event)[0]
     if participant.coupon:
-        return render_to_response('events/already_activated.html', {
+        return render(request, 'events/already_activated.html', {
             'event':event
-        }, context_instance=RequestContext(request))
+        })
     else:
         coupon = Coupon.objects.get(uuid=uuid)
         activate_coupon(participant, coupon)
-        return render_to_response('events/activated.html', {
+        return render(request, 'events/activated.html', {
             'event':event
-        }, context_instance=RequestContext(request))
+        })
     
     
     
