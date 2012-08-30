@@ -3,7 +3,7 @@ from django.views.generic.simple import redirect_to
 from django.conf import settings
 from django.contrib import admin
 
-from sitemap import SitemapForum, SitemapTopic
+
 from pages.forms import RegistrationForm
 
 import functools
@@ -27,8 +27,6 @@ from pages.views import NewsFeed
 admin.autodiscover()
 
 sitemaps = {
-    'forum': SitemapForum,
-    'topic': SitemapTopic,
 }
 
 urlpatterns = patterns('',
@@ -40,7 +38,6 @@ urlpatterns = patterns('',
     
     # Apps
     (r'^accounts/', include('registration.urls')),
-    (r'^forum/', include('djangobb_forum.urls', namespace='djangobb')),
     (r'^events/', include('events.urls')),
     (r'^seatmap/', include('seatmap.urls')),
 
