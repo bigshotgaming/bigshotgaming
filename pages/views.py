@@ -39,7 +39,7 @@ def index(request):
     #     posts = paginator.page(1)
     # except EmptyPage:
     #     posts = paginator.page(paginator.num_pages)
-    return render_to_response("index2.html", {'posts':posts}, context_instance=RequestContext(request))
+    return render_to_response("index.html", {'posts':posts}, context_instance=RequestContext(request))
 
 def reviews(request):
     try:
