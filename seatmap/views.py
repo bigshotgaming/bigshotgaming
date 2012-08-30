@@ -24,7 +24,9 @@ def seatmap_display(request, event=None):
 
 @csrf_exempt
 @login_required
-def seat_display(request, seat):
+def seat_display(request, seat, event=None):
+    if event is None:
+        event = Event.objects.get(is_active=True)
     try:
         seat = Seat.objects.get(pk=seat)
     except Seat.DoesNotExist:
