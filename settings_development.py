@@ -117,15 +117,14 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django_authopenid.middleware.OpenIDMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
-    'djangobb_forum.middleware.LastLoginMiddleware',
-    'djangobb_forum.middleware.UsersOnline',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 )
 
-AUTHENTICATION_BACKENDS = ('auth.backends.LegacyPasswordBackend',)
+AUTHENTICATION_BACKENDS = (
+    'auth.backends.LegacyPasswordBackend',
+)
 
 ROOT_URLCONF = 'urls'
 
@@ -149,10 +148,6 @@ INSTALLED_APPS = (
     'django.contrib.flatpages',
     'django.contrib.staticfiles',
     'registration',
-    'django_authopenid',
-    'djangobb_forum',
-    'haystack',
-    'messages',
     'events',
     'sponsorship',
     'seatmap',
@@ -186,19 +181,12 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.media',
     'django.core.context_processors.request',
     'django.core.context_processors.static',
-    'django_authopenid.context_processors.authopenid',
-    'djangobb_forum.context_processors.forum_settings',
 )
-
-# Haystack settings
-HAYSTACK_SITECONF = 'search_sites'
-HAYSTACK_SEARCH_ENGINE = 'whoosh'
-HAYSTACK_WHOOSH_PATH = os.path.join(PROJECT_ROOT, 'djangobb_index')
 
 # Account settings
 ACCOUNT_ACTIVATION_DAYS = 10
-LOGIN_REDIRECT_URL = '/forum/'
-LOGIN_URL = '/forum/account/signin/'
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/accounts/login/'
 
 #Cache settings
 CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True

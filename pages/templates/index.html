@@ -2,17 +2,28 @@
 {% block content %}
 {% load lan_info %}
 {% lan_info %}
-{% for topic in news_posts %}
-{% with topic.posts.all.0 as post %}
-<h3>{{ topic.name }}</h3>
-<h4>Written by {{ post.user }}</h4>
-<h5>{% if post.updated %}{{ post.updated }}{% else %}{{ post.created }}{% endif %}</h5>
-<p>{{ post.body_html|safe }}</p>
-<p><a href="{{ topic.get_absolute_url }}">Comment on this news post</a></p>
+{% for post in posts.object_list %}
+<h3>{{ post.title }} </h3>
+<h4>Written by {{ post.author }}</h4>
+<h5>{{ post.created }}</h5>
+<p>{{ post.body|safe }}</p>
+<div class="postlink"><a href="{% url pages.views.post post.pk %}#disqus_thread">Comments</a></div>
 {% if not forloop.last %}<hr />{% endif %}
-{% endwith %}
-{% empty %}
-<h3>No items</h3>
-<p>Sorry!</h3>
 {% endfor %}
+
+<div class="pagination">
+    <span class="step-links">
+        {% if posts.has_previous %}
+            <a href="?page={{ posts.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ posts.number }} of {{ posts.paginator.num_pages }}.
+        </span>
+
+        {% if posts.has_next %}
+            <a href="?page={{ posts.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>
 {% endblock %}
