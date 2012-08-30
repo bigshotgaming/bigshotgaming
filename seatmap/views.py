@@ -33,7 +33,7 @@ def seat_display(request, seat, event=None):
         return HttpResponse('Seat not found', status=404)
     
     try:
-       part = Participant.objects.get(user=request.user)
+       part = Participant.objects.get(user=request.user, event=event)
        coup = part.coupon
     except (Participant.DoesNotExist, Coupon.DoesNotExist):
        return HttpResponse('notpaid')
