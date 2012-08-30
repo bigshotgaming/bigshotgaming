@@ -3,7 +3,7 @@
 {% load lan_info %}
 {% lan_info %}
 {% for post in posts.object_list %}
-<h3>{{ post.title }} </h3>
+<h3>{{ post.title }}</h3>
 <h4>Written by {{ post.author }}</h4>
 <h5>{{ post.created_time }}</h5>
 <p>{{ post.body|safe|linebreaks }}</p>
