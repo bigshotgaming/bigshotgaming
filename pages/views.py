@@ -6,19 +6,40 @@ from django.template import RequestContext
 from django.contrib.syndication.views import Feed
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-from djangobb_forum.models import Category
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from pages.forms import ContactForm
 from sponsorship.models import Sponsor
 from events.models import Event
+from pages.models import Post
 
 
 #TODO: Possibly switch these to a generic view in the future, if we decide that's the right way to go.
+# def index(request):
+#     try:
+#         posts = Category.objects.get(name='News').forums.get(name='News').topics.select_related().order_by('-created')[:3]
+#     except ObjectDoesNotExist:
+#         posts = None
+#     return render_to_response('index.html', {'news_posts':posts}, context_instance=RequestContext(request))
 def index(request):
+    posts_list = Post.objects.all().order_by("-created_time")
+    paginator = Paginator(posts_list, 5)
+
     try:
-        posts = Category.objects.get(name='News').forums.get(name='News').topics.select_related().order_by('-created')[:3]
-    except ObjectDoesNotExist:
-        posts = None
-    return render_to_response('index.html', {'news_posts':posts}, context_instance=RequestContext(request))
+        page = int(request.GET.get('page', '1'))
+    except ValueError:
+        page = 1
+
+    try:
+        posts = paginator.page(page)
+    except (EmptyPage, InvalidPage):
+        posts = paginator.page(paginator.num_pages)
+    # try: 
+    #     posts = paginator.page(page)
+    # except PageNotAnInteger:
+    #     posts = paginator.page(1)
+    # except EmptyPage:
+    #     posts = paginator.page(paginator.num_pages)
+    return render_to_response("index.html", {'posts':posts}, context_instance=RequestContext(request))
 
 def reviews(request):
     try:
@@ -26,6 +47,10 @@ def reviews(request):
     except ObjectDoesNotExist:
         posts = None
     return render_to_response('index.html', {'news_posts':posts}, context_instance=RequestContext(request))
+
+def post(request, pk):
+    post = Post.objects.get(pk=int(pk))
+    return render_to_response('post.html', {'post':post}, context_instance=RequestContext(request))
 
 def sponsors(request):
     ''' 
