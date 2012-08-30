@@ -5,8 +5,8 @@
 {% for post in posts.object_list %}
 <h3>{{ post.title }} </h3>
 <h4>Written by {{ post.author }}</h4>
-<h5>{{ post.created }}</h5>
-<p>{{ post.body|safe }}</p>
+<h5>{{ post.created_time }}</h5>
+<p>{{ post.body|safe|linebreaks }}</p>
 <div class="postlink"><a href="{% url pages.views.post post.pk %}#disqus_thread">Comments</a></div>
 {% if not forloop.last %}<hr />{% endif %}
 {% endfor %}
