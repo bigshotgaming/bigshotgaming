@@ -3,7 +3,7 @@
 {% blocktrans %}
 Hi,
 
-Thank you for your registration. To activate your account click on the link below :
+Thank you for registering on {{ site.domain }}. Please click the link below -
 {% endblocktrans %}
 
 http://{{ site.domain }}{% url registration_activate activation_key %}
