@@ -1,25 +1,35 @@
 from django.db import models
-from events.models import Event
+from events.models import Event, Participant, Coupon
 from sponsorship.models import Sponsor, Prize
-#from registration.models import Ticket
 
 PLATFORM_CHOICES = (('P','PC'),('C','Console'))
 class Game(models.Model):
-    name     = models.CharField(max_length=255)
+
+    def __unicode__(self):
+        return self.name
+
+    name = models.CharField(max_length=60)
     platform = models.CharField(max_length=1, choices=PLATFORM_CHOICES)
 
 class Tournament(models.Model):
-    name     = models.CharField(max_length=255)
-    game     = models.ForeignKey(Game)
-    when     = models.DateTimeField()
-    event    = models.ForeignKey(Event)
-    sponsors = models.ManyToMany(Sponsor)
-    prizes   = models.ManyToMany(Prize)
-    entrants = models.ManyToMany(Ticket)
+
+    def __unicode__(self):
+        return self.name
+
+    name = models.CharField(max_length=60)
+    game = models.ForeignKey(Game)
+    start_time = models.DateTimeField()
+    event = models.ForeignKey(Event)
+    # sponsors = models.ManyToMany(Sponsor)
+    # prizes   = models.ManyToMany(Prize)
+    teams = models.ManyToManyField('Team', blank=True)
+    max_teams = models.IntegerField()
 
 class Team(models.Model):
-    tournament = models.ForeignKey('TeamTournament')
-    members    = models.ManyToMany(Ticket)
 
-class TeamTournament(Tournament):
-    entrants = models.ManyToMany(Team)
+    def __unicode__(self):
+        return self.name
+
+    name = models.CharField(max_length=60)
+    members = models.ManyToManyField(Participant, blank=True)
+    password = models.CharField(max_length=10)
