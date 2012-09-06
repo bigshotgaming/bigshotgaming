@@ -16,13 +16,15 @@ def add_remoteip(function, request):
 # This is a total hack that decorates the register view. It allows us to provide a dynamic parameter (remote IP address)
 # to the registration form.
 
-# from django_authopenid.urls import urlpatterns as authopenid_urlpatterns
-# for i, rurl in enumerate(authopenid_urlpatterns):
-#     if rurl.name == 'registration_register':
-#         authopenid_urlpatterns[i]._callback = functools.partial(add_remoteip, authopenid_urlpatterns[i]._callback)
-#                                                  'backend': 'registration.backends.default.DefaultBackend'})
-#    elif rurl.name == 'registration_activate':
-#                authopenid_urlpatterns[i].default_args = {'backend': 'registration.backends.default.DefaultBackend'}
+from django_authopenid.urls import urlpatterns as authopenid_urlpatterns
+from registration.urls import urlpatterns as registration_urlpatterns
+for i, rurl in enumerate(registration_urlpatterns):
+     if rurl.name == 'registration_register':
+         registration_urlpatterns[i]._callback = functools.partial(add_remoteip, registration_urlpatterns[i]._callback)
+                                                  'backend': 'registration.backends.default.DefaultBackend'})
+    elif rurl.name == 'registration_activate':
+                registration_urlpatterns[i].default_args = {'backend': 'registration.backends.default.DefaultBackend'}
+                
 from pages.views import NewsFeed
 admin.autodiscover()
 
