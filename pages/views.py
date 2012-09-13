@@ -4,6 +4,7 @@ from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 from django.template import RequestContext
 from django.contrib.syndication.views import Feed
+from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
@@ -86,12 +87,11 @@ def contact(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
-            staff_member = form.cleaned_data['staff_member']
             subject = form.cleaned_data['subject']
             message = form.cleaned_data['message']
             sender = (request.user.email)
-            recipients = [staff_member.email, sender]
-
+            recipients = [sender]
+            recipients.extend([u.email for u in User.objects.filter(is_superuser=True).exclude(email="").order_by('id')])
             from django.core.mail import send_mail
             send_mail(subject, message, sender, recipients)
             return HttpResponseRedirect('/thanks/')

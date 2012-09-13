@@ -20,6 +20,5 @@ class RegistrationForm(RegistrationFormUniqueEmail):
         self.fields['captcha'] = ReCaptchaField(remote_ip=remote_ip)
 
 class ContactForm(forms.Form):
-    staff_member = forms.ModelChoiceField(queryset=User.objects.filter(is_staff=True))
     subject = forms.CharField(max_length=100)
     message = forms.CharField(widget=forms.widgets.Textarea)
