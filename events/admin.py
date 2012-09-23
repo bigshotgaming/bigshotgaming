@@ -13,7 +13,7 @@ class ParticipantAdmin(admin.ModelAdmin):
     readonly_fields = ('signup_time',)
     list_display = ('user', 'event', 'coupon', 'signup_time', 'checkin_time', 'user_has_seat')
     list_filter = ('event', 'checked_in')
-    search_fields = ['user', 'coupon']
+    search_fields = ['user__username', 'coupon__uuid']
     actions = [mark_as_paid]
     
     def user_has_seat(self, obj):
