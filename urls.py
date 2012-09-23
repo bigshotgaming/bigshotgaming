@@ -40,6 +40,7 @@ urlpatterns = patterns('',
     (r'^accounts/', include('registration.urls')),
     (r'^events/', include('events.urls')),
     (r'^seatmap/', include('seatmap.urls')),
+    (r'^tournaments/', include('tournaments.urls')),
 
 )
 
