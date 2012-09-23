@@ -77,6 +77,7 @@ class Coupon(models.Model):
     activated = models.BooleanField()
     created_time = models.DateTimeField(auto_now_add=True)
     activated_time = models.DateTimeField(null=True, blank=True)
+    notes = models.TextField(blank=True)
 
 @receiver(post_save, sender=Event)
 def one_active(sender, **kwargs):
