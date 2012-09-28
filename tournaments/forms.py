@@ -12,6 +12,10 @@ class JoinTeamForm(forms.Form):
 class LeaveTeamForm(forms.Form):
     pass
 
+class CreateTeamForm(forms.Form):
+    name = forms.CharField(max_length=60)
+    password = forms.CharField(max_length=10)
+
     # def clean(self):
     #     data = self.cleaned_data
     #     try:

@@ -13,6 +13,10 @@
 
 	{% endfor %}
 </ul></p>
+<form action="{% url tournaments.views.tournament tournament.pk %}" method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Create Team" />
+</form>
 {% else %}
 <h2>No events are active at this time.</h2>
 {% endif %}
