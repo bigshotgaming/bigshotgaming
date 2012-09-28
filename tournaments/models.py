@@ -18,11 +18,14 @@ class Tournament(models.Model):
 
     name = models.CharField(max_length=60)
     game = models.ForeignKey(Game)
-    start_time = models.DateTimeField()
     event = models.ForeignKey(Event)
+
     # sponsors = models.ManyToMany(Sponsor)
     # prizes   = models.ManyToMany(Prize)
+    team_size = models.IntegerField()
     max_teams = models.IntegerField()
+    #rules = models.TextField()
+
 
 class Team(models.Model):
 
@@ -31,5 +34,5 @@ class Team(models.Model):
 
     name = models.CharField(max_length=60)
     members = models.ManyToManyField(Participant, blank=True)
-    password = models.CharField(max_length=10, blank=True)
+    password = models.CharField(max_length=10)
     tournament = models.ForeignKey(Tournament)
