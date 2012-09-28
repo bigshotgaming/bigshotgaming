@@ -1,0 +1,19 @@
+{% extends "pages/master.html" %}
+{% block content %}
+{% if event %}
+<h1>{{ event.name }}</h1>
+<h2>{{ tournament.name }}</h2>
+<p><ul>
+	{% for team in teams %}
+		<p><a href="{% url tournaments.views.team team.pk %}">{{ team.name }}</a> - {{team.members.count}} player(s)</p>
+	{% endfor %}
+	<p>Teams Registered/Max: {{teams.count}}/{{tournament.max_teams}}
+	{% for tournament in tournaments_list %}
+	<li><a href= "{% url tournaments.views.tournament tournament.pk %}">{{ tournament.name }}</a></li>
+
+	{% endfor %}
+</ul></p>
+{% else %}
+<h2>No events are active at this time.</h2>
+{% endif %}
+{% endblock %}
