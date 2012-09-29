@@ -3,6 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.decorators import login_required
 from tournaments.models import Tournament, Team
 from tournaments.forms import JoinTeamForm, LeaveTeamForm, CreateTeamForm
 from events.models import Event, Participant, Coupon
@@ -22,6 +23,7 @@ def index(request):
         'tournaments_list': tournaments_list,
     })
 
+@login_required
 def tournament(request, pk):
     tournament = Tournament.objects.get(pk=int(pk))
     teams = tournament.team_set.all()
@@ -50,6 +52,7 @@ def tournament(request, pk):
         'form': form,
     })
 
+@login_required
 def team(request, pk):
 
     team = Team.objects.get(pk=int(pk))
