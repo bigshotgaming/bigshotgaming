@@ -26,7 +26,6 @@ class Tournament(models.Model):
     max_teams = models.IntegerField()
     #rules = models.TextField()
 
-
 class Team(models.Model):
 
     def __unicode__(self):
@@ -36,3 +35,15 @@ class Team(models.Model):
     members = models.ManyToManyField(Participant, blank=True)
     password = models.CharField(max_length=10)
     tournament = models.ForeignKey(Tournament)
+
+def team_full(tournament, team):
+    if team.members.count() >= tournament.team_size:
+        return True
+
+def tournament_full(tournament):
+    if tournament.team_set.count() >= tournament.max_teams:
+        return True
+
+def password_correct(team, password):
+    if password == team.password:
+        return True

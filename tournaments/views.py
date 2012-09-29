@@ -29,7 +29,7 @@ def tournament(request, pk):
     participant = Participant.objects.get(user=request.user, event=event)
 
     if request.method == 'POST':
-        form = CreateTeamForm(request.POST)
+        form = CreateTeamForm(request.POST, tournament=tournament)
         if form.is_valid():
             try:
                 ct = Team.objects.get(members=participant)
@@ -39,8 +39,9 @@ def tournament(request, pk):
             team = Team.objects.create(name=form.cleaned_data['name'], password=form.cleaned_data['password'],
                 tournament=tournament)
             team.members.add(participant)
+            return HttpResponseRedirect(reverse('tournaments_tournament', args=[tournament.id]))
     else:
-        form = CreateTeamForm
+        form = CreateTeamForm(tournament=tournament)
 
     return render(request, 'tournaments/tournament.html', {
         'event': event,
@@ -64,7 +65,7 @@ def team(request, pk):
     # thanks to pwf for the following
     if request.method == 'POST':
         if not on_team:
-            form = JoinTeamForm(request.POST)
+            form = JoinTeamForm(request.POST, team=team, tournament=tournament)
             if form.is_valid():
                 team.members.add(participant) 
                 return HttpResponseRedirect(reverse('tournaments_team', args=[team.id]))   
@@ -74,7 +75,7 @@ def team(request, pk):
                 team.members.remove(participant)
                 return HttpResponseRedirect(reverse('tournaments_team', args=[team.id]))   
     else:
-        form = JoinTeamForm
+        form = JoinTeamForm(team=team, tournament=tournament)
 
     return render(request, 'tournaments/team.html', {
         'event': event,
