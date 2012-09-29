@@ -13,6 +13,7 @@
 <p><a href={% url events_register event.id %}>Register for this event</a></p>
 <p><a href={% url events_participants event.id %}>View participants for this event</a></p>
 <p><a href={% url seatmap.views.seatmap_display %} target="_blank">View the seatmap for this event</a></p>
+<p><a href={% url tournaments.views.index %}>View/Register for tournaments for this event</a></p>
 {% else %}
 <h2>No events are active at this time.</h2>
 {% endif %}
