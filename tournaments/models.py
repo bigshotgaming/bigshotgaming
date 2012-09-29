@@ -19,12 +19,11 @@ class Tournament(models.Model):
     name = models.CharField(max_length=60)
     game = models.ForeignKey(Game)
     event = models.ForeignKey(Event)
-
     # sponsors = models.ManyToMany(Sponsor)
     # prizes   = models.ManyToMany(Prize)
     team_size = models.IntegerField()
     max_teams = models.IntegerField()
-    #rules = models.TextField()
+    rules = models.TextField()
 
 class Team(models.Model):
 

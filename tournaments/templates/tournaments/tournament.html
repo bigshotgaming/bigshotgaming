@@ -3,20 +3,25 @@
 {% if event %}
 <h1>{{ event.name }}</h1>
 <h2>{{ tournament.name }}</h2>
+<h3>Tournament Rules:</h3>
+<p>
+    {{tournament.rules}}
+</p>
+<h3>Registered teams:</h3>
 <p><ul>
 	{% for team in teams %}
 		<p><a href="{% url tournaments.views.team team.pk %}">{{ team.name }}</a> - {{team.members.count}} player(s)</p>
 	{% endfor %}
-	<p>Teams Registered/Max: {{teams.count}}/{{tournament.max_teams}}
 	{% for tournament in tournaments_list %}
 	<li><a href= "{% url tournaments.views.tournament tournament.pk %}">{{ tournament.name }}</a></li>
-
 	{% endfor %}
 </ul></p>
+<p>Teams Registered/Max: {{teams.count}}/{{tournament.max_teams}}
 <form action="{% url tournaments.views.tournament tournament.pk %}" method="post">{% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="Create Team" />
 </form>
+<a href="{% url tournaments.views.index %}">Back to list of all tournaments</a>
 {% else %}
 <h2>No events are active at this time.</h2>
 {% endif %}
