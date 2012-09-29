@@ -21,7 +21,7 @@
     <input type="submit" value="Join Team" />
 </form>
 {% endif %}
-
+<a href="{% url tournaments.views.tournament tournament.pk %}">Back to tournament</a>
 {% else %}
 <h2>No events are active at this time.</h2>
 {% endif %}
