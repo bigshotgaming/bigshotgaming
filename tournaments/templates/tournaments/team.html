@@ -1,0 +1,28 @@
+{% extends "pages/master.html" %}
+{% block content %}
+{% if event %}
+<h1>{{ event.name }}</h1>
+<h2>{{ tournament.name }}</h2>
+<h3>{{ team.name }}</h3>
+<p>Team Members:</p>
+<p><ul>
+    {% for member in team.members.all %}
+        <li>{{ member.user }}</li>
+    {% endfor %}
+</ul></p>
+
+{% if on_team %}
+<form action="{% url tournaments.views.team team.pk %}" method="post">{% csrf_token %}
+    <input type="submit" value="Leave Team" />
+</form>
+{% else %}
+<form action="{% url tournaments.views.team team.pk %}" method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Join Team" />
+</form>
+{% endif %}
+<a href="{% url tournaments.views.tournament tournament.pk %}">Back to tournament</a>
+{% else %}
+<h2>No events are active at this time.</h2>
+{% endif %}
+{% endblock %}

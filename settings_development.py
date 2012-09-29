@@ -153,6 +153,7 @@ INSTALLED_APPS = (
     'seatmap',
     'paypal.standard.ipn',
     'pages',
+    'tournaments',
 )
 
 # try:

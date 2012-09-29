@@ -1,0 +1,15 @@
+{% extends "pages/master.html" %}
+{% block title %} - Events{% endblock %}
+{% block content %}
+{% if event %}
+<h1>{{ event.name }}</h1>
+<h2>Tournaments</h2>
+<p><ul>
+	{% for tournament in tournaments_list %}
+	<li><a href= "{% url tournaments.views.tournament tournament.pk %}">{{ tournament.name }}</a> - {{tournament.team_set.count}}/{{tournament.max_teams}} teams</li>
+	{% endfor %}
+</ul></p>
+{% else %}
+<h2>No events are active at this time.</h2>
+{% endif %}
+{% endblock %}
