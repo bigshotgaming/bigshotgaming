@@ -38,6 +38,7 @@ urlpatterns = patterns('',
     (r'^events/', include('events.urls')),
     (r'^seatmap/', include('seatmap.urls')),
     (r'^tournaments/', include('tournaments.urls')),
+    (r'^schedule/', include('schedule.urls')),
 
 )
 

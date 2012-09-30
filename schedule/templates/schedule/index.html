@@ -1,0 +1,10 @@
+{% extends "pages/master.html" %}
+{% block content %}
+<h1>{{event.name}}</h1>
+<h2>Schedule</h2>
+<ul>
+{% for item in schedule %}
+<li><p>{{item.name}} - {{item.start_time}} to {{item.end_time}}</p></li>
+{% endfor %}
+</ul>
+{% endblock %}
