@@ -152,6 +152,7 @@ INSTALLED_APPS = (
     'paypal.standard.ipn',
     'pages',
     'tournaments',
+    'schedule',
     'gunicorn',
 )
 
