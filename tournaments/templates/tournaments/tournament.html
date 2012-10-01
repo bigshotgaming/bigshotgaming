@@ -16,11 +16,13 @@
 	<li><a href= "{% url tournaments.views.tournament tournament.pk %}">{{ tournament.name }}</a></li>
 	{% endfor %}
 </ul></p>
-<p>Teams Registered/Max: {{teams.count}}/{{tournament.max_teams}}
+<p>Teams Registered/Max: {{teams.count}}/{{tournament.max_teams}}</p>
+{% if participant != None %}
 <form action="{% url tournaments.views.tournament tournament.pk %}" method="post">{% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="Create Team" />
 </form>
+{% endif %}
 <a href="{% url tournaments.views.index %}">Back to list of all tournaments</a>
 {% else %}
 <h2>No events are active at this time.</h2>

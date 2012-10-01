@@ -11,15 +11,17 @@
     {% endfor %}
 </ul></p>
 
-{% if on_team %}
-<form action="{% url tournaments.views.team team.pk %}" method="post">{% csrf_token %}
-    <input type="submit" value="Leave Team" />
-</form>
-{% else %}
-<form action="{% url tournaments.views.team team.pk %}" method="post">{% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Join Team" />
-</form>
+{% if participant != None %}
+    {% if on_team %}
+    <form action="{% url tournaments.views.team team.pk %}" method="post">{% csrf_token %}
+        <input type="submit" value="Leave Team" />
+    </form>
+    {% else %}
+    <form action="{% url tournaments.views.team team.pk %}" method="post">{% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Join Team" />
+    </form>
+    {% endif %}
 {% endif %}
 <a href="{% url tournaments.views.tournament tournament.pk %}">Back to tournament</a>
 {% else %}
