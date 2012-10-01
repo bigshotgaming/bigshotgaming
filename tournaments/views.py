@@ -34,7 +34,7 @@ def tournament(request, pk):
         form = CreateTeamForm(request.POST, tournament=tournament)
         if form.is_valid():
             try:
-                ct = Team.objects.get(members=participant)
+                ct = Team.objects.get(members=participant, tournament=tournament)
                 ct.members.remove(participant)
             except:
                 pass
