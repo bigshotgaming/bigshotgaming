@@ -11,7 +11,7 @@
     {% endfor %}
 </ul></p>
 
-{% if participant != None %}
+{% if participant.coupon %}
     {% if on_team %}
     <form action="{% url tournaments.views.team team.pk %}" method="post">{% csrf_token %}
         <input type="submit" value="Leave Team" />
