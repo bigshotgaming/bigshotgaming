@@ -197,6 +197,8 @@ RECAPTCHA_PUBLIC_KEY = '6Lfgv8ESAAAAAOCwstLnTDgClcfGBVoKuc6pypfu'
 RECAPTCHA_PRIVATE_KEY = '6Lfgv8ESAAAAAHbUjSt1YGoLQgSnX4VYzEJHIvwT'
 
 PAYPAL_RECEIVER_EMAIL = 'wiede1_1297892766_biz@cmich.edu'
+CHALLONGE_USERNAME = 'tomsoverbaghdad'
+CHALLONGE_API_KEY = 'aetvcd2xwyprukz8g6jyx38zc4425dxpzdf2dbxr'
 
 try:
     from local_settings import *
