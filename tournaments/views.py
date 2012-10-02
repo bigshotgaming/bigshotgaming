@@ -65,39 +65,36 @@ def team(request, pk):
 
     #more ugly hacks here
     form = None
-    participant = None
     on_team = False
+
     try:
         participant = Participant.objects.get(user=request.user, event=event)
-
-
-
-        if participant in team.members.all():
-            on_team = True
-
-        # thanks to pwf for the following
-        if request.method == 'POST':
-            if not on_team:
-                form = JoinTeamForm(request.POST, team=team, tournament=tournament)
-                if form.is_valid():
-                    team.members.add(participant) 
-                    return HttpResponseRedirect(reverse('tournaments_team', args=[team.id]))   
-            else:
-                form = LeaveTeamForm(request.POST)
-                if form.is_valid():
-                    team.members.remove(participant)
-                    return HttpResponseRedirect(reverse('tournaments_team', args=[team.id]))   
-        else:
-            form = JoinTeamForm(team=team, tournament=tournament)
     except (TypeError, ObjectDoesNotExist):
-        pass
+        participant = None
+
+    if participant in team.members.all():
+        on_team = True
+    # thanks to pwf for the following
+    if request.method == 'POST':
+        if not on_team:
+            form = JoinTeamForm(request.POST, team=team, tournament=tournament)
+            if form.is_valid():
+                team.members.add(participant) 
+                return HttpResponseRedirect(reverse('tournaments_team', args=[team.id]))   
+        else:
+            form = LeaveTeamForm(request.POST)
+            if form.is_valid():
+                team.members.remove(participant)
+                return HttpResponseRedirect(reverse('tournaments_team', args=[team.id]))   
+    else:
+        form = JoinTeamForm(team=team, tournament=tournament)
 
     return render(request, 'tournaments/team.html', {
         'event': event,
         'tournament': tournament,
         'team': team,
         'on_team': on_team,
-        'form': form
-
+        'form': form,
+        'participant': participant,
 
     })

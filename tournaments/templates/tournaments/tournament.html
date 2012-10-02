@@ -17,7 +17,7 @@
 	{% endfor %}
 </ul></p>
 <p>Teams Registered/Max: {{teams.count}}/{{tournament.max_teams}}</p>
-{% if participant != None %}
+{% if participant.coupon %}
 <form action="{% url tournaments.views.tournament tournament.pk %}" method="post">{% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="Create Team" />
