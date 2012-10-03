@@ -16,7 +16,7 @@ class JoinTeamForm(forms.Form):
         # this is ugly and I promise I will fix it later
         if team_full(self.tournament, self.team):
             raise forms.ValidationError('This team is full.')
-        if not password_correct(self.team, self.cleaned_data['password']):
+        if not password_correct(self.team, self.cleaned_data.get('password')):
             raise forms.ValidationError('That password is incorrect.')
         return self.cleaned_data
 
