@@ -1,14 +1,15 @@
 import datetime
-from django.shortcuts import render_to_response
+from django.core.mail import send_mail
+from django.shortcuts import render_to_response, render
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
-from django.template import RequestContext
+from django.template import RequestContext, loader, Context
 from django.contrib.syndication.views import Feed
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
-from pages.forms import ContactForm
+from pages.forms import ContactForm, VolunteerForm
 from sponsorship.models import Sponsor
 from events.models import Event
 from pages.models import Post
@@ -92,14 +93,34 @@ def contact(request):
             sender = (request.user.email)
             recipients = [sender]
             recipients.extend([u.email for u in User.objects.filter(is_superuser=True).exclude(email="").order_by('id')])
-            from django.core.mail import send_mail
             send_mail(subject, message, sender, recipients)
             return HttpResponseRedirect('/thanks/')
     else:
-        form = ContactForm() # An unbound form
+        form = ContactForm()
     return render_to_response('contact.html', {'form': form}, context_instance=RequestContext(request))
 
-    
+@login_required
+def volunteer(request):
+    if request.method == 'POST':
+        form = VolunteerForm(request.POST)
+        if form.is_valid():
+            subj = "[VOLUNTEER - %s] - %s" % (form.cleaned_data['desired_position'], request.user.username)
+            t = loader.get_template('pages/volunteer_email.txt')
+            c = Context({
+                'real_name': form.cleaned_data['your_name'],
+                'city': form.cleaned_data['city'],
+                'cmu_student': form.cleaned_data['cmu_student'],
+                'comments': form.cleaned_data['comments_and_experience'],
+            })
+            fr = 'Big Shot Gaming <bigshot@bigshotgaming.com>'
+            send_mail(subj, t.render(c), fr, [u.email for u in User.objects.filter(is_superuser=True).exclude(email="").order_by('id')])
+            return HttpResponseRedirect('/thanks/')
+    else:
+        form = VolunteerForm()
+    return render(request, 'pages/volunteer.html', {
+        'form':form,
+    })
+
 class NewsFeed(Feed):
     title = "Big Shot Gaming News Feed"
     description = "News from your friends at Big Shot Gaming"
