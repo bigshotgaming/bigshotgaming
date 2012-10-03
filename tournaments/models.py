@@ -49,7 +49,7 @@ class Tournament(models.Model):
     max_teams = models.IntegerField()
     rules = models.TextField()
     style = models.CharField(max_length=1, choices=STYLE_CHOICES)
-    slugified_name = models.SlugField(editable=False)
+    slugified_name = models.SlugField(max_length=80, editable=False)
     is_active = models.BooleanField(default=True)
     has_started = models.BooleanField()
 
