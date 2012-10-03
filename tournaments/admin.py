@@ -22,8 +22,9 @@ class TournamentAdmin(admin.ModelAdmin):
         for obj in queryset:
             tournament = obj
             _challonge_auth()
+            tournament_style = tournament.get_tournament_style().lower()
             tournament_name = "%s - %s" % (tournament.event.name, tournament.name)
-            challonge.tournaments.create(name=tournament_name, url=tournament.slugified_name, tournament_type=tournament.get_tournament_style())
+            challonge.tournaments.create(name=tournament_name, url=tournament.slugified_name, tournament_type=tournament_style)
 
 class TeamAdmin(admin.ModelAdmin):
     actions = ['add_to_challonge']
