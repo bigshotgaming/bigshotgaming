@@ -1,0 +1,8 @@
+{{real_name}} from {{city}} is interested in volunteering for the LAN!
+{% if cmu_student %}
+{{real_name}} is a CMU student. 
+{% endif %}
+{{real_name}} had the following to say:
+{{comments}}
+
+- BSG automated mailer-bot

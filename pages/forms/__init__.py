@@ -22,3 +22,19 @@ class RegistrationForm(RegistrationFormUniqueEmail):
 class ContactForm(forms.Form):
     subject = forms.CharField(max_length=100)
     message = forms.CharField(widget=forms.widgets.Textarea)
+
+class VolunteerForm(forms.Form):
+    VOLUNTEER_CHOICES = (
+        ('IT', 'IT/Infrastructure'),
+        ('TA', 'Tournament Administration'),
+        ('GH', 'General Help'),
+        ('MS', 'Marketing & Sponsorship'),
+    )
+    
+    your_name = forms.CharField(max_length=50)
+    city = forms.CharField(max_length=30)
+    comments_and_experience = forms.CharField(widget=forms.widgets.Textarea)
+    cmu_student = forms.BooleanField()
+    desired_position = forms.ChoiceField(choices=VOLUNTEER_CHOICES)
+
+
