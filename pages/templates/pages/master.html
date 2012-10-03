@@ -63,6 +63,8 @@
                 </ul>
             </div>
             <div id="content">
+                {% load lan_info %}
+                {% lan_info %}  
                 {% block content %}
                 {% endblock %}
             </div>
