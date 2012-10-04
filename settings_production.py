@@ -2,6 +2,8 @@
 import os.path
 import sys
 import re
+import djcelery
+djcelery.setup_loader()
 
 PROJECT_ROOT = os.path.dirname(os.path.realpath(__file__))
 
@@ -145,6 +147,8 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     'django.contrib.flatpages',
     'django.contrib.staticfiles',
+    'djcelery',
+    'gunicorn',
     'registration',
     'events',
     'sponsorship',
@@ -153,7 +157,6 @@ INSTALLED_APPS = (
     'pages',
     'tournaments',
     'schedule',
-    'gunicorn',
 )
 
 try:
