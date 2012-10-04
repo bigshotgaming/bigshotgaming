@@ -6,6 +6,6 @@ PIL>=1.1.7
 django-registration==0.7
 setproctitle
 pychallonge
-django-celery
+django-celery-with-redis
 -e git://github.com/jtauber/django-mailer.git#egg=django-mailer
 -e git://github.com/dcramer/django-paypal.git#egg=django-paypal

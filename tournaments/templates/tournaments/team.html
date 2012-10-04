@@ -15,6 +15,9 @@
     {% if on_team %}
     <form action="{% url tournaments.views.team team.pk %}" method="post">{% csrf_token %}
         <input type="submit" value="Leave Team" />
+        {% if team.owner == participant %}
+            <button type="submit" value="deleteteam" name="deleteteam">Delete Team</button>
+        {% endif %}
     </form>
     {% else %}
     <form action="{% url tournaments.views.team team.pk %}" method="post">{% csrf_token %}
