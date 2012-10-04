@@ -41,7 +41,7 @@ def tournament(request, pk):
                 except:
                     pass
                 team = Team.objects.create(name=form.cleaned_data['name'], password=form.cleaned_data['password'],
-                    tournament=tournament)
+                    tournament=tournament, owner=participant)
                 team.members.add(participant)
                 return HttpResponseRedirect(reverse('tournaments_tournament', args=[tournament.id]))
         else:
@@ -75,6 +75,7 @@ def team(request, pk):
     if participant in team.members.all():
         on_team = True
     # thanks to pwf for the following
+    # this is not good
     if request.method == 'POST':
         if not on_team:
             form = JoinTeamForm(request.POST, team=team, tournament=tournament)
@@ -84,8 +85,22 @@ def team(request, pk):
         else:
             form = LeaveTeamForm(request.POST)
             if form.is_valid():
-                team.members.remove(participant)
-                return HttpResponseRedirect(reverse('tournaments_team', args=[team.id]))   
+                if request.POST.get('deleteteam'):
+                    team.delete()
+                    return HttpResponseRedirect(reverse('tournaments_tournament', args=[tournament.id]))
+                else:
+                    team.members.remove(participant)
+                    if team.owner == participant:
+                        try:
+                            team.owner = team.members.all()[0]
+                            team.save()
+                            team.members.remove(participant)
+                            return HttpResponseRedirect(reverse('tournaments_team', args=[team.id]))   
+                        except IndexError: # this means there are no more members, delete the team
+                            team.delete()
+                            return HttpResponseRedirect(reverse('tournaments_tournament', args=[tournament.id]))
+
+
     else:
         form = JoinTeamForm(team=team, tournament=tournament)
 
