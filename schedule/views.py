@@ -15,6 +15,13 @@ def index(request):
         schedule = ScheduleItem.objects.filter(event=event)
     except:
         schedule = None
+    # days = {}
+    #     for item in schedule:
+    #         if item.start_time.day is not in days:
+    #             days[start_time.day] = [item,]
+    #         else
+    #             days[start_time.day].append(item)
+    #     print days
     return render(request, 'schedule/index.html', {
         'event': event,
         'schedule': schedule,
