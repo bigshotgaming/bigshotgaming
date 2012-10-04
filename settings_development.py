@@ -2,6 +2,8 @@
 import os.path
 import sys
 import re
+import djcelery
+djcelery.setup_loader()
 
 PROJECT_ROOT = os.path.dirname(os.path.realpath(__file__))
 
@@ -13,7 +15,6 @@ ADMINS = (
 )
 
 MANAGERS = ADMINS
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
@@ -24,6 +25,7 @@ DATABASES = {
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
 }
+BROKER_URL = 'redis://localhost:6379/0'
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -147,11 +149,12 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     'django.contrib.flatpages',
     'django.contrib.staticfiles',
+    'paypal.standard.ipn',
+    'djcelery',
     'registration',
     'events',
     'sponsorship',
     'seatmap',
-    'paypal.standard.ipn',
     'pages',
     'tournaments',
     'schedule',

@@ -1,11 +1,11 @@
 import challonge
-from django.conf import settings
 from django.db import models
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from django.template.defaultfilters import slugify
 from events.models import Event, Participant, Coupon
 from sponsorship.models import Sponsor, Prize
+from tournaments.tasks import create_tournament, delete_tournament, create_participant, destroy_participant
 
 PLATFORM_CHOICES = (('P','PC'),('C','Console'))
 
@@ -62,6 +62,7 @@ class Team(models.Model):
     members = models.ManyToManyField(Participant, blank=True)
     password = models.CharField(max_length=10)
     tournament = models.ForeignKey(Tournament)
+    owner = models.ForeignKey(Participant, related_name='owned_by')
 
 def team_full(tournament, team):
     if team.members.count() >= tournament.team_size:
@@ -75,38 +76,29 @@ def password_correct(team, password):
     if password == team.password:
         return True
 
-def _challonge_auth():
-    challonge.set_credentials(settings.CHALLONGE_USERNAME, settings.CHALLONGE_API_KEY)
-
 @receiver(post_save, sender=Tournament)
 def create_challonge_tournament(sender, **kwargs):
     tournament = kwargs['instance']
-    _challonge_auth()
     tournament_style = tournament.get_tournament_style().lower()
     tournament_name = "%s - %s" % (tournament.event.name, tournament.name)
     if kwargs['created']:
-        challonge.tournaments.create(name=tournament_name, url=tournament.slugified_name, tournament_type=tournament_style)
+        create_tournament.delay(name=tournament_name, url=tournament.slugified_name, tournament_type=tournament_style)
 
 @receiver(pre_delete, sender=Tournament)
 def delete_challonge_tournament(sender, **kwargs):
     tournament = kwargs['instance']
-    _challonge_auth()
-    challonge.tournaments.destroy(tournament=tournament.slugified_name)
+    delete_tournament.delay(tournament=tournament.slugified_name)
 
 @receiver(post_save, sender=Team)
 def create_challonge_team(sender, **kwargs):
     team = kwargs['instance']
     tournament = kwargs['instance'].tournament
-    _challonge_auth()
-    challonge.participants.create(tournament=tournament.slugified_name, name=team)
+    create_participant.delay(tournament=tournament, team=team)
 
 @receiver(pre_delete, sender=Team)
 def delete_challonge_team(sender, **kwargs):
     team = kwargs['instance']
     tournament = team.tournament
-    _challonge_auth()
-    for p in challonge.participants.index(tournament=tournament.slugified_name):
-        if p['name'] == team.name:
-            challonge.participants.destroy(tournament=tournament.slugified_name, participant_id=p['id'])
+    destroy_participant.delay(tournament=tournament, team=team)
 
     
