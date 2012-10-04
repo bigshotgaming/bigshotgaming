@@ -26,9 +26,12 @@ tbody tr:nth-child(odd) {
 {% block content %}
 <h1>{{event.name}}</h1>
 <h2>Schedule</h2>
-<table class="schedule_table">
-{% for item in schedule %}
-    <tr><th>{{item.name}}</th><td>{{item.start_time}}</td><td>{{item.end_time}}</td></tr>
+{% for day in schedule %}
+    <h3>{{ day.date }}</h3>
+    <table class="schedule_table">
+    {% for item in day %}
+        <tr><th>{{item.name}}</th><td>{{item.start_time}}</td><td>{{item.end_time}}</td></tr>
+    {% endfor %}
+    </table>
 {% endfor %}
-</table>
 {% endblock %}
