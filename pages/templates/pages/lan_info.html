@@ -4,5 +4,8 @@
 	<p>Event date/time: {{ event.start_date }} - {{ event.end_date }}</p>
 	<p>Current status: {{event.number_paid }} seats paid - {{ event.number_pending }} seats pending - {{ event.number_remaining }} seats remaining
     <p><a href={% url events_index %}>Event information</a>&nbsp;&nbsp;<a href={% url tournaments.views.index %}>Tournament information</a>&nbsp;&nbsp;<a href={% url schedule.views.index %}>Event schedule</a></p>
+    <p>Sponsored by:</p>
+    {% load banner %}
+    {% get_banner %}
 </div>
 {% endif %}
