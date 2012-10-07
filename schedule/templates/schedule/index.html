@@ -12,19 +12,22 @@ th, td, table {
     border: 1px solid #fff;
 }
 tbody tr:nth-child(odd) {
-   background-color: #222;
+   background-color: #555;
 }
 .schedule_table th{
-    background-color: #444;
+    background-color: #888;
 }
 </style>
 {% endblock %}
 {% block content %}
 <h1>{{event.name}}</h1>
 <h2>Schedule</h2>
-<table class="schedule_table">
-{% for item in schedule %}
-    <tr><th>{{item.name}}</th><td>{{item.start_time}}</td><td>{{item.end_time}}</td></tr>
+{% for key, value in days.items %}
+    <h3>{{ key }}</h3>
+    <table class="schedule_table">
+    {% for item in value %}
+        <tr><th>{{item.name}}</th><td>{{item.start_time}}</td><td>{{item.end_time}}</td></tr>
+    {% endfor %}
+    </table>
 {% endfor %}
-</table>
 {% endblock %}
