@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.db import IntegrityError
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
@@ -108,7 +109,12 @@ def activate(request, eventid, uuid):
         })
     else:
         coupon = Coupon.objects.get(uuid=uuid)
-        activate_coupon(participant, coupon)
+        try:
+            activate_coupon(participant, coupon)
+        except IntegrityError:
+            return render(request, 'events/coupon_used.html', {
+                'event':event
+                })
         return render(request, 'events/activated.html', {
             'event':event
         })
