@@ -66,7 +66,7 @@ def reviews(request):
 
 def post(request, pk):
     post = Post.objects.get(pk=int(pk))
-    return render_to_response('post.html', {'post':post}, context_instance=RequestContext(request))
+    return render_to_response('pages/post.html', {'post':post}, context_instance=RequestContext(request))
 
 def sponsors(request):
     ''' 
