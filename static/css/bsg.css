@@ -152,7 +152,7 @@ img {
 .lan_info {
 	text-align: center;
     border: 1px solid #FFFFFF;
-    padding: 0 1em;
+    padding: 0 1em 1em 0em;
     margin-top: 1em;
 
 }
