@@ -10,7 +10,7 @@
 <h3>Registered teams:</h3>
 <p><ul>
 	{% for team in teams %}
-		<p><a href="{% url tournaments.views.team team.pk %}">{{ team.name }}</a> - {{team.members.count}} player(s)</p>
+		<p><a href="{% url tournaments.views.team team.pk %}">{{ team.name }}</a> - {{team.members.count}} player(s), team captain {{team.owner.user}}</p>
 	{% endfor %}
 	{% for tournament in tournaments_list %}
 	<li><a href= "{% url tournaments.views.tournament tournament.pk %}">{{ tournament.name }}</a></li>

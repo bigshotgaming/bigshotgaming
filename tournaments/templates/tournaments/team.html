@@ -3,7 +3,7 @@
 {% if event %}
 <h1>{{ event.name }}</h1>
 <h2>{{ tournament.name }}</h2>
-<h3>{{ team.name }}</h3>
+<h3>{{ team.name }} - team captain {{team.owner.user}}</h3>
 <p>Team Members:</p>
 <p><ul>
     {% for member in team.members.all %}
