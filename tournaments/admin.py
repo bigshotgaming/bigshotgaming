@@ -19,7 +19,8 @@ class TournamentAdmin(admin.ModelAdmin):
     pub_tournament.short_description = 'Publish and start tournament'
 
 class TeamAdmin(admin.ModelAdmin):
-    pass
+    raw_id_fields = ('owner',)
+    filter_vertical = ('members',)
 
 
 admin.site.register(Game, GameAdmin)
