@@ -21,6 +21,7 @@ class TournamentAdmin(admin.ModelAdmin):
 class TeamAdmin(admin.ModelAdmin):
     raw_id_fields = ('owner',)
     filter_vertical = ('members',)
+    list_display = ('name', 'tournament', 'owner',)
 
 
 admin.site.register(Game, GameAdmin)
