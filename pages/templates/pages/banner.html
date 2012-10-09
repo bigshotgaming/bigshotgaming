@@ -1,5 +1,7 @@
 {% if sponsors|length %}
 {% with sponsors|random as selectedsponsor %}
+<div id="banner">
 	<a href="{{ selectedsponsor.banner_url }}" target="_blank"><img src="{{ selectedsponsor.banner.url }}" alt="{{ selectedsponsor.name }}" /></a>
+</div>
 {% endwith %}
 {% endif %}
