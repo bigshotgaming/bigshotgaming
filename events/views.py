@@ -4,8 +4,8 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-from events.models import Event, Participant, Coupon, activate_coupon
-from events.forms import RegisterForm
+from events.models import Event, Participant, Coupon, Waiver, activate_coupon
+from events.forms import RegisterForm, WaiverForm
 from paypal.standard.forms import PayPalPaymentsForm
 
 import uuid
@@ -113,5 +113,32 @@ def activate(request, eventid, uuid):
             'event':event
         })
     
-    
+def waiver(request, part_id):
+    if not request.user.is_staff:
+        return HttpResponse(status=403)
+    #part = Participant.objects.get(id=part_id)
+    return render_to_response('events/waiver_popup.html', {'waiver_form': WaiverForm(), 'date': datetime.today(), 'part': part_id}, context_instance=RequestContext(request))
+
+def waiver_sign(request):
+    if not request.user.is_staff:
+        return HttpResponse(status=403)
+
+    if request.method == "POST":
+        p = Participant.objects.get(pk=request.POST['part'])
+        w = Waiver(part=p, name=request.POST['name'], alias=request.POST['alias'], signature=request.POST['signature'])
+        p.checkin_time = datetime.now()
+        p.checked_in = True
+        p.save()
+        s = Seat.objects.get(participant=p)
+        s.status = 'C'
+        s.save()
+        if request.POST['psig']:
+            w.psig = request.POST['psig']
+            w.pname = request.POST['pname']
+            w.minor = True
+            w.minor_name = request.POST['minor_name']
+            w.minor_age = request.POST['minor_age']
+        w.save()
+        return render_to_response('events/waiver_okay.html', {'part': w.name})
+    return HttpResponse(status=444)    
     
