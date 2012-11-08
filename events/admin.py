@@ -44,10 +44,14 @@ class CouponAdmin(admin.ModelAdmin):
     list_filter = ('event', 'activated')
     search_fields = ['uuid', 'transaction__txn_id']
     
+class WaiverAdmin(admin.ModelAdmin):
+    list_display = ('part', 'name', 'alias', 'signed_on')
+    list_filter = ('minor', )
+    search_fields = ('name', 'alias')
     
 admin.site.register(Event, EventAdmin)
 admin.site.register(Venue)
 admin.site.register(Participant, ParticipantAdmin)
-
+admin.site.register(Waiver, WaiverAdmin)
 admin.site.register(Coupon, CouponAdmin)
 

@@ -2,7 +2,7 @@ from django import forms
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
-from events.models import Participant
+from events.models import Participant, Waiver
 from paypal.standard.forms import PayPalPaymentsForm
 
 class RegisterForm(forms.Form):
@@ -12,6 +12,15 @@ class RegisterForm(forms.Form):
     ), widget=forms.RadioSelect)
 
     ticket_quantity = forms.IntegerField(min_value=1, max_value=15, required=False)
+
+class WaiverForm(forms.Form):
+    name = forms.CharField()
+    alias = forms.CharField()
+    signature = forms.CharField()
+    pname = forms.CharField(required=False)
+    psig = forms.CharField(required=False)
+    minor_name = forms.CharField(required=False)
+    minor_age = forms.IntegerField(required=False)
 
 #     
 #     def process_step(self, request, form, step):
