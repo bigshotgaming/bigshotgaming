@@ -85,12 +85,8 @@ class Waiver(models.Model):
 
     part = models.ForeignKey(Participant)
     name = models.CharField(max_length=255)
-    alias = models.CharField(max_length=255)
-    signature = models.CharField(max_length=255)
     pname = models.CharField(max_length=255, blank=True, null=True)
-    psig = models.CharField(max_length=255, blank=True, null=True)
     minor = models.BooleanField()
-    minor_name = models.CharField(max_length=255, blank=True, null=True)
     minor_age = models.IntegerField(max_length=2, blank=True, null=True)
     signed_on = models.DateTimeField(auto_now_add=True)
 
