@@ -106,15 +106,16 @@
                                 {
                                     text: "Check In.",
                                     click: function() { 
-                                        $(this).popupWindow({
+                                        /*$(this).popupWindow({
                                             windowURL:'http://bigshotgaming.com/events/waiver/' + data[3].value, 
                                             windowName:'waiver_popup' 
-                                        });/*
+                                        });*/
                                         $.ajax({
                                         type: 'PUT',
                                         url: url,
                                         success: function(data){ location.reload(true); }
-                                        });*/
+                                        });
+                                        
                                     }
                                 },
                                 {
