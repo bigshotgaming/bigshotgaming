@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-from events.models import Event, Participant, Coupon, activate_coupon
+from events.models import Event, Participant, Coupon, Waiver, activate_coupon
 from events.forms import RegisterForm
 from paypal.standard.forms import PayPalPaymentsForm
 
@@ -119,5 +119,31 @@ def activate(request, eventid, uuid):
             'event':event
         })
     
-    
+def waiver(request, part_id):
+    if not request.user.is_staff:
+        return HttpResponse(status=403)
+    part = Participant.objects.get(id=part_id)
+    return render_to_response('events/waiver_popup.html', {'waiver_form': WaiverForm(), 'part_id': part_id, 'username':part.user}, context_instance=RequestContext(request))
+
+def waiver_sign(request):
+    if not request.user.is_staff:
+        return HttpResponse(status=403)
+
+    if request.method == "POST":
+        p = Participant.objects.get(pk=request.POST['part_id'])
+        w = Waiver(part=p, name=request.POST['name'])
+        p.checkin_time = datetime.now()
+        p.checked_in = True
+        p.save()
+        #s = Seat.objects.get(participant=p)
+        #s.status = 'C'
+        #s.save()
+        if request.POST['pname']:
+            w.pname = request.POST['pname']
+            w.minor = True
+            w.minor_age = request.POST['minor_age']
+        w.save()
+        #return render_to_response('events/waiver_okay.html', {'part': w.name})
+        return HttpResponseRedirect('/seatmap/admin')
+    return HttpResponse(status=444)    
     

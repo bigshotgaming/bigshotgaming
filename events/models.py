@@ -79,6 +79,17 @@ class Coupon(models.Model):
     activated_time = models.DateTimeField(null=True, blank=True)
     notes = models.TextField(blank=True)
 
+class Waiver(models.Model):
+    def __unicode__(self):
+        return '%s\'s waiver signed %s' % (self.part.user.username, self.signed_on)
+
+    part = models.ForeignKey(Participant)
+    name = models.CharField(max_length=255)
+    pname = models.CharField(max_length=255, blank=True, null=True)
+    minor = models.BooleanField()
+    minor_age = models.IntegerField(max_length=2, blank=True, null=True)
+    signed_on = models.DateTimeField(auto_now_add=True)
+
 @receiver(post_save, sender=Event)
 def one_active(sender, **kwargs):
     instance = kwargs['instance']
