@@ -1,0 +1,15 @@
+{% extends "pages/master.html" %}
+{% block content %}
+  <h1>Waiver Confirmation</h1>
+  <form action="." method="post">
+  {% csrf_token %}
+  <p>
+    <h3>{{ username }}</h3>
+    <label for="name">Attendee (Real) Name</label><input type="text" name="name" /><br />
+    <label for="pname"><i>Parent Name Name</i></label><input type="text" name="pname" /><br />
+    <label for="minor_age"><i>Minor Age</i></label><input type="text" name="minor_age" /><br />
+  </p> 
+  <input type="hidden" value="{{ part_id }}" />
+  <input type="submit" value="Submit" />
+  </form>
+{% endblock %}

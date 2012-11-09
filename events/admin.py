@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.contrib import admin
-from events.models import Event, Venue, Participant, Coupon
+from events.models import Event, Venue, Participant, Coupon, Waiver
 
 def mark_as_paid(modeladmin, request, queryset):
     for participant in queryset:
@@ -44,10 +44,14 @@ class CouponAdmin(admin.ModelAdmin):
     list_filter = ('event', 'activated')
     search_fields = ['uuid', 'transaction__txn_id']
     
+class WaiverAdmin(admin.ModelAdmin):
+    list_display = ('part', 'name', 'signed_on')
+    list_filter = ('minor', )
+    search_fields = ('name', )
     
 admin.site.register(Event, EventAdmin)
 admin.site.register(Venue)
 admin.site.register(Participant, ParticipantAdmin)
-
+admin.site.register(Waiver, WaiverAdmin)
 admin.site.register(Coupon, CouponAdmin)
 
