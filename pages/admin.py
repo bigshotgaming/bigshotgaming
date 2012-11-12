@@ -23,6 +23,19 @@ class ExtendedUserAdmin(UserAdmin):
 
 class PostAdmin(admin.ModelAdmin):
     search_fields = ['title']
+    actions = ['email_post_participants']
+
+    def email_post_participants(self, request, queryset):
+        from events.models import Event, Participant
+        from django.core.mail import send_mass_mail
+        participants = Participant.objects.filter(event__is_active=True)
+        for obj in queryset:
+            for participant in participants:
+                fr_email = 'Big Shot Gaming <bigshot@bigshotgaming.com>'
+                dt = (obj.title, obj.body, fr_email, [participant.user.email])
+                send_mass_mail((dt,))
+
+    email_post_participants.short_description = "Email all participants for the current event"
 
 admin.site.unregister(User)   
 admin.site.register(User, ExtendedUserAdmin)
