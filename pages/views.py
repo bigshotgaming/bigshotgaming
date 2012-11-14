@@ -1,6 +1,6 @@
 import datetime
 from django.core.mail import send_mail
-from django.shortcuts import render_to_response, render
+from django.shortcuts import render_to_response, render, get_object_or_404
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 from django.template import RequestContext, loader, Context
@@ -65,7 +65,7 @@ def reviews(request):
     return render_to_response("index.html", {'posts':posts}, context_instance=RequestContext(request))
 
 def post(request, pk):
-    post = Post.objects.get(pk=int(pk))
+    post = get_object_or_404(Post, pk=int(pk))
     return render_to_response('pages/post.html', {'post':post}, context_instance=RequestContext(request))
 
 def sponsors(request):
