@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
@@ -24,7 +24,7 @@ def index(request):
     })
 
 def tournament(request, pk):
-    tournament = Tournament.objects.get(pk=int(pk))
+    tournament = get_object_or_404(Tournament, pk=int(pk))
     teams = tournament.team_set.all()
     event = tournament.event
     # ugly temporary hacks here
@@ -59,7 +59,7 @@ def tournament(request, pk):
 
 def team(request, pk):
 
-    team = Team.objects.get(pk=int(pk))
+    team = get_object_or_404(Team, pk=int(pk))
     tournament = team.tournament
     event = tournament.event
 
