@@ -109,7 +109,7 @@ img {
 	border: 1px solid #9e9e9e;
 }
 #side-b img {
-	margin: 15px auto;
+/*	margin: 15px auto;*/
 /*	display: block;*/
 	display: inline;
 	}
@@ -135,10 +135,16 @@ img {
 	margin: 0 auto;
 	clear: both;
 }
+
+#side-b-ads {
+	padding-top: 15px;
+
+}
 #social_media img {
 	border: none;
 	float: left;
 	padding-right: 6px;
+	padding-bottom: 6px;
 	display: inline;
 }
 #banner a {
