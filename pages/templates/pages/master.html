@@ -77,6 +77,11 @@
     				<a href="http://facebook.com/bigshotgaming" alt="Facebook Link"><img src="{{ STATIC_URL }}images/facebook.png" alt="Facebook" /></a>
     				<a href="http://twitter.com/bigshotgaming" alt="Twitter Link"><img src="{{ STATIC_URL }}images/twitter.png" alt="Twitter" /></a>
                     <a href="http://steamcommunity.com/groups/bigshot" alt="Steam Community Link"><img src="{{ STATIC_URL }}images/steam.png" alt="Steam Community" /></a>
+                    {% if not user.is_authenticated %}
+                    <a href="mumble://mumble.bigshotgaming.com:64738/?version=1.2.0" alt="Mumble Link"><img src="{{ STATIC_URL }}images/mumble.png" alt="Mumble" /></a>
+                    {% else %}
+                    <a href="mumble://{{user.username}}@mumble.bigshotgaming.com:64738/?version=1.2.0" alt="Mumble Link"><img src="{{ STATIC_URL }}images/mumble.png" alt="Mumble" /></a>
+                    {% endif %}
     			</div>
                 <div id="side-b-ads">
 					{% load featured_banner %}
