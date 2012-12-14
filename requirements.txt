@@ -7,5 +7,6 @@ django-registration==0.7
 setproctitle
 pychallonge
 django-celery-with-redis
+raven
 -e git://github.com/jtauber/django-mailer.git#egg=django-mailer
 -e git://github.com/dcramer/django-paypal.git#egg=django-paypal
