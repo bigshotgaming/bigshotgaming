@@ -58,8 +58,8 @@ def register(request, eventid):
                     request.session['qty'] = form.cleaned_data['ticket_quantity']
                     request.session['participant'] = participant.id
                     return HttpResponseRedirect(reverse('events_payment'))   
-                elif form.cleaned_data['payment_type'] == 'ad':
-                    return HttpResponseRedirect('/events/thanks')
+                # elif form.cleaned_data['payment_type'] == 'ad':
+                #     return HttpResponseRedirect('/events/thanks')
     else:
         form = RegisterForm()
         # we do this here because we need a participant for the context
@@ -69,7 +69,7 @@ def register(request, eventid):
             participant = Participant.objects.get(user=request.user, event__id=eventid)
         except ObjectDoesNotExist:
             participant = None
-            
+
         return render(request, 'events/register.html', {
             'event': Event.objects.get(id=eventid),
             'participant': participant,
