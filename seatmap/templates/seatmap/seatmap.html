@@ -1,17 +1,18 @@
-<html>
-<head>
-    <title>Seatmap</title>
-	<link rel="stylesheet" type="text/css" href="/static/seatmap/css/seatmap.css" title="default" media="Screen" />
-	<link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/base/jquery-ui.css" />
-	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js"></script>
-	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
-	<script type="text/javascript">
-	$('#close-window').click(function(){
+{% extends "pages/master.html" %}
+{% block content %}
+    <link rel="stylesheet" type="text/css" href="/static/seatmap/css/seatmap.css" title="default" media="Screen" />
+    <link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/base/jquery-ui.css" />
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+    <h1>Seatmap</h1>
+    <canvas id="seatmap" width=520 height=800 style="cursor: hand;">
+    <script type="text/javascript">
+    $('#close-window').click(function(){
         window.close();
     });
-	
-	window.onload = function() {
-	    seats = Array();
+    
+    window.onload = function() {
+        seats = Array();
         function ev_mousedown(ev) {
             var x, y;
 
@@ -145,11 +146,7 @@
             ctx.fillText("{%if seat.status == 'T' or seat.status == 'A' or seat.status == 'C' %}{{ seat.participant.user.username }}{% else %}({{ seat.status_full }}){% endif %}", ({{ seat.x }} + {{ seat_size }} / 2), ({{ seat.y }} + {{ seat_size }} / 2), 40);
         {% endfor %}
     }
-    </script>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-</head>
-<body style="background:#CCCCCC; position: absolute; top: 0; left: 0; padding: 0;">
-    <canvas id="seatmap" width=1600 height=800 style="cursor: hand;">
+    </script>        
     <p>Unfortunately, your browser does not support the canvas tag, which is required to use this feature.</p>
     <p>Supported browsers:<ul>
         <li><a href="http://www.google.com/chrome">Chrome</a></li>
@@ -159,5 +156,4 @@
         <li><a  href="http://www.konqueror.org">Konqueror</a></li>
     </ul></p>
     </canvas>
-</body>
-</html>
+{% endblock %}
