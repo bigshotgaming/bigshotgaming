@@ -1,6 +1,6 @@
 from seatmap.models import SeatMap, Seat, Table, STATUS_LIST
 from events.models import Event, Participant, Coupon
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, render
 from django.http import HttpResponse
 from django.template import RequestContext
 from django.shortcuts import get_object_or_404
@@ -20,7 +20,12 @@ def seatmap_display(request, event=None):
     for seat in seats:
         seat.status_full = seat.get_status_display()
        
-    return render_to_response('seatmap/seatmap.html', {'tables':Table.objects.filter(seatmap=sm), 'seats':seats, 'seat_size':sm.seat_size, 'user':request.user})
+    return render(request, 'seatmap/seatmap.html', {
+        'tables': Table.objects.filter(seatmap=sm),
+        'seats': seats,
+        'seat_size': sm.seat_size,
+        'user':request.user,
+    })
 
 @csrf_exempt
 @login_required
