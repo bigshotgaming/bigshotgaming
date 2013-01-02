@@ -150,6 +150,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'raven.contrib.django',
     'djcelery',
+    'django-celery-mailer',
     'gunicorn',
     'registration',
     'events',
@@ -161,12 +162,7 @@ INSTALLED_APPS = (
     'schedule',
 )
 
-try:
-    import mailer
-    INSTALLED_APPS += ('mailer',)
-    EMAIL_BACKEND = "mailer.backend.DbBackend"
-except ImportError:
-    pass
+EMAIL_BACKEND = 'celery_mailer.backends.CeleryEmailBackend'
 
 try:
     import south

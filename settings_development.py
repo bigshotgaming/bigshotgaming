@@ -160,15 +160,7 @@ INSTALLED_APPS = (
     'schedule',
 )
 
-# try:
-#     import mailer
-#     INSTALLED_APPS += ('mailer',)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-#     MAILER_EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-# except ImportError:
-#MAILER_EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-
 
 try:
     import south
