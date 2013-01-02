@@ -46,10 +46,17 @@ class Venue(models.Model):
     state = USStateField()
     zipcode = models.CharField(max_length=10)
 
+class ParticipantManager(models.Manager):
+    def get_by_natural_key(self, user, event):
+        return self.get(user=user.username, event=event.name)
+
 class Participant(models.Model):
     
     def __unicode__(self):
         return '%s - %s' % (self.user.username, self.event)
+
+    def natural_key(self):
+        return (self.user.username, self.event.name)
     
     user = models.ForeignKey(User)
     event = models.ForeignKey(Event)

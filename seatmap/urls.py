@@ -7,4 +7,5 @@ urlpatterns = patterns('',
     (r'^admin/seat/(?P<seat>\d+)/$', 'seatmap.views.seat_admin'),
     (r'^admin/seat/create/$', 'seatmap.views.seat_create'),
     (r'^admin/table/create/$', 'seatmap.views.table_create'),
+    (r'data/$', 'seatmap.views.seatmap_data'),
 )

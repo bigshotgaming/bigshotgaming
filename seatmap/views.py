@@ -1,13 +1,24 @@
 from seatmap.models import SeatMap, Seat, Table, STATUS_LIST
 from events.models import Event, Participant, Coupon
-from django.shortcuts import render_to_response, render
+from django.shortcuts import render_to_response, render, get_object_or_404
 from django.http import HttpResponse
 from django.template import RequestContext
-from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
+from django.core import serializers
 from datetime import datetime
+
+def seatmap_data(request):
+    seatmap_data = {}
+    try: 
+        event = Event.objects.get(is_active=True)
+    except Event.DoesNotExist:
+        event = None
+    seatmap = SeatMap.objects.get(event=event)
+    objects = list(Seat.objects.filter(seatmap=seatmap)) + list(Table.objects.filter(seatmap=seatmap))
+    seatmap_data = serializers.serialize('json', objects, use_natural_keys=True)
+    return HttpResponse(seatmap_data, content_type='application/json', status=200)
 
 def seatmap_display(request, event=None):
     if event is None:
