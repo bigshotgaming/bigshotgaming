@@ -9,7 +9,6 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
 
-@login_required
 def seatmap_display(request, event=None):
     if event is None:
         sm = SeatMap.objects.get(event=Event.objects.get(is_active=True))
