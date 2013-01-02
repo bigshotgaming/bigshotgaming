@@ -14,21 +14,37 @@
     window.onload = function() {
         seats = Array();
         function ev_mousedown(ev) {
-            var x, y;
-
-            if (ev.layerX || ev.layerX == 0) { // Firefox
-                x = ev.layerX;
-                y = ev.layerY;
-            } else if (ev.offsetX || ev.offsetX == 0) { // Opera
-                x = ev.offsetX;
-                y = ev.offsetY;
+            var x;
+            var y;
+            if (ev.pageX || ev.pageY) { 
+              x = ev.pageX;
+              y = ev.pageY;
             }
+            else { 
+              x = ev.clientX + document.body.scrollLeft + document.documentElement.scrollLeft; 
+              y = ev.clientY + document.body.scrollTop + document.documentElement.scrollTop; 
+            } 
+            x -= canvas.offsetLeft;
+            y -= canvas.offsetTop;
+            // var x, y;
+
+            // x = ev.layerX || ev.offsetX;
+            // y = ev.layerY || ev.offsetY;
+
+            // if (ev.layerX || ev.layerX == 0) { // Firefox
+            //     x = ev.layerX;
+            //     y = ev.layerY;
+            // } else if (ev.offsetX || ev.offsetX == 0) { // Opera
+            //     x = ev.offsetX;
+            //     y = ev.offsetY;
+            // }
             x = Math.floor(x / {{ seat_size }}) * {{ seat_size }};
             y = Math.floor(y / {{ seat_size }}) * {{ seat_size }};
             
             for(s in seats) {
                 s = seats[s];
                 if(x == s.x && y == s.y) {
+                    console.log(s.x);
                     var hi = $('<div style="position:absolute; zindex:10; background:transparent; border:2px solid #FFFF00; top:' + (s.y - 1) + '; left:' + (s.x - 1) + '; width:' + ({{ seat_size }} - 1) + '; height:' + ({{ seat_size }} - 1) + '"></div>').appendTo('body');
                     var url = "/seatmap/seat/" + s.id + "/";
                     $.get(url, {},
