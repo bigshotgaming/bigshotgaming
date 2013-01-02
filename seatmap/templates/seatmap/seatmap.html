@@ -44,7 +44,6 @@
             for(s in seats) {
                 s = seats[s];
                 if(x == s.x && y == s.y) {
-                    console.log(s.x);
                     var hi = $('<div style="position:absolute; zindex:10; background:transparent; border:2px solid #FFFF00; top:' + (s.y - 1) + '; left:' + (s.x - 1) + '; width:' + ({{ seat_size }} - 1) + '; height:' + ({{ seat_size }} - 1) + '"></div>').appendTo('body');
                     var url = "/seatmap/seat/" + s.id + "/";
                     $.get(url, {},
