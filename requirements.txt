@@ -8,5 +8,5 @@ setproctitle
 pychallonge
 django-celery-with-redis
 raven
--e git://github.com/jtauber/django-mailer.git#egg=django-mailer
+django-celery-mailer
 -e git://github.com/dcramer/django-paypal.git#egg=django-paypal

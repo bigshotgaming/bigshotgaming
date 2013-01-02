@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.mail import send_mail
 from django.contrib.localflavor.us.models import USStateField
 from django.contrib.auth.models import User
 from django.forms import ModelForm
@@ -7,7 +8,6 @@ from django.dispatch import receiver
 from django.template import loader, Context
 from paypal.standard.ipn.signals import payment_was_successful, payment_was_flagged
 from paypal.standard.ipn.models import PayPalIPN
-from mailer import send_mail
 import uuid
 import datetime
 
