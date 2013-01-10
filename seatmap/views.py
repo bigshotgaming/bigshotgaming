@@ -19,8 +19,11 @@ def seatmap_data(request):
     if len(seatmap) != 1:
         return HttpResponseBadRequest('SeatMap with ID "%s" does not exitst.' % seatmap_id)
     seatmap = seatmap[0]
-    
-    objects = list(Seat.objects.filter(seatmap=seatmap)) + list(Table.objects.filter(seatmap=seatmap))
+
+    # this is a temporary fix so that the seatmap can still be edited
+    objects = list(Seat.objects.filter(seatmap=seatmap))
+    # objects = list(Seat.objects.filter(seatmap=seatmap)) + list(Table.objects.filter(seatmap=seatmap))
+
     seatmap_data = serializers.serialize('json', objects, use_natural_keys=True)
     return HttpResponse(seatmap_data, content_type='application/json', status=200)
 
