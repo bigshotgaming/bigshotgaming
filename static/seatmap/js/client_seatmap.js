@@ -1,5 +1,5 @@
 $(document).ready(function(){
-    seatmap_id = 1;
+    seatmap_id = 6;
 
 	show_grid = false;
 	GRID_INC = 15;
