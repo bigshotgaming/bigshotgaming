@@ -1,24 +1,28 @@
 from seatmap.models import SeatMap, Seat, Table, STATUS_LIST
 from events.models import Event, Participant, Coupon
 from django.shortcuts import render_to_response, render, get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, HttpResponseForbidden
 from django.template import RequestContext
-from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
 from datetime import datetime
+import json
 
+@csrf_exempt
 def seatmap_data(request):
-    seatmap_data = {}
-    try: 
-        event = Event.objects.get(is_active=True)
-    except Event.DoesNotExist:
-        event = None
-    seatmap = SeatMap.objects.get(event=event)
-    objects = list(Seat.objects.filter(seatmap=seatmap)) + list(Table.objects.filter(seatmap=seatmap))
-    seatmap_data = serializers.serialize('json', objects, use_natural_keys=True)
-    return HttpResponse(seatmap_data, content_type='application/json', status=200)
+	seatmap_data = {}
+
+	seatmap_id = request.GET.get('seatmap_id')
+	seatmap = SeatMap.objects.filter(id=seatmap_id)
+	if len(seatmap) != 1:
+		return HttpResponseBadRequest('SeatMap with ID "%s" does not exitst.' % seatmap_id)
+	seatmap = seatmap[0]
+	
+	objects = list(Seat.objects.filter(seatmap=seatmap)) + list(Table.objects.filter(seatmap=seatmap))
+	seatmap_data = serializers.serialize('json', objects, use_natural_keys=True)
+	return HttpResponse(seatmap_data, content_type='application/json', status=200)
 
 def seatmap_display(request, event=None):
     if event is None:
@@ -30,12 +34,7 @@ def seatmap_display(request, event=None):
     for seat in seats:
         seat.status_full = seat.get_status_display()
        
-    return render(request, 'seatmap/seatmap.html', {
-        'tables': Table.objects.filter(seatmap=sm),
-        'seats': seats,
-        'seat_size': sm.seat_size,
-        'user':request.user,
-    })
+    return render(request, 'seatmap/seatmap_page.html', {})
 
 @csrf_exempt
 @login_required
@@ -139,3 +138,72 @@ def table_create(request):
     print w, h
     Table.objects.create(seatmap=sm, name=request.POST['name-create'], x=request.POST['x-create'], y=request.POST['y-create'], w=w, h=h).save()
     return HttpResponse('success')
+
+@csrf_exempt
+@login_required
+def seatmap_save(request):
+	if request.POST.get('seat_data'):
+		data = json.loads(request.POST.get('seat_data'))
+		seatmap_id = request.POST.get('seatmap_id')
+		seatmap = SeatMap.objects.get(id=seatmap_id)
+		Seat.objects.filter(seatmap=seatmap).delete()
+		for seat in data:
+			print seat
+			s = Seat()
+			s.seatmap = seatmap
+			s.x = seat['x']
+			s.y = seat['y']
+			s.status = seat['status']
+			if seat.get('participant') not in [None, 'null', 'None']:
+				p = Participant.objects.filter(event=seatmap.event, user__username=seat['participant'])
+				if len(p) == 0:
+					p = Participant()
+					p.event = seatmap.event
+					u = User.objects.get(username = seat['participant'])
+					p.user = u
+					p.save()
+				else:
+					p = p[0]
+				s.participant = p;
+			s.save()
+	return HttpResponse('success')
+
+@csrf_exempt
+@login_required
+def seatmap_user(request):
+	if request.GET.get('q'):
+		users = User.objects.filter(username__contains=request.GET.get('q'))
+		return HttpResponse(json.dumps([user.username for user in users]), content_type='application/json', status=200)
+	return HttpResponseBadRequest('fail')
+	
+@csrf_exempt
+@login_required
+def seatmap_sitdown(request):
+	if not request.user.is_authenticated():
+		return HttpResponseForbidden('log in to sit down')
+	if None in [request.POST.get('x'), request.POST.get('y'), request.POST.get('seatmap_id')]:
+		print 
+		return HttpResponseBadRequest('missing a variable in the query string: ' + str([request.POST.get('x'), request.POST.get('y'), request.POST.get('seatmap_id')]))
+	seat = Seat.objects.filter(x=request.POST.get('x'), y=request.POST.get('y'), seatmap__id=request.POST.get('seatmap_id'))
+	if len(seat) != 1:
+		return HttpResponseBadRequest('seat not found')
+	seat = seat[0]
+	seatmap = SeatMap.objects.get(id=request.POST.get('seatmap_id'))
+	p = Participant.objects.filter(event=seatmap.event, user=request.user)
+	if len(p) != 0:
+		s = Seat.objects.filter(participant=p[0], seatmap=seatmap)
+		for i in s:
+			i.participant = None
+			i.status = 'O'
+			i.save()
+		p[0].delete()
+		
+	p = Participant()
+	p.event = seatmap.event
+	p.user = request.user
+	p.save()
+	seat.participant = p
+	seat.status = 'C'
+	seat.save()
+	return HttpResponse('good')
+	

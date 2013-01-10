@@ -1,0 +1,46 @@
+{% extends "admin/change_form.html" %}
+
+{% block after_field_sets %}
+	<h1>The Seatmap</h1>
+	<fieldset class="module aligned " id="seatmap-fieldset">
+		<div id="seatmap-message" style="padding:15px;">This is where the seatmap will go</div>
+        <div id="seatmap-toolbar" style="display:none;margin:5px; 0px 5px 10px;">
+            <input type="button" id="chair-button" value="Draw Chair"/>
+			<select id="chair-type-select">
+				<option value="O">Open</option>
+				<option value="C">Closed</option>
+				<option value="A">Admin</option>
+			</select>
+            <input type="button" id="move-button" value="Move Chair" />
+            <input type="button" id="aux-button" value="Draw Aux"/>
+            <input type="button" id="select-button" value="Select Mode"/>
+            <input type="button" id="zoom-out-button" value=" - "/>
+            <input type="button" id="zoom-in-button" value=" + "/>
+            <input type="button" id="pan-button" value="Pan" />
+			<input type="button" id="save-button" value="Save" />
+        </div>
+		<div id="participant-preview">
+			
+		</div>
+		<div style="display:none;">
+			<div id="participant-dialog">
+				<input type="text" id="user-search-box"/>
+				<input type="button" id="user-search-button" value="Search"/>
+				<div id="user-search-results">
+					<ul>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</fieldset>
+{% endblock %}
+{% block extrahead %}
+{{ block.super }}
+<script type="text/javascript" src="/static/seatmap/js/jquery-1.8.3.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery-ui-1.9.2.custom.min.js"></script>
+<script type="text/javascript" src="/static/seatmap/js/easeljs-0.5.0.min.js"></script>
+<script type="text/javascript" src="/static/seatmap/js/seatmap_functions.js"></script>
+<script type="text/javascript" src="/static/seatmap/js/admin_seatmap.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/seatmap/css/seatmap_styles.css" />
+<link rel="stylesheet" type="text/css" href="/static/css/bsg-jquery-ui/jquery-ui-1.9.2.custom.min.css" />
+{% endblock %}
