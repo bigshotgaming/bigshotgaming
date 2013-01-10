@@ -12,17 +12,17 @@ import json
 
 @csrf_exempt
 def seatmap_data(request):
-	seatmap_data = {}
+    seatmap_data = {}
 
-	seatmap_id = request.GET.get('seatmap_id')
-	seatmap = SeatMap.objects.filter(id=seatmap_id)
-	if len(seatmap) != 1:
-		return HttpResponseBadRequest('SeatMap with ID "%s" does not exitst.' % seatmap_id)
-	seatmap = seatmap[0]
-	
-	objects = list(Seat.objects.filter(seatmap=seatmap)) + list(Table.objects.filter(seatmap=seatmap))
-	seatmap_data = serializers.serialize('json', objects, use_natural_keys=True)
-	return HttpResponse(seatmap_data, content_type='application/json', status=200)
+    seatmap_id = request.GET.get('seatmap_id')
+    seatmap = SeatMap.objects.filter(id=seatmap_id)
+    if len(seatmap) != 1:
+        return HttpResponseBadRequest('SeatMap with ID "%s" does not exitst.' % seatmap_id)
+    seatmap = seatmap[0]
+    
+    objects = list(Seat.objects.filter(seatmap=seatmap)) + list(Table.objects.filter(seatmap=seatmap))
+    seatmap_data = serializers.serialize('json', objects, use_natural_keys=True)
+    return HttpResponse(seatmap_data, content_type='application/json', status=200)
 
 def seatmap_display(request, event=None):
     if event is None:
@@ -142,68 +142,65 @@ def table_create(request):
 @csrf_exempt
 @login_required
 def seatmap_save(request):
-	if request.POST.get('seat_data'):
-		data = json.loads(request.POST.get('seat_data'))
-		seatmap_id = request.POST.get('seatmap_id')
-		seatmap = SeatMap.objects.get(id=seatmap_id)
-		Seat.objects.filter(seatmap=seatmap).delete()
-		for seat in data:
-			print seat
-			s = Seat()
-			s.seatmap = seatmap
-			s.x = seat['x']
-			s.y = seat['y']
-			s.status = seat['status']
-			if seat.get('participant') not in [None, 'null', 'None']:
-				p = Participant.objects.filter(event=seatmap.event, user__username=seat['participant'])
-				if len(p) == 0:
-					p = Participant()
-					p.event = seatmap.event
-					u = User.objects.get(username = seat['participant'])
-					p.user = u
-					p.save()
-				else:
-					p = p[0]
-				s.participant = p;
-			s.save()
-	return HttpResponse('success')
+    if request.POST.get('seat_data'):
+        data = json.loads(request.POST.get('seat_data'))
+        seatmap_id = request.POST.get('seatmap_id')
+        seatmap = SeatMap.objects.get(id=seatmap_id)
+        Seat.objects.filter(seatmap=seatmap).delete()
+        for seat in data:
+            print seat
+            s = Seat()
+            s.seatmap = seatmap
+            s.x = seat['x']
+            s.y = seat['y']
+            s.status = seat['status']
+            if seat.get('participant') not in [None, 'null', 'None']:
+                p = Participant.objects.filter(event=seatmap.event, user__username=seat['participant'])
+                if len(p) == 0:
+                    p = Participant()
+                    p.event = seatmap.event
+                    u = User.objects.get(username = seat['participant'])
+                    p.user = u
+                    p.save()
+                else:
+                    p = p[0]
+                s.participant = p;
+            s.save()
+    return HttpResponse('success')
 
 @csrf_exempt
 @login_required
 def seatmap_user(request):
-	if request.GET.get('q'):
-		users = User.objects.filter(username__contains=request.GET.get('q'))
-		return HttpResponse(json.dumps([user.username for user in users]), content_type='application/json', status=200)
-	return HttpResponseBadRequest('fail')
-	
+    if request.GET.get('q'):
+        users = User.objects.filter(username__contains=request.GET.get('q'))
+        return HttpResponse(json.dumps([user.username for user in users]), content_type='application/json', status=200)
+    return HttpResponseBadRequest('fail')
+    
 @csrf_exempt
 @login_required
 def seatmap_sitdown(request):
-	if not request.user.is_authenticated():
-		return HttpResponseForbidden('log in to sit down')
-	if None in [request.POST.get('x'), request.POST.get('y'), request.POST.get('seatmap_id')]:
-		print 
-		return HttpResponseBadRequest('missing a variable in the query string: ' + str([request.POST.get('x'), request.POST.get('y'), request.POST.get('seatmap_id')]))
-	seat = Seat.objects.filter(x=request.POST.get('x'), y=request.POST.get('y'), seatmap__id=request.POST.get('seatmap_id'))
-	if len(seat) != 1:
-		return HttpResponseBadRequest('seat not found')
-	seat = seat[0]
-	seatmap = SeatMap.objects.get(id=request.POST.get('seatmap_id'))
-	p = Participant.objects.filter(event=seatmap.event, user=request.user)
-	if len(p) != 0:
-		s = Seat.objects.filter(participant=p[0], seatmap=seatmap)
-		for i in s:
-			i.participant = None
-			i.status = 'O'
-			i.save()
-		p[0].delete()
-		
-	p = Participant()
-	p.event = seatmap.event
-	p.user = request.user
-	p.save()
-	seat.participant = p
-	seat.status = 'C'
-	seat.save()
-	return HttpResponse('good')
-	
+    if not request.user.is_authenticated():
+        return HttpResponseForbidden('log in to sit down')
+    if None in [request.POST.get('x'), request.POST.get('y'), request.POST.get('seatmap_id')]:
+        print 
+        return HttpResponseBadRequest('missing a variable in the query string: ' + str([request.POST.get('x'), request.POST.get('y'), request.POST.get('seatmap_id')]))
+    seat = Seat.objects.filter(x=request.POST.get('x'), y=request.POST.get('y'), seatmap__id=request.POST.get('seatmap_id'))
+    if len(seat) != 1:
+        return HttpResponseBadRequest('seat not found')
+    seat = seat[0]
+    seatmap = SeatMap.objects.get(id=request.POST.get('seatmap_id'))
+    try:
+        p = Participant.objects.get(event=seatmap.event, user=request.user)
+    except Participant.DoesNotExist:
+        return HttpResponseForbidden('no participant found for this user')
+    else:
+        if seat.participant != None and seat.participant != p:
+            return HttpResponseBadRequest('participant already sitting here')
+        if p.seat_set.count() != 0:
+            return HttpResponseBadRequest('participant already has a seat')
+        else:
+            seat.participant = p
+            seat.status = 'C'
+            seat.save()
+            return HttpResponse('good')
+    
