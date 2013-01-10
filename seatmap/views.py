@@ -192,18 +192,14 @@ def seatmap_sitdown(request):
         return HttpResponseBadRequest('seat not found')
     seat = seat[0]
     seatmap = SeatMap.objects.get(id=request.POST.get('seatmap_id'))
-    try:
-        p = Participant.objects.get(event=seatmap.event, user=request.user)
-    except Participant.DoesNotExist:
-        return HttpResponseForbidden('no participant found for this user')
+    p = get_object_or_404(Participant, event=seatmap.event, user=request.user)
+    if seat.participant != None and seat.participant != p:
+        return HttpResponseBadRequest('participant already sitting here')
+    if p.seat_set.count() != 0:
+        return HttpResponseBadRequest('participant already has a seat')
     else:
-        if seat.participant != None and seat.participant != p:
-            return HttpResponseBadRequest('participant already sitting here')
-        if p.seat_set.count() != 0:
-            return HttpResponseBadRequest('participant already has a seat')
-        else:
-            seat.participant = p
-            seat.status = 'C'
-            seat.save()
-            return HttpResponse('good')
+        seat.participant = p
+        seat.status = 'C'
+        seat.save()
+        return HttpResponse('good')
     
