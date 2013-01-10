@@ -37,7 +37,7 @@ def seatmap_display(request, event=None):
     for seat in seats:
         seat.status_full = seat.get_status_display()
        
-    return render(request, 'seatmap/seatmap_page.html', {})
+    return render(request, 'seatmap/seatmap_page.html', {'seatmap_id' : sm.id})
 
 @csrf_exempt
 @login_required
