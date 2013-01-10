@@ -1,0 +1,32 @@
+{% extends "pages/master.html" %}
+{% block content %}
+    <script type="text/javascript" src="/static/seatmap/js/jquery-1.8.3.min.js"></script>
+	<script type="text/javascript" src="/static/js/jquery-ui-1.9.2.custom.min.js"></script>
+	<script type="text/javascript" src="/static/seatmap/js/easeljs-0.5.0.min.js"></script>
+	<script type="text/javascript" src="/static/seatmap/js/seatmap_functions.js"></script>
+	<script type="text/javascript" src="/static/seatmap/js/client_seatmap.js"></script>
+	<link rel="stylesheet" type="text/css" href="/static/seatmap/css/seatmap_styles.css" />
+	<link rel="stylesheet" type="text/css" href="/static/css/bsg-jquery-ui/jquery-ui-1.9.2.custom.min.css" />
+    <h1>Seatmap</h1>
+	<button id="zoom-out-button" class="ui-state-default ui-corner-all" title="Zoom Out">
+		<span class="ui-icon ui-icon-minusthick"></span>
+	</button>
+	<button id="zoom-in-button" class="ui-state-default ui-corner-all" title="Zoom In">
+		<span class="ui-icon ui-icon-plusthick"></span>
+	</button>
+	<button id="pan-button" class="ui-state-default ui-corner-all" title="Pan">
+		<span class="ui-icon ui-icon-arrow-4"></span>
+	</button>
+	<button id="select-seat-button" class="ui-state-default ui-corner-all" title="Select Seat">
+		<span class="ui-icon ui-icon-arrowreturnthick-1-s"></span>
+	</button>
+	<span id="preview" style="position:relative; top:-10px;"></span>
+	<div id="seatmap-container" style="height:600px;">
+		
+	</div>
+	<div style="display:none;">
+		<div id="select-seat-dialog">
+			Is the highlighted seat okay?
+		</div>
+	</div>
+{% endblock %}

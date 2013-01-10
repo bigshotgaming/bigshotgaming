@@ -1,0 +1,25 @@
+#seatmap-fieldset {
+	position:relative;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+#participant-preview {
+	position: absolute;
+	right: 30px;
+	top: 10px;
+}
+
+#user-search-box {
+	width: 197px;
+}
+
+#user-search-results {
+	max-height:200px;
+	overflow:auto;
+}
+
