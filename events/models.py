@@ -105,13 +105,15 @@ def one_active(sender, **kwargs):
     
 @receiver(payment_was_successful)
 def payment_complete(sender, **kwargs):
+    user = User.objects.get(username=sender.custom)
+    event = Event.objects.get(is_active=True)
     # we do this so that the Coupon objects actually have their correct types
-    coupons = [Coupon(transaction=sender, event=Event.objects.get(is_active=True)) for i in xrange(sender.quantity)]
+    coupons = [Coupon(transaction=sender, event=event) for i in xrange(sender.quantity)]
     for coupon in coupons:
         coupon.save()
     # I cannot see a better way to do this at the moment, so here we are
     # We pop the last coupon off the list to activate the ticket for the original payer
-    participant = Participant.objects.get(id=sender.custom)
+    participant = Participant.objects.get_or_create(user=user, event=event)
     coupon = coupons.pop()
     activate_coupon(participant, coupon)
     # We need to dispatch off an email...

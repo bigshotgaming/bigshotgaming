@@ -53,10 +53,9 @@ def register(request, eventid):
                 return HttpResponseRedirect('/events/full')
             else:
                 # we create a participant regardless of what people want to do
-                participant = Participant.objects.get_or_create(user=request.user, event_id=eventid)[0]
+                # participant = Participant.objects.get_or_create(user=request.user, event_id=eventid)[0]
                 if form.cleaned_data['payment_type'] == 'pp':
                     request.session['qty'] = form.cleaned_data['ticket_quantity']
-                    request.session['participant'] = participant.id
                     return HttpResponseRedirect(reverse('events_payment'))   
                 # elif form.cleaned_data['payment_type'] == 'ad':
                 #     return HttpResponseRedirect('/events/thanks')
@@ -80,14 +79,14 @@ def register(request, eventid):
 def payment(request):
     # hm, not sure if this was the best idea
     # could do it the opposite way since it's easy to get the participant object
-    event = Participant.objects.get(id=request.session['participant']).event
+    event = Event.objects.get(event=is_active)
     paypal_dict = {
         "business": settings.PAYPAL_RECEIVER_EMAIL,
         "amount": event.prepay_price,
         "item_name": '%s ticket' % event.name,
         "invoice": uuid.uuid4(),
         "quantity": request.session['qty'],
-        "custom": request.session['participant'],
+        "custom": request.user.username,
         "notify_url": "http://www.bigshotgaming.com/events/ppnotification",
         "return_url": "http://www.bigshotgaming.com/events/thanks",
         "cancel_return": "http://www.bigshotgaming.com",
