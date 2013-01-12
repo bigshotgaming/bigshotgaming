@@ -113,7 +113,7 @@ def payment_complete(sender, **kwargs):
         coupon.save()
     # I cannot see a better way to do this at the moment, so here we are
     # We pop the last coupon off the list to activate the ticket for the original payer
-    participant = Participant.objects.get_or_create(user=user, event=event)
+    participant = Participant.objects.get_or_create(user=user, event=event)[0]
     coupon = coupons.pop()
     activate_coupon(participant, coupon)
     # We need to dispatch off an email...
