@@ -441,6 +441,7 @@ function init_grid() {
 		var height = stage.canvas.height;
 		
 		grid = new createjs.Shape();
+		grid.graphics.clear();
 		grid.graphics.beginStroke(COLORS.GRID_COLOR);
 		// I know there's a better way of doing this, but my maths are broken right now...
 		// Vertical lines
@@ -481,7 +482,6 @@ function tick() {
         stage.x = stage.pan_origin_loc.x + (stage.pan_origin.x - stage.mouseX) * PAN_STRENGTH;
         stage.y = stage.pan_origin_loc.y + (stage.pan_origin.y - stage.mouseY) * PAN_STRENGTH;
 
-        grid.graphics.clear();
         init_grid();
 
 		stage.update();
