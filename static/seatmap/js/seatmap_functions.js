@@ -12,6 +12,10 @@ var COLORS = {
 	CLOSED_SEAT_FILL: '#BA1414',
 	CLOSED_SEAT_STROKE_OVER: '#800000',
 	CLOSED_SEAT_FILL_OVER: '#E85454',
+	TAKEN_SEAT_STROKE: '#800000',
+	TAKEN_SEAT_FILL: '#BA1414',
+	TAKEN_SEAT_STROKE_OVER: '#800000',
+	TAKEN_SEAT_FILL_OVER: '#E85454',
 	ADMIN_SEAT_STROKE: '#7891E3',
 	ADMIN_SEAT_FILL: '#2247BF',
 	ADMIN_SEAT_STROKE_OVER: '#7891E3',
@@ -392,6 +396,14 @@ function addSeat(x, y, participant, status) {
 			} else {
 				this.graphics.beginStroke(COLORS.ADMIN_SEAT_STROKE);
 				this.graphics.beginFill(COLORS.ADMIN_SEAT_FILL);
+			}
+		} else if (this.status == "T") {
+			if (this.mouseover == true) {
+				this.graphics.beginStroke(COLORS.TAKEN_SEAT_STROKE_OVER);
+				this.graphics.beginFill(COLORS.TAKEN_SEAT_FILL_OVER);
+			} else {
+				this.graphics.beginStroke(COLORS.TAKEN_SEAT_STROKE);
+				this.graphics.beginFill(COLORS.TAKEN_SEAT_FILL);
 			}
 		} else {
 			this.graphics.beginStroke(COLORS.DEFAULT_STROKE);

@@ -199,7 +199,7 @@ def seatmap_sitdown(request):
         return HttpResponseBadRequest('participant already has a seat')
     else:
         seat.participant = p
-        seat.status = 'C'
+        seat.status = 'T'
         seat.save()
         return HttpResponse('good')
     
