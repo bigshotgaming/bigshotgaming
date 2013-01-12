@@ -79,7 +79,7 @@ def register(request, eventid):
 def payment(request):
     # hm, not sure if this was the best idea
     # could do it the opposite way since it's easy to get the participant object
-    event = Event.objects.get(event=is_active)
+    event = Event.objects.get(is_active=True)
     paypal_dict = {
         "business": settings.PAYPAL_RECEIVER_EMAIL,
         "amount": event.prepay_price,
