@@ -39,7 +39,7 @@ urlpatterns = patterns('',
     (r'^seatmap/', include('seatmap.urls')),
     (r'^tournaments/', include('tournaments.urls')),
     (r'^schedule/', include('schedule.urls')),
-
+    (r'^pooling/', include('pooling.urls')),
 )
 
 # PM Extension

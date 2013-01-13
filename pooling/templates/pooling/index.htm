@@ -1,0 +1,14 @@
+{% extends "pages/master.html" %}
+{% block title %} - Car & Room Pools{% endblock %}
+{% block content %}
+{% if event %}
+<h1>{{ event.name }}</h1>
+<h2>Car & Room Pools</h2>
+<p>
+	<h3><a href= "{% url pooling.views.cars %}">Carpools</a></h3>
+	<h3><a href= "{% url pooling.views.rooms %}">Rooming</a></h3>
+</p>
+{% else %}
+<h2>No events are active at this time.</h2>
+{% endif %}
+{% endblock %}

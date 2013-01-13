@@ -1,0 +1,33 @@
+{% extends "pages/master.html" %}
+{% block content %}
+{% if event %}
+<h1>{{ event.name }}</h1>
+<h2>{{ tournament.name }} - {{tournament.get_tournament_style}}</h2>
+<h3>Tournament Rules:</h3>
+<p>
+    {{tournament.rules|linebreaks}}
+</p>
+<h3>Registered teams:</h3>
+<p><ul>
+	{% for team in teams %}
+		<p><a href="{% url tournaments.views.team team.pk %}">{{ team.name }}</a> - {{team.members.count}} player(s), team captain {{team.owner.user}}</p>
+	{% endfor %}
+	{% for tournament in tournaments_list %}
+	<li><a href= "{% url tournaments.views.tournament tournament.pk %}">{{ tournament.name }}</a></li>
+	{% endfor %}
+</ul></p>
+<p>Teams Registered/Max: {{teams.count}}/{{tournament.max_teams}}</p>
+{% if participant.coupon %}
+<form action="{% url tournaments.views.tournament tournament.pk %}" method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Create Team" />
+</form>
+{% endif %}
+{% if tournament.has_started %}
+<p><a href="http://www.challonge.com/{{tournament.slugified_name}}">Challonge bracket for this tournament</a></p>
+{% endif %}
+<a href="{% url tournaments.views.index %}">Back to list of all tournaments</a>
+{% else %}
+<h2>No events are active at this time.</h2>
+{% endif %}
+{% endblock %}
