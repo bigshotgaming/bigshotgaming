@@ -4,6 +4,10 @@ var GRID_INC = 25;
 var ZOOM_PERCENT = 0.1;
 var PAN_STRENGTH = 1.0 // Percentage the stage will move while panning
 var COLORS = {
+	USER_SEAT_STROKE: '#B2B200',
+	USER_SEAT_FILL: '#FFFF00',
+	USER_SEAT_STROKE_OVER: '#B2B200',
+	USER_SEAT_FILL_OVER: '#FFFF99',
 	OPEN_SEAT_STROKE: '#008A20',
 	OPEN_SEAT_FILL: '#16C940',
 	OPEN_SEAT_STROKE_OVER: '#008A20',
@@ -55,14 +59,14 @@ var preview_container;
 
 });*/
 
-function populate_canvas(seatmap_id) {
+function populate_canvas(seatmap_id, user) {
 	$.ajax({
 		url: '/seatmap/admin/data/',
 		data: 'seatmap_id=' + seatmap_id,
 		type: 'GET',
 	}).done(function(e) {
 		for (var i = 0; i < e.length; i++) {
-			addSeat(e[i].fields.x * GRID_INC, e[i].fields.y * GRID_INC, e[i].fields.participant, e[i].fields.status);
+			addSeat(e[i].fields.x * GRID_INC, e[i].fields.y * GRID_INC, e[i].fields.participant, e[i].fields.status, user);
 		}
 	}).fail(function(e) {
 		console.log('fail');
@@ -342,7 +346,7 @@ function handle_draw_chair_click(e) {
 	}
 }
 
-function addSeat(x, y, participant, status) {
+function addSeat(x, y, participant, status, user) {
 	var s = new createjs.Shape();
 	
 	if (participant != null) {
@@ -373,7 +377,16 @@ function addSeat(x, y, participant, status) {
     s.drawSeat = function() {
         this.graphics.clear();
         this.graphics.setStrokeStyle(1);
-		if(this.status == "O") {
+
+		if (s.participant === user) {
+			if (this.mouseover == true) {
+				this.graphics.beginStroke(COLORS.USER_SEAT_STROKE_OVER);
+				this.graphics.beginFill(COLORS.USER_SEAT_FILL_OVER);
+			} else {
+				this.graphics.beginStroke(COLORS.USER_SEAT_STROKE);
+				this.graphics.beginFill(COLORS.USER_SEAT_FILL);
+			}
+		} else if (this.status == "O") {
 			if (this.mouseover == true) {
 				this.graphics.beginStroke(COLORS.OPEN_SEAT_STROKE_OVER);
 				this.graphics.beginFill(COLORS.OPEN_SEAT_FILL_OVER);

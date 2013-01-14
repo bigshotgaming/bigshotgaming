@@ -1,5 +1,6 @@
 $(document).ready(function(){
     seatmap_id = $('#seatmap_id').val();
+    user = $('#user_username').val();
 
 	show_grid = false;
 	GRID_INC = 15;
@@ -13,7 +14,7 @@ $(document).ready(function(){
 		select_seat_selector: '#select-seat-button',
 		pan_selector: '#pan-button',
 	});
-    populate_canvas(seatmap_id);
+    populate_canvas(seatmap_id, user);
     $('#seatmap-message').hide();
     $('#seatmap-toolbar').show();
 	$('#select-seat-button').click();
