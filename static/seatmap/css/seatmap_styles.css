@@ -23,3 +23,25 @@
 	overflow:auto;
 }
 
+#legend div {
+	width:13px;
+	height:13px;
+	margin-right:5px;
+	display: inline-block;
+}
+.yellow {
+	background-color:#FFFF00;
+	border:1px solid #D8D800;
+}
+.green {
+	background-color:#16C940;
+	border:1px solid #0BAA30;
+}
+.red {
+	background-color:#BA1414;
+	border:1px solid #9D0A0A;
+}
+.blue {
+	background-color:#2247BF;
+	border:1px solid #4D6CD1;
+}
