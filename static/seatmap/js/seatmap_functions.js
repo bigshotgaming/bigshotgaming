@@ -88,6 +88,7 @@ function init_canvas(options) {
 	createjs.Ticker.addListener(window);
 
     stage = new createjs.Stage('seatmap-canvas');//options.canvas_id);
+    createjs.Touch.enable(stage);
 	stage.enableMouseOver();
     stage.panning = false;
     stage.pan_origin = {x: 0, y:0};
@@ -428,14 +429,16 @@ function addSeat(x, y, participant, status, user) {
     s.onMouseOver = function(e) {
 		this.mouseover = true;
 		if (this.participant == null) {
-			$(preview_container)[0].innerHTML = '';
+            $('#tooltip').fadeOut(200);
 		} else {
-			$(preview_container)[0].innerHTML = 'User Hovered: ' + this.participant; //only need the username
+            $('#tooltip').fadeIn(200);
+            $('#tooltip')[0].innerHTML = 'User: ' + this.participant;
 		}
 		this.drawSeat();
 		stage.update();
     };
 	s.onMouseOut = function(e) {
+        $('#tooltip').fadeOut(200);
 		this.mouseover = false;
 		this.drawSeat();
 		stage.update();
