@@ -5,4 +5,4 @@ bsg.db
 djangobb_index
 db.json
 settings.py
-
+secret.txt
