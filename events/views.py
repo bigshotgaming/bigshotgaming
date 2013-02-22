@@ -60,7 +60,7 @@ def register(request, eventid):
                 # elif form.cleaned_data['payment_type'] == 'ad':
                 #     return HttpResponseRedirect('/events/thanks')
     else:
-        form = RegisterForm()
+        form = RegisterForm(initial={'payment_type':'pp'})
         # we do this here because we need a participant for the context
         # need to be able to check if they're paid or not
         # to render the template differently

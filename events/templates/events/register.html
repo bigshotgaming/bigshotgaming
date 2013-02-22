@@ -1,15 +1,4 @@
 {% extends "pages/master.html" %}
-{% block header %}
-<script type="text/javascript">
-function showQuantity() {
-  document.getElementById("quantity").style.display = 'block';
-}
-function hideQuantity() {
-  document.getElementById("quantity").style.display = 'none';
-  document.getElementById("id_ticket_quantity").value = 1;
-}
-</script>
-{% endblock %}
 {% block content %}
 {% if event.is_active %}
 	{% if not participant.coupon %}
@@ -17,31 +6,7 @@ function hideQuantity() {
 		<p>We no longer allow payment-at-the-door. You can pay via PayPal without having an account - just click "Buy Now" and choose the "Don't have a PayPal account?" option.</p>
 		<form action="." method="post">
 		{% csrf_token %}
-		<p><label for="id_payment_type_0">Payment type:</label> <ul> 
-		  <li><label for="id_payment_type_0"><input type="radio" id="id_payment_type_0" value="pp" name="payment_type" onclick="showQuantity();" checked /> PayPal</label></li> 
-		</ul></p> 
-		<div id="quantity"><p><label for="id_ticket_quantity">Ticket quantity:</label><select name="ticket_quantity" id="id_ticket_quantity">
-<option value="1">1</option>
-<option value="2">2</option>
-<option value="3">3</option>
-<option value="4">4</option>
-<option value="5">5</option>
-<option value="6">6</option>
-<option value="7">7</option>
-<option value="8">8</option>
-<option value="9">9</option>
-<option value="10">10</option>
-<option value="11">11</option>
-<option value="12">12</option>
-<option value="13">13</option>
-<option value="14">14</option>
-<option value="15">15</option>
-<option value="16">16</option>
-<option value="17">17</option>
-<option value="18">18</option>
-<option value="19">19</option>
-<option value="20">20</option>
-</select></p></div>
+        {{ form.as_p }}
 		<input type="submit" value="Submit" />
 		</form>
 	{% else %}
