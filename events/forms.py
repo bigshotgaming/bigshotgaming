@@ -7,8 +7,8 @@ from paypal.standard.forms import PayPalPaymentsForm
 
 class RegisterForm(forms.Form):
     payment_type = forms.ChoiceField(choices=(
-        ('pp', 'PayPal')
+        ('pp', 'PayPal'),
     ), widget=forms.RadioSelect)
 
     # we do this so that we can have the quantity field be a dropdown instead of a textbox
-    ticket_quantity = forms.IntegerField(widget=forms.Select(choices=[x for x in range(1, 21)]))
+    ticket_quantity = forms.IntegerField(widget=forms.Select(choices=[(x,x) for x in range(1, 21)]))
