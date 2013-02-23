@@ -58,9 +58,13 @@ def _user_check_password(self, raw_password):
             self.set_password(raw_password)
             self.save()
         return is_correct
-    return check_password(raw_password, self.password) or _check_password(raw_password, self.password)
+    # This converts Joomla hashes to Django hashes
+    if _check_password(raw_password, self.password):
+        self.set_password(raw_password)
+        self.save()
+    return check_password(raw_password, self.password)
 
-#User.check_password = _user_check_password
+User.check_password = _user_check_password
 
 class LegacyPasswordBackend(ModelBackend):
     
