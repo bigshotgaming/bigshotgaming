@@ -60,7 +60,7 @@ def _user_check_password(self, raw_password):
         return is_correct
     return check_password(raw_password, self.password) or _check_password(raw_password, self.password)
 
-User.check_password = _user_check_password
+#User.check_password = _user_check_password
 
 class LegacyPasswordBackend(ModelBackend):
     
