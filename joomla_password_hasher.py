@@ -1,5 +1,5 @@
 import hashlib
-from django.contrib.auth.hashers import BasePasswordHasher
+from django.contrib.auth.hashers import BasePasswordHasher, mask_hash
 from django.utils.crypto import constant_time_compare
 from django.utils.datastructures import SortedDict
 from django.utils.translation import ugettext_noop as _
@@ -9,7 +9,7 @@ class JoomlaPasswordHasher(BasePasswordHasher):
 
     def encode(self, password, salt):
         assert password
-        assert salt and '$' not in salt
+        assert salt and '$' not in salt 
         hash = hashlib.md5(password + salt).hexdigest()
         return "%s$%s$%s" % (self.algorithm, salt, hash)
 
