@@ -1,9 +1,9 @@
-{% load i18n %}
-
-{% blocktrans %}
+{% load i18n %}{% blocktrans with website=site.domain %}
 Hi,
 
-Thank you for registering on {{ site.domain }}. Please click the link below -
+Thank you for registering on {{ website }}. Please click the link below to verify your email and complete your registration -
 {% endblocktrans %}
 
 http://{{ site.domain }}{% url registration_activate activation_key %}
+
+- BSG automated mailer-bot
