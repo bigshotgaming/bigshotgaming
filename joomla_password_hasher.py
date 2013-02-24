@@ -2,6 +2,7 @@ import hashlib
 from django.contrib.auth.hashers import BasePasswordHasher
 from django.utils.crypto import constant_time_compare
 from django.utils.datastructures import SortedDict
+from django.utils.translation import ugettext_noop as _
 
 class JoomlaPasswordHasher(BasePasswordHasher):
     algorithm = "joomla_md5"
