@@ -126,8 +126,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
 )
 
-AUTHENTICATION_BACKENDS = ('auth.backends.LegacyPasswordBackend',)
-
 ROOT_URLCONF = 'urls'
 
 TEMPLATE_DIRS = (
