@@ -140,6 +140,10 @@ img {
 	margin-top: 15px;
 }
 
+#social_media > a {
+	display:block;
+}
+
 #side-b-ads img {
 	margin-top: 15px;
 
