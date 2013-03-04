@@ -60,17 +60,24 @@ var preview_container;
 });*/
 
 function populate_canvas(seatmap_id, user) {
-	$.ajax({
-		url: '/seatmap/admin/data/',
-		data: 'seatmap_id=' + seatmap_id,
-		type: 'GET',
-	}).done(function(e) {
-		for (var i = 0; i < e.length; i++) {
-			addSeat(e[i].fields.x * GRID_INC, e[i].fields.y * GRID_INC, e[i].fields.participant, e[i].fields.status, user);
-		}
-	}).fail(function(e) {
-		console.log('fail');
-	});
+    if ($('#seatmap_data').length > 0) {
+        var e = eval($('#seatmap_data').val());
+        for (var i = 0; i < e.length; i++) {
+            addSeat(e[i].fields.x * GRID_INC, e[i].fields.y * GRID_INC, e[i].fields.participant, e[i].fields.status, user);
+        }
+    } else {
+        $.ajax({
+            url: '/seatmap/admin/data/',
+            data: 'seatmap_id=' + seatmap_id,
+            type: 'GET',
+        }).done(function(e) {
+            for (var i = 0; i < e.length; i++) {
+                addSeat(e[i].fields.x * GRID_INC, e[i].fields.y * GRID_INC, e[i].fields.participant, e[i].fields.status, user);
+            }
+        }).fail(function(e) {
+            console.log('fail');
+        });
+    }
 }
 
 function create_canvas(parent_element) {
@@ -429,16 +436,16 @@ function addSeat(x, y, participant, status, user) {
     s.onMouseOver = function(e) {
 		this.mouseover = true;
 		if (this.participant == null) {
-            $('#tooltip').fadeOut(200);
+			$('#tooltip').hide();
 		} else {
-            $('#tooltip').fadeIn(200);
+			$('#tooltip').show()
             $('#tooltip')[0].innerHTML = 'User: ' + this.participant;
 		}
 		this.drawSeat();
 		stage.update();
     };
 	s.onMouseOut = function(e) {
-        $('#tooltip').fadeOut(200);
+		$('#tooltip').hide();
 		this.mouseover = false;
 		this.drawSeat();
 		stage.update();

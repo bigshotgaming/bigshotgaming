@@ -20,4 +20,10 @@ $(document).ready(function(){
     $('#seatmap-message').hide();
     $('#seatmap-toolbar').show();
 
+    $('#seatmap-fieldset').mousemove(function(e) {
+        $('#tooltip').css({
+            'top': e.clientY + $(document).scrollTop() - 190,
+            'left': e.clientX - 5
+        });
+    });
 });

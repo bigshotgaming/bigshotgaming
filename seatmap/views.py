@@ -26,6 +26,19 @@ def seatmap_data(request):
 
     seatmap_data = serializers.serialize('json', objects, use_natural_keys=True)
     return HttpResponse(seatmap_data, content_type='application/json', status=200)
+    
+def get_seatmap_data(seatmap_id):
+    seatmap = SeatMap.objects.filter(id=seatmap_id)
+    if len(seatmap) != 1:
+        return HttpResponseBadRequest('SeatMap with ID "%s" does not exitst.' % seatmap_id)
+    seatmap = seatmap[0]
+
+    # this is a temporary fix so that the seatmap can still be edited
+    objects = list(Seat.objects.filter(seatmap=seatmap))
+    # objects = list(Seat.objects.filter(seatmap=seatmap)) + list(Table.objects.filter(seatmap=seatmap))
+
+    seatmap_data = serializers.serialize('json', objects, use_natural_keys=True)
+    return seatmap_data
 
 def seatmap_display(request, event=None):
     if event is None:
@@ -37,7 +50,7 @@ def seatmap_display(request, event=None):
     for seat in seats:
         seat.status_full = seat.get_status_display()
        
-    return render(request, 'seatmap/seatmap_page.html', {'seatmap_id' : sm.id})
+    return render(request, 'seatmap/seatmap_page.html', {'seatmap_id' : sm.id, 'seatmap_data' : get_seatmap_data(sm.id)})
 
 @csrf_exempt
 @login_required
@@ -196,7 +209,15 @@ def seatmap_sitdown(request):
     if seat.participant != None and seat.participant != p:
         return HttpResponseBadRequest('participant already sitting here')
     if p.seat_set.count() != 0:
-        return HttpResponseBadRequest('participant already has a seat')
+        old_seat = p.seat_set.all()[0]
+        old_seat.participant = None
+        old_seat.status = 'O'
+        old_seat.save()
+
+        seat.participant = p
+        seat.status = 'T'
+        seat.save()
+        return HttpResponse('Participant has moved seats.')
     else:
         seat.participant = p
         seat.status = 'T'

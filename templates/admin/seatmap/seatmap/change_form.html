@@ -2,7 +2,7 @@
 
 {% block after_field_sets %}
 	<h1>The Seatmap</h1>
-	<fieldset class="module aligned " id="seatmap-fieldset">
+	<fieldset class="module aligned " id="seatmap-fieldset" style="postition:relative;">
 		<div id="seatmap-message" style="padding:15px;">This is where the seatmap will go</div>
         <div id="seatmap-toolbar" style="display:none;margin:5px; 0px 5px 10px;">
             <input type="button" id="chair-button" value="Draw Chair"/>
@@ -32,6 +32,7 @@
 				</div>
 			</div>
 		</div>
+		<div id="tooltip" style="position: absolute; top: 511px; left: 461px; background-color: rgba(33, 33, 33, 0.8); padding: 10px;px; border-style: solid;border-width: 1px;border-color: white; display:none; color: white;">Default Tooltip text</div>
 	</fieldset>
 {% endblock %}
 {% block extrahead %}
