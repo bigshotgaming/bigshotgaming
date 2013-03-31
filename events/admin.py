@@ -40,7 +40,7 @@ class EventAdmin(admin.ModelAdmin):
 
 class CouponAdmin(admin.ModelAdmin):
     readonly_fields = ('uuid', 'transaction', 'created_time')
-    list_display = ('uuid', 'transaction', 'activated', 'created_time', 'activated_time')
+    list_display = ('uuid', 'transaction', 'activated', 'created_time', 'activated_time', 'notes')
     list_filter = ('event', 'activated')
     search_fields = ['uuid', 'transaction__txn_id']
     
