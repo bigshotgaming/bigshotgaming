@@ -12,7 +12,8 @@
 				<option value="A">Admin</option>
 			</select>
             <input type="button" id="move-button" value="Move Chair" />
-            <input type="button" id="aux-button" value="Draw Aux"/>
+            <input type="button" id="aux-button" value="Draw Table"/>
+            <input type="button" id="s-table-button" value="Select Table"/>
             <input type="button" id="select-button" value="Select Mode"/>
             <input type="button" id="zoom-out-button" value=" - "/>
             <input type="button" id="zoom-in-button" value=" + "/>
@@ -32,6 +33,11 @@
 				</div>
 			</div>
 		</div>
+        <div style="display:none;">
+            <div id="table-dialog">
+                Table Name <input type="text" id="table-text-box"/>
+            </div>
+        </div>
 		<div id="tooltip" style="position: absolute; top: 511px; left: 461px; background-color: rgba(33, 33, 33, 0.8); padding: 10px;px; border-style: solid;border-width: 1px;border-color: white; display:none; color: white;">Default Tooltip text</div>
 	</fieldset>
 {% endblock %}

@@ -3,6 +3,7 @@ var tool_mode = "draw_chair";
 var GRID_INC = 25;
 var ZOOM_PERCENT = 0.1;
 var PAN_STRENGTH = 1.0 // Percentage the stage will move while panning
+var TABLE_LABEL_FONT_SIZE = 16;
 var COLORS = {
 	USER_SEAT_STROKE: '#B2B200',
 	USER_SEAT_FILL: '#FFFF00',
@@ -27,9 +28,14 @@ var COLORS = {
 	DEFAULT_STROKE: '#A8A8A8',
 	DEFAULT_FILL: '#A8A8A8',
 	GRID_COLOR: '#D4D4D4',
+    TABLE_COLOR: '#292929',
+    TABLE_TEXT_COLOR: '#FFFFFF',
 }
 var grid;
 var chairs;
+var tables;
+var table_names;
+var cur_table = null;
 var mouse_down = false;
 var seatmap_id;
 var selected_seat = null;
@@ -37,43 +43,39 @@ update = false;
 var show_grid = true;
 var preview_container;
 
-/*$(document).ready(function(){
-    seatmap_id = window.location.pathname.split('/')[4];
-
-	//show_grid = false;
-	GRID_INC = 15;
-    create_canvas('#seatmap-fieldset'); // height and width are dependent on the parent element
-
-    init_canvas({
-		canvas_id : 'seatmap-canvas'
-		draw_chair_selector: '#chair-button',
-		move_selector: '#move-button',
-		admin_select_selector: '#select-button',
-		zoom_out_selector: '#zoom-out-button',
-		zoom_in_selector: '#zoom-in-button',
-		save_selector: '#save-button',
-	});
-    populate_canvas(seatmap_id);
-    $('#seatmap-message').hide();
-    $('#seatmap-toolbar').show();
-
-});*/
-
 function populate_canvas(seatmap_id, user) {
-    if ($('#seatmap_data').length > 0) {
-        var e = eval($('#seatmap_data').val());
+    if ($('#seat_data').length > 0) {
+        var e = eval($('#seat_data').val());
         for (var i = 0; i < e.length; i++) {
             addSeat(e[i].fields.x * GRID_INC, e[i].fields.y * GRID_INC, e[i].fields.participant, e[i].fields.status, user);
         }
+        e = eval($('#table_data').val());
+        for (var i = 0; i < e.length; i++) {
+            addTable(e[i].fields.x * GRID_INC, e[i].fields.y * GRID_INC, e[i].fields.w, e[i].fields.h, e[i].fields.name);
+        }
+        stage.update();
     } else {
         $.ajax({
-            url: '/seatmap/admin/data/',
+            url: '/seatmap/admin/data/?object_type=seat',
             data: 'seatmap_id=' + seatmap_id,
             type: 'GET',
         }).done(function(e) {
             for (var i = 0; i < e.length; i++) {
                 addSeat(e[i].fields.x * GRID_INC, e[i].fields.y * GRID_INC, e[i].fields.participant, e[i].fields.status, user);
             }
+        }).fail(function(e) {
+            console.log('fail');
+        });
+        
+        $.ajax({
+            url: '/seatmap/admin/data/?object_type=table',
+            data: 'seatmap_id=' + seatmap_id,
+            type: 'GET',
+        }).done(function(e) {
+            for (var i = 0; i < e.length; i++) {
+                addTable(e[i].fields.x * GRID_INC, e[i].fields.y * GRID_INC, e[i].fields.w, e[i].fields.h, e[i].fields.name);
+            }
+            stage.update();
         }).fail(function(e) {
             console.log('fail');
         });
@@ -98,15 +100,74 @@ function init_canvas(options) {
     createjs.Touch.enable(stage);
 	stage.enableMouseOver();
     stage.panning = false;
+    stage.drawing_table = false;
     stage.pan_origin = {x: 0, y:0};
     stage.pan_origin_loc = {x: 0, y:0};
 
     chairs = new createjs.Container();
     stage.addChild(chairs);
+    
+    tables = new createjs.Container();
+    stage.addChild(tables);
+    
+    table_names = new createjs.Container();
+    stage.addChild(table_names);
 	init_grid();
 
     stage.update();
 
+    if (options.select_table_selector != null) {
+        $(options.select_table_selector).click(function() {
+            stage.onMouseDown = function(e) {
+				// get the seat that is being selected
+				var x = e.stageX - stage.x;
+				var y = e.stageY - stage.y;
+				var objects = this.getObjectsUnderPoint(x, y);
+				var selected_object = null;
+				for (var i = 0; i < objects.length; i++) {
+					if (objects[i].object_type == "table") {
+						selected_object = objects[i];
+						
+					}
+				}
+				// show the dialog to select a user
+				if (selected_object != null) {
+                    if (selected_object.name != null) {
+                        $('#table-text-box').val(selected_object.name);
+                    }
+					$('#table-dialog').dialog({
+						title: "Edit a table",
+						height:130,
+                        buttons: {
+                            "Remove Table": function() {
+                                selected_object.text.text = '';
+                                selected_object.text.visible = false;
+                                table_names.removeChild(selected_object.text);
+                                tables.removeChild(selected_object);
+                                stage.update();
+                                $( this ).dialog( "close" );
+                            },
+                            "Update": function() {
+                                selected_object.name = $('#table-text-box').val();
+                                selected_object.drawTable();
+                                stage.update();
+                                $( this ).dialog( "close" );
+                            }
+                        }
+					});
+				}
+			}
+			stage.onMouseUp = null;
+        });
+    }
+    
+    if (options.draw_table_selector != null) {
+        $(options.draw_table_selector).click(function() {
+            stage.onMouseDown = draw_table_mouse_down;
+            stage.onMouseUp = draw_table_mouse_up;
+        });
+    }
+    
 	if (options.draw_chair_selector != null) {
 		$(options.draw_chair_selector).click(function() {
 			stage.onMouseDown = handle_draw_chair_click;
@@ -130,7 +191,6 @@ function init_canvas(options) {
 				for (var i = 0; i < objects.length; i++) {
 					if (objects[i].object_type == "seat") {
 						selected_object = objects[i];
-						
 					}
 				}
 				// show the dialog to select a user
@@ -181,6 +241,14 @@ function init_canvas(options) {
 				c.x = c.x - c.x * ZOOM_PERCENT;
 				c.y = c.y - c.y * ZOOM_PERCENT;
 			}
+            
+            for (var i = 0; i < tables.children.length; i++) {
+				var t = tables.children[i];
+				t.x = t.x - t.x * ZOOM_PERCENT;
+				t.y = t.y - t.y * ZOOM_PERCENT;
+                t.drawTable();
+			}
+            
 			stage.update();
 		});
 	}
@@ -197,6 +265,14 @@ function init_canvas(options) {
 				c.x = c.x + c.x * ZOOM_PERCENT;
 				c.y = c.y + c.y * ZOOM_PERCENT;
 			}
+            
+            for (var i = 0; i < tables.children.length; i++) {
+				var t = tables.children[i];
+				t.x = t.x + t.x * ZOOM_PERCENT;
+				t.y = t.y + t.y * ZOOM_PERCENT;
+                t.drawTable();
+			}
+            
 			stage.update();
 		});
 	}
@@ -222,9 +298,22 @@ function init_canvas(options) {
 				};
 				seat_data.push(my_data);
 			}
+            var table_data = [];
+			for (var i = 0; i < tables.children.length; i++) {
+				var t = tables.children[i];
+				var my_data = {
+					x: Math.round(t.x / GRID_INC),
+					y: Math.round(t.y / GRID_INC),
+                    w: t.width,
+                    h: t.height,
+					name: t.name,
+					type: 'table',
+				};
+				table_data.push(my_data);
+			}
 			$.ajax({
 				url: '/seatmap/admin/seatmap/save/',
-				data: 'seat_data=' + JSON.stringify(seat_data) + '&seatmap_id=' + seatmap_id,
+				data: 'table_data=' + JSON.stringify(table_data) + '&seat_data=' + JSON.stringify(seat_data) + '&seatmap_id=' + seatmap_id,
 				type: 'POST',
 			}).done(function(e) {
 				console.log('success');
@@ -252,7 +341,6 @@ function init_canvas(options) {
 				// show the dialog to select a user
 				if (selected_object != null) {
 					selected_seat = selected_object;
-					console.log(selected_seat);
 					$('#select-seat-dialog').dialog({
 						title: "Confirm Seat",
 						width:390,
@@ -284,6 +372,72 @@ function init_canvas(options) {
 			stage.onMouseUp = null;
 		});
 	}
+}
+
+function addTable(x, y, w, h, name) {
+    var t = new createjs.Shape();
+	
+	t.mouseover = false;
+    t.snapToGrid = function(x, y) {
+        if (x < 0) {
+            this.x = x - (GRID_INC - Math.abs(x) % GRID_INC);
+        } else {
+            this.x = x - x % GRID_INC;
+        }
+        if (y < 0) {
+            this.y = y - (GRID_INC - Math.abs(y) % GRID_INC);
+        } else {
+            this.y = y - y % GRID_INC;
+        }
+    };
+    t.snapToGrid(x, y);
+    t.width = w;
+    t.height = h;
+    stage.draw_table_x = t.x;
+    stage.draw_table_y = t.y;
+    t.name = name;
+    t.drawTable = function() {
+        this.graphics.clear();
+        this.graphics.setStrokeStyle(1);
+
+        this.graphics.beginStroke(COLORS.TABLE_COLOR);
+        this.graphics.beginFill(COLORS.TABLE_COLOR);
+ 
+        this.graphics.drawRect(0, 0, GRID_INC * this.width, GRID_INC * this.height);
+         
+        if (this.text != null) {
+            table_names.removeChild(this.text);
+        }
+        
+        this.text = new createjs.Text(this.name, TABLE_LABEL_FONT_SIZE + "px Arial", COLORS.TABLE_TEXT_COLOR);
+        this.text.x = this.x + (GRID_INC * this.width - this.text.getMeasuredWidth()) / 2;
+        this.text.y = this.y + (GRID_INC * this.height - this.text.getMeasuredHeight()) / 2;
+        table_names.addChild(this.text);
+    };
+    t.drawTable();
+	
+	t.object_type = "table";
+	tables.addChild(t);
+    return t;
+}
+
+function draw_table_mouse_down(e) {
+    var x = e.stageX - stage.x;
+    var y = e.stageY - stage.y;
+    
+    t = addTable(x, y, 1, 1, '');
+    
+    cur_table = t;
+	
+	stage.update();
+    stage.drawing_table = true;
+}
+
+function draw_table_mouse_up(e) {
+    var x = e.stageX - stage.x;
+    var y = e.stageY - stage.y;
+    
+    stage.drawing_table = false;
 }
 
 function applyUserToCurrentSeat(username) {
@@ -509,4 +663,13 @@ function tick() {
 
 		stage.update();
 	}
+    
+    if (stage.drawing_table) {
+        if (cur_table != null) {
+            cur_table.width = Math.ceil((stage.mouseX - stage.draw_table_x) / GRID_INC);
+            cur_table.height = Math.ceil((stage.mouseY - stage.draw_table_y) / GRID_INC);
+            cur_table.drawTable();
+            stage.update();
+        }
+    }
 }

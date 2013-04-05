@@ -15,6 +15,8 @@ $(document).ready(function(){
 		zoom_in_selector: '#zoom-in-button',
 		save_selector: '#save-button',
 		pan_selector: '#pan-button',
+        draw_table_selector: '#aux-button',
+        select_table_selector: '#s-table-button',
 	});
     populate_canvas(seatmap_id);
     $('#seatmap-message').hide();

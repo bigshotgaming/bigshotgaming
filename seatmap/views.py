@@ -21,8 +21,10 @@ def seatmap_data(request):
     seatmap = seatmap[0]
 
     # this is a temporary fix so that the seatmap can still be edited
-    objects = list(Seat.objects.filter(seatmap=seatmap))
-    # objects = list(Seat.objects.filter(seatmap=seatmap)) + list(Table.objects.filter(seatmap=seatmap))
+    if request.GET.get('object_type') == "seat":
+        objects = list(Seat.objects.filter(seatmap=seatmap))
+    else:
+        objects = list(Table.objects.filter(seatmap=seatmap))
 
     seatmap_data = serializers.serialize('json', objects, use_natural_keys=True)
     return HttpResponse(seatmap_data, content_type='application/json', status=200)
@@ -34,11 +36,15 @@ def get_seatmap_data(seatmap_id):
     seatmap = seatmap[0]
 
     # this is a temporary fix so that the seatmap can still be edited
-    objects = list(Seat.objects.filter(seatmap=seatmap))
-    # objects = list(Seat.objects.filter(seatmap=seatmap)) + list(Table.objects.filter(seatmap=seatmap))
+    seats = list(Seat.objects.filter(seatmap=seatmap))
+    tables = list(Table.objects.filter(seatmap=seatmap))
+    
+    d = {
+        'seats' : serializers.serialize('json', seats, use_natural_keys=True),
+        'tables' : serializers.serialize('json', tables, use_natural_keys=True)
+    }
 
-    seatmap_data = serializers.serialize('json', objects, use_natural_keys=True)
-    return seatmap_data
+    return d
 
 def seatmap_display(request, event=None):
     if event is None:
@@ -49,8 +55,9 @@ def seatmap_display(request, event=None):
     seats = Seat.objects.filter(seatmap=sm)
     for seat in seats:
         seat.status_full = seat.get_status_display()
-       
-    return render(request, 'seatmap/seatmap_page.html', {'seatmap_id' : sm.id, 'seatmap_data' : get_seatmap_data(sm.id)})
+    
+    data = get_seatmap_data(sm.id)
+    return render(request, 'seatmap/seatmap_page.html', {'seatmap_id' : sm.id, 'seat_data' : data['seats'], 'table_data' : data['tables']})
 
 @csrf_exempt
 @login_required
@@ -159,11 +166,13 @@ def table_create(request):
 @login_required
 def seatmap_save(request):
     if request.POST.get('seat_data'):
-        data = json.loads(request.POST.get('seat_data'))
+        seat_data = json.loads(request.POST.get('seat_data'))
+        table_data = json.loads(request.POST.get('table_data'))
         seatmap_id = request.POST.get('seatmap_id')
         seatmap = SeatMap.objects.get(id=seatmap_id)
         Seat.objects.filter(seatmap=seatmap).delete()
-        for seat in data:
+        Table.objects.filter(seatmap=seatmap).delete()
+        for seat in seat_data:
             print seat
             s = Seat()
             s.seatmap = seatmap
@@ -182,6 +191,17 @@ def seatmap_save(request):
                     p = p[0]
                 s.participant = p;
             s.save()
+            
+        for table in table_data:
+            print table
+            t = Table()
+            t.seatmap = seatmap
+            t.x = table['x']
+            t.y = table['y']
+            t.w = table['w']
+            t.h = table['h']
+            t.name = table['name']
+            t.save()
     return HttpResponse('success')
 
 @csrf_exempt
