@@ -5,7 +5,11 @@
 <h2>{{ tournament.name }} - {{tournament.get_tournament_style}}</h2>
 <h3>Tournament Rules:</h3>
 <p>
-    {{tournament.rules|linebreaks}}
+    {% if tournament.html_rules %}{% autoescape off %}
+        {{ tournament.html_rules }}
+    {% endautoescape %}{% else %}
+        {{ tournament.rules|linebreaks }}
+    {% endif %}
 </p>
 <h3>Registered teams:</h3>
 <p><ul>
