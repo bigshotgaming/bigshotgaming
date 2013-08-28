@@ -5,7 +5,7 @@ from django.dispatch import receiver
 from django.template.defaultfilters import slugify
 from events.models import Event, Participant, Coupon
 from sponsorship.models import Sponsor, Prize
-from tournaments.tasks import create_tournament, delete_tournament, create_participant, destroy_participant
+from tournaments.tasks import create_tournament, delete_tournament, create_participant, destroy_participant, automate_tournament
 
 PLATFORM_CHOICES = (('P','PC'),('C','Console'))
 
@@ -25,6 +25,10 @@ class Tournament(models.Model):
         ('R', 'Round Robin'),
         ('W', 'Swiss'),
     )
+    def __init__(self, *args, **kwargs):
+        super(Tournament, self).__init__(*args, **kwargs)
+        self.automated_active = False
+
     def __unicode__(self):
         return self.name
 
@@ -40,6 +44,11 @@ class Tournament(models.Model):
                 style = choice[1]
                 return style
 
+    def is_automated_active(self):
+        if self.automated_active:
+            return True
+        return False
+
     name = models.CharField(max_length=60)
     game = models.ForeignKey(Game)
     event = models.ForeignKey(Event)
@@ -53,6 +62,8 @@ class Tournament(models.Model):
     slugified_name = models.SlugField(max_length=80, editable=False)
     is_active = models.BooleanField(default=True)
     has_started = models.BooleanField()
+    automated = models.BooleanField(help_text="Will periodically check to see if the tournament has been updated to send participants emails.")
+    automated_data = models.TextField(blank=True, null=True)
 
 class Team(models.Model):
 
@@ -84,6 +95,8 @@ def create_challonge_tournament(sender, **kwargs):
     tournament_name = "%s - %s" % (tournament.event.name, tournament.name)
     if kwargs['created']:
         create_tournament.delay(name=tournament_name, url=tournament.slugified_name, tournament_type=tournament_style)
+    if tournament.automated and not tournament.automated_active:
+        automate_tournament.delay(tournament)
 
 @receiver(pre_delete, sender=Tournament)
 def delete_challonge_tournament(sender, **kwargs):
