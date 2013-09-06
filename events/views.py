@@ -2,10 +2,11 @@ from django.shortcuts import render
 from django.db import IntegrityError
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from events.models import Event, Participant, Coupon, Waiver, activate_coupon
+from events.name_badge_pdf import NameBadgePDF
 from events.forms import RegisterForm
 from paypal.standard.forms import PayPalPaymentsForm
 
@@ -145,4 +146,31 @@ def waiver_sign(request):
         #return render_to_response('events/waiver_okay.html', {'part': w.name})
         return HttpResponseRedirect('/seatmap/admin')
     return HttpResponse(status=444)    
-    
+
+@login_required
+def name_badges_pdf(request, event_id):
+    if not request.user.is_staff:
+        return HttpResponse('Not happenin', 403)
+
+    try:
+        event = Event.objects.get(id=event_id)
+    except:
+        return HttpResponse('Event with ID %s not found.' % event_id)
+    participants = Participant.objects.filter(event__id=event_id)
+    if len(participants) == 0:
+        return HttpResponse('No participants found for event : ' + str(event_id))
+
+    names = []
+    for participant in participants:
+        if participant.user.is_staff:
+            names.append((participant.user.username, 'ADMIN'))
+        else:
+            names.append((participant.user.username, 'ATTENDEE'))
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="%s - Name Badges.pdf"' % event.name
+
+    nbp = NameBadgePDF(response, names)
+    nbp.save()
+
+    return response
