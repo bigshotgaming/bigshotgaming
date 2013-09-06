@@ -71,6 +71,8 @@ class NameBadgePDF:
                     self.canvas.setFont(self.font_name, font_size)
                     self.canvas.drawString(self.badge_locations[self.location_number][0] + ((self.badge_width - self.canvas.stringWidth(line_one)) / 2), self.badge_locations[self.location_number][1] + self.name_y_placement_delta + font_size, line_one)
                     self.canvas.drawString(self.badge_locations[self.location_number][0] + ((self.badge_width - self.canvas.stringWidth(line_two)) / 2), self.badge_locations[self.location_number][1] + self.name_y_placement_delta, line_two)
+                else:
+                    self.canvas.drawString(self.badge_locations[self.location_number][0] + ((self.badge_width - self.canvas.stringWidth(name)) / 2), self.badge_locations[self.location_number][1] + self.name_y_placement_delta, name)
             else:
                 self.canvas.drawString(self.badge_locations[self.location_number][0] + ((self.badge_width - self.canvas.stringWidth(name)) / 2), self.badge_locations[self.location_number][1] + self.name_y_placement_delta, name)
             
