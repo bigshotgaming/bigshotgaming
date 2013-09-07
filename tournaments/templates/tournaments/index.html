@@ -6,7 +6,7 @@
 <h2>Tournaments</h2>
 <p><ul>
 	{% for tournament in tournaments_list %}
-	<li><a href= "{% url tournaments.views.tournament tournament.pk %}">{{ tournament.name }}</a> - {{tournament.team_set.count}}/{{tournament.max_teams}} teams</li>
+	<li><a href= "{% url 'tournaments.views.tournament' tournament.pk %}">{{ tournament.name }}</a> - {{tournament.team_set.count}}/{{tournament.max_teams}} teams</li>
 	{% endfor %}
 </ul></p>
 {% else %}
