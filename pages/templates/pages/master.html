@@ -24,23 +24,23 @@
     }());
     </script>
     <div id="header">
-        <h1><a href="{% url pages_index %}" title="Home">Big Shot Gaming</a></h1>
+        <h1><a href="{% url 'pages_index' %}" title="Home">Big Shot Gaming</a></h1>
         <div id="login">
             {% if not user.is_authenticated %}
-            <form method="post" action="{% url auth_login %}">{% csrf_token %}
+            <form method="post" action="{% url 'auth_login' %}">{% csrf_token %}
                 <ul>
                     <li>Username</li>
                     <li><input id="username" type="text" name="username" /></li>
                     <li>Password</li>
                     <li><input type="password" id="password" name="password" /></li>
                     <li><input type="submit" value="Login" /></li>
-                    <li class="login_help"><a href="{% url auth_password_reset %}" title="">Forgot your password?</a></li>
-                    <li class="login_help"><a href="{% url registration_register %}" title="">Create an account</a></li>	
+                    <li class="login_help"><a href="{% url 'auth_password_reset' %}" title="">Forgot your password?</a></li>
+                    <li class="login_help"><a href="{% url 'registration_register' %}" title="">Create an account</a></li>	
                 </ul>
             </form>
             {% else %}
             <h5>Signed in as {{ user.username }}<h5>
-            <a href="{% url auth_logout %}?next={{ request.path }}">Sign Out</a>
+            <a href="{% url 'auth_logout' %}?next={{ request.path }}">Sign Out</a>
             {% endif %}
             <!-- end login -->				
         </div>
@@ -51,7 +51,7 @@
             <div id="side-a">
                 <h3>Main Menu</h3>
                 <ul>
-                    <li><a href="{% url pages_index %}" title="Home Page Link">Home</a></li>
+                    <li><a href="{% url 'pages_index' %}" title="Home Page Link">Home</a></li>
                     <li><a href="/about/" title="About Us Page Link">About Us</a></li>
                     <li><a href="/staff/" title="Staff Page Link">Staff</a></li>
                     <li><a href="/volunteer" title="Volunteer Page Link">Volunteer</a></li>
