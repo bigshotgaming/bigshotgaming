@@ -4,6 +4,6 @@ Hi,
 Thank you for registering on {{ website }}. Please click the link below to verify your email and complete your registration -
 {% endblocktrans %}
 
-http://{{ site.domain }}{% url registration_activate activation_key %}
+http://{{ site.domain }}{% url 'registration_activate' activation_key %}
 
 - BSG automated mailer-bot
