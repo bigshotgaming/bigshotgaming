@@ -192,7 +192,7 @@ PASSWORD_HASHERS = (
     'django.contrib.auth.hashers.MD5PasswordHasher',
     'django.contrib.auth.hashers.UnsaltedMD5PasswordHasher',
     'django.contrib.auth.hashers.CryptPasswordHasher',
-    'bigshotgaming.joomla_password_hasher.JoomlaPasswordHasher' 
+    'joomla_password_hasher.JoomlaPasswordHasher' 
 )
 
 # Account settings
