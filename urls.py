@@ -1,5 +1,4 @@
 from django.conf.urls.defaults import *
-from django.views.generic.simple import redirect_to
 from django.conf import settings
 from django.contrib import admin
 
@@ -17,8 +16,9 @@ def add_remoteip(function, request):
 # to the registration form.
 from registration.urls import urlpatterns as registration_urlpatterns
 for i, rurl in enumerate(registration_urlpatterns):
-    if rurl.name == 'registration_register':
-        registration_urlpatterns[i]._callback = functools.partial(add_remoteip, registration_urlpatterns[i]._callback)
+    if hasattr(rurl, 'name'):
+        if rurl.name == 'registration_register':
+            registration_urlpatterns[i]._callback = functools.partial(add_remoteip, registration_urlpatterns[i]._callback)
                 
 from pages.views import NewsFeed
 admin.autodiscover()

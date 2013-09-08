@@ -10,6 +10,8 @@ PROJECT_ROOT = os.path.dirname(os.path.realpath(__file__))
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
+ALLOWED_HOSTS = ['.bigshotgaming.com']
+
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
 )
@@ -190,7 +192,7 @@ PASSWORD_HASHERS = (
     'django.contrib.auth.hashers.MD5PasswordHasher',
     'django.contrib.auth.hashers.UnsaltedMD5PasswordHasher',
     'django.contrib.auth.hashers.CryptPasswordHasher',
-    'bigshotgaming.joomla_password_hasher.JoomlaPasswordHasher' 
+    'joomla_password_hasher.JoomlaPasswordHasher' 
 )
 
 # Account settings

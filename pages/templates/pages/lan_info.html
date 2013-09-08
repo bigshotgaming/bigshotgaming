@@ -2,8 +2,8 @@
 <div class='lan_info'>
     <h2>{{ event.name }}</h2>
 	<p>Event date/time: {{ event.start_date }} - {{ event.end_date }}</p>
-	<p>Current status: <a href="{% url events_participants event.id %}">{{event.number_paid }} seats paid</a> - {{ event.number_pending }} seats pending - {{ event.number_remaining }} seats remaining
-    <p><a href={% url events_index %}>Event information</a>&nbsp;&nbsp;<a href={% url events_register event.id %}>Register</a>&nbsp;&nbsp;<a href={% url tournaments.views.index %}>Tournaments</a>&nbsp;&nbsp;<a href={% url schedule.views.index %}>Schedule</a>&nbsp;&nbsp;<a href="/seatmap/">Seatmap</a>&nbsp;&nbsp;<a href="/events/faq/">FAQ</a></p>
+	<p>Current status: <a href="{% url 'events_participants' event.id %}">{{event.number_paid }} seats paid</a> - {{ event.number_pending }} seats pending - {{ event.number_remaining }} seats remaining
+    <p><a href={% url 'events_index' %}>Event information</a>&nbsp;&nbsp;<a href={% url 'events_register' event.id %}>Register</a>&nbsp;&nbsp;<a href={% url 'tournaments.views.index' %}>Tournaments</a>&nbsp;&nbsp;<a href={% url 'schedule.views.index' %}>Schedule</a>&nbsp;&nbsp;<a href="/seatmap/">Seatmap</a>&nbsp;&nbsp;<a href="/events/faq/">FAQ</a></p>
     {% load banner %}
     {% get_banner %}
 </div>
