@@ -5,7 +5,7 @@ We just wanted to let you know that your signup for the {{event.name}} event has
 {% if coupons %}
 You paid for extra tickets, so here are links to give to your friends for those seats:
 {% for coupon in coupons %}
-	http://www.bigshotgaming.com{% url events_activate event.id coupon.uuid %}
+	http://www.bigshotgaming.com{% url 'events_activate' event.id coupon.uuid %}
 {% endfor %}
 Make sure they use those exact links, or they will be unable to redeem the extra tickets.
 {% endif %}
