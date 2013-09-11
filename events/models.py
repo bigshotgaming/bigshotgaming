@@ -32,6 +32,7 @@ class Event(models.Model):
     participant_limit = models.IntegerField()
     description = models.CharField(max_length=100)
     is_active = models.BooleanField()
+    registration_enabled = models.BooleanField()
     prepay_price = models.DecimalField(max_digits=4, decimal_places=2)
     atd_price = models.DecimalField(max_digits=4, decimal_places=2, verbose_name='At-the-Door price')
     waiver = models.FileField(upload_to='events/waivers/', blank=True)

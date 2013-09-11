@@ -1,0 +1,14 @@
+
+{% extends "pages/master.html" %}
+{% block content %}
+    <h2>Coupon Activation</h2>
+    <h3>Complete this to finish your registration for the {{event.name}} event.</h3>
+    {% if event.waiver %}
+       <p><a href={{ event.waiver.url }} target="_blank">Event Waiver</a></p>
+    {% endif %}
+    <form action="." method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Submit" />
+    </form>
+{% endblock %}

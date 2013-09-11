@@ -7,10 +7,12 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from events.models import Event, Participant, Coupon, Waiver, activate_coupon
 from events.name_badge_pdf import NameBadgePDF
-from events.forms import RegisterForm
+from events.forms import RegisterForm, WaiverForm
 from paypal.standard.forms import PayPalPaymentsForm
 
 import uuid
+
+# TODO: Throw all this terrible code in a fire where it will burn for all eternity.
 
 def index(request):
     try:
@@ -60,6 +62,7 @@ def register(request, eventid):
                     return HttpResponseRedirect(reverse('events_payment'))   
                 # elif form.cleaned_data['payment_type'] == 'ad':
                 #     return HttpResponseRedirect('/events/thanks')
+
     else:
         form = RegisterForm(initial={'payment_type':'pp'})
         # we do this here because we need a participant for the context
@@ -73,6 +76,10 @@ def register(request, eventid):
         return render(request, 'events/register.html', {
             'event': Event.objects.get(id=eventid),
             'participant': participant,
+            'form': form,
+            })
+    return render(request, 'events/register.html', {
+            'event': Event.objects.get(id=eventid),
             'form': form,
         })
 
@@ -101,23 +108,37 @@ def payment(request):
 def activate(request, eventid, uuid):
     # create a participant since these people will be signing up ONLY via coupon
     # if they were dumb enough to try and signup manually, this'll still catch em
+    # This is all bastard code and it will never have a home or a family
+
     event = Event.objects.get(id=eventid)
     participant = Participant.objects.get_or_create(user=request.user, event=event)[0]
     if participant.coupon:
         return render(request, 'events/already_activated.html', {
             'event':event
         })
-    else:
-        coupon = Coupon.objects.get(uuid=uuid)
-        try:
-            activate_coupon(participant, coupon)
-        except IntegrityError:
-            return render(request, 'events/coupon_used.html', {
+
+    if request.method == 'POST':
+        form = WaiverForm(request.POST)
+        if form.is_valid():
+            print uuid
+            coupon = Coupon.objects.get(uuid=uuid)
+            try:
+                activate_coupon(participant, coupon)
+            except IntegrityError:
+                return render(request, 'events/coupon_used.html', {
+                    'event':event
+                    })
+            return render(request, 'events/activated.html', {
                 'event':event
-                })
-        return render(request, 'events/activated.html', {
-            'event':event
-        })
+            })
+    else:
+        form = WaiverForm()
+
+    return render(request, 'events/activate.html', {
+        'form': form,
+        'event': event,
+    })
+
     
 def waiver(request, part_id):
     if not request.user.is_staff:

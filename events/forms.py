@@ -12,3 +12,14 @@ class RegisterForm(forms.Form):
 
     # we do this so that we can have the quantity field be a dropdown instead of a textbox
     ticket_quantity = forms.IntegerField(widget=forms.Select(choices=[(x,x) for x in range(1, 21)]))
+
+    waiver = forms.BooleanField(
+        error_messages={'required': 'You must accept the LAN waiver.'},
+        label="Accept Waiver"
+    )
+
+class WaiverForm(forms.Form):
+    waiver = forms.BooleanField(
+        error_messages={'required': 'You must accept the LAN waiver.'},
+        label="Accept Waiver"
+    )
