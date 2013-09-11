@@ -48,9 +48,9 @@ def get_seatmap_data(seatmap_id):
 
 def seatmap_display(request, event=None):
     if event is None:
-        sm = SeatMap.objects.get_object_or_404(event=Event.objects.get(is_active=True))
+        sm = get_object_or_404(SeatMap, event=Event.objects.get(is_active=True))
     else:
-        sm = SeatMap.objects.get_object_or_404(event=event)
+        sm = get_object_or_404(SeatMap, event=event)
     
     seats = Seat.objects.filter(seatmap=sm)
     for seat in seats:
