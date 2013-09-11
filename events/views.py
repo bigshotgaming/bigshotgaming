@@ -35,7 +35,7 @@ def participants(request, eventid):
     except (TypeError, ObjectDoesNotExist):
         event = None
     try:
-        participants = Participant.objects.filter(event=event)
+        participants = Participant.objects.filter(event=event).order_by('signup_time')
     except (TypeError, ObjectDoesNotExist):
         participants = None
     
