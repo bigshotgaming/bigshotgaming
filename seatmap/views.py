@@ -47,10 +47,13 @@ def get_seatmap_data(seatmap_id):
     return d
 
 def seatmap_display(request, event=None):
-    if event is None:
-        sm = SeatMap.objects.get(event=Event.objects.get(is_active=True))
-    else:
-        sm = SeatMap.objects.get(event=event)
+    try:
+        if event is None:
+            sm = SeatMap.objects.get_object_or_404(event=Event.objects.get(is_active=True))
+        else:
+            sm = SeatMap.objects.get_object_or_404(event=event)
+    except DoesNotExist:
+        return HttpRespon
     
     seats = Seat.objects.filter(seatmap=sm)
     for seat in seats:
