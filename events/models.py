@@ -70,7 +70,7 @@ class Participant(models.Model):
 class Coupon(models.Model):
     
     def __unicode__(self):
-        return self.uuid
+        return str(self.uuid)
            
     def make_uuid():
         return str(uuid.uuid4())
