@@ -3,7 +3,7 @@ from django.db import models
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from django.template.defaultfilters import slugify
-from events.models import Event, Participant, Coupon
+from events.models import Event, Participant
 from sponsorship.models import Sponsor, Prize
 from tournaments.tasks import create_tournament, delete_tournament, create_participant, destroy_participant, automate_tournament
 

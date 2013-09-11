@@ -1,19 +1,20 @@
 from django.http import HttpResponse
 from django.contrib import admin
-from events.models import Event, Venue, Participant, Coupon, Waiver
+from events.models import Event, Venue, Participant, Ticket, TicketType, Transaction
 
 def mark_as_paid(modeladmin, request, queryset):
-    for participant in queryset:
-        participant.coupon = Coupon(event=Event.objects.get(is_active=True))
-        participant.coupon.activate()
-        participant.save()
+    pass
+    # for participant in queryset:
+    #     participant.coupon = Coupon(event=Event.objects.get(is_active=True))
+    #     participant.coupon.activate()
+    #     participant.save()
 mark_as_paid.short_description = "Mark selected participants as paid"
 
 class ParticipantAdmin(admin.ModelAdmin):
     readonly_fields = ('signup_time',)
-    list_display = ('user', 'event', 'coupon', 'signup_time', 'checkin_time', 'user_has_seat')
+    list_display = ('user', 'event', 'signup_time', 'checkin_time',)
     list_filter = ('event', 'checked_in')
-    search_fields = ['user__username', 'coupon__uuid']
+    search_fields = ['user__username']
     actions = [mark_as_paid]
     
     def user_has_seat(self, obj):
@@ -27,12 +28,11 @@ class ParticipantAdmin(admin.ModelAdmin):
 class EventAdmin(admin.ModelAdmin):
     fields = (
         'name', 'start_date', 'end_date', 'venue',
-        'participant_limit', 'description', 'is_active',
-        'prepay_price', 'atd_price', 'waiver',
+        'description', 'is_active', 'waiver',
     )
     
     list_display = ('name', 'start_date', 'end_date', 'venue',
-        'participant_limit', 'is_active'
+        'is_active'
     )
     
     list_filter = ('venue',)
@@ -52,6 +52,9 @@ class WaiverAdmin(admin.ModelAdmin):
 admin.site.register(Event, EventAdmin)
 admin.site.register(Venue)
 admin.site.register(Participant, ParticipantAdmin)
-admin.site.register(Waiver, WaiverAdmin)
-admin.site.register(Coupon, CouponAdmin)
+admin.site.register(Ticket)
+admin.site.register(TicketType)
+admin.site.register(Transaction)
+#admin.site.register(Waiver, WaiverAdmin)
+#admin.site.register(Coupon, CouponAdmin)
 

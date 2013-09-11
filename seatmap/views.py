@@ -1,5 +1,5 @@
 from seatmap.models import SeatMap, Seat, Table, STATUS_LIST
-from events.models import Event, Participant, Coupon
+from events.models import Event, Participant
 from django.shortcuts import render_to_response, render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, HttpResponseForbidden
 from django.template import RequestContext

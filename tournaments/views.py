@@ -6,7 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 from tournaments.models import Tournament, Team
 from tournaments.forms import JoinTeamForm, LeaveTeamForm, CreateTeamForm
-from events.models import Event, Participant, Coupon
+from events.models import Event, Participant
 
 
 def index(request):

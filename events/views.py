@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-from events.models import Event, Participant, Coupon, Waiver, activate_coupon
+from events.models import Event, Participant
 from events.name_badge_pdf import NameBadgePDF
 from events.forms import RegisterForm
 from paypal.standard.forms import PayPalPaymentsForm

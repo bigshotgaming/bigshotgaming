@@ -151,9 +151,9 @@ INSTALLED_APPS = (
     'registration',
     'events',
     'sponsorship',
-    'seatmap',
+#    'seatmap',
     'pages',
-    'tournaments',
+#    'tournaments',
     'schedule',
 )
 
