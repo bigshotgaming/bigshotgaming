@@ -201,27 +201,44 @@ def name_badges_pdf(request, event_id):
 @login_required
 def registration_history(request, event_id):
 
+    # a fun exercise in date math for everybody involved
+
     event = Event.objects.get(id=event_id)
     participants = Participant.objects.filter(event=event).order_by('signup_time')
     data = {}
     last_count = 0
+
+    # figuring out our boundaries
+    # the 120 day limit is arbitrary
+    start_date = int((event.start_date - datetime.timedelta(days=120)).date().strftime('%s'))*1000
+    end_date = int(event.end_date.date().strftime('%s'))*1000
+
     for participant in participants:
         key = int((participant.signup_time.date().strftime('%s')))*1000
-        if key in data:
-            data[key] += 1
+        # we're checking to see if somebody signed up before our above cutoff
+        # if they signup before that cutoff, it just adds their count to the start_date
+        if key > start_date:
+            if key in data:
+                data[key] += 1
+            else:
+                data[key] = last_count+1
+            last_count = data[key]
         else:
-            data[key] = last_count+1
-        last_count = data[key]
+            if start_date in data:
+                data[start_date] += 1
+            else:
+                data[start_date] = 0
 
-    # this is how we set the left boundary
-    # 90 days is a *bit* arbitrary, but who cares?
-    start_date = int((event.start_date - datetime.timedelta(days=90)).date().strftime('%s'))*1000
-    if start_date not in data:
-        data[start_date] = 0
-
-    # and now the right boundary
-    end_date = int(event.end_date.date().strftime('%s'))*1000
-    data[end_date] = last_count
+    # here we're checking to see if we're looking at this data before the fact or after
+    # we want the graph to cutoff on today if it's before the LAN ends
+    now = int(datetime.datetime.now().date().strftime('%s'))*1000
+    if int(datetime.datetime.now().date().strftime('%s'))*1000 > end_date:
+        data[end_date] = last_count
+    else:
+        if now in data:
+            pass
+        else:
+            data[now] = last_count
 
     # time to sort our dict
     data = collections.OrderedDict(sorted(data.items(), key=lambda t: t[0]))
