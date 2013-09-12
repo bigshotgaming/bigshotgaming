@@ -202,7 +202,7 @@ def name_badges_pdf(request, event_id):
 def registration_history(request, event_id):
 
     event = Event.objects.get(id=event_id)
-    participants = Participant.objects.filter(event=event)
+    participants = Participant.objects.filter(event=event).order_by('signup_time')
     data = {}
     last_count = 0
     for participant in participants:
@@ -216,7 +216,8 @@ def registration_history(request, event_id):
     # this is how we set the left boundary
     # 90 days is a *bit* arbitrary, but who cares?
     start_date = int((event.start_date - datetime.timedelta(days=90)).date().strftime('%s'))*1000
-    data[start_date] = 0
+    if start_date not in data:
+        data[start_date] = 0
 
     # and now the right boundary
     end_date = int(event.end_date.date().strftime('%s'))*1000
