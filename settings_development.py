@@ -136,6 +136,8 @@ TEMPLATE_DIRS = (
 
 ACCOUNT_ACTIVATION_DAYS = 7
 
+AUTHENTICATION_BACKENDS = ('backends.CaseInsensitiveModelBackend',)
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
