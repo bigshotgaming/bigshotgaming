@@ -151,6 +151,7 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     'django.contrib.flatpages',
     'django.contrib.staticfiles',
+    'django_nvd3',
     'raven.contrib.django',
     'djcelery',
     'djcelery_email',

@@ -10,7 +10,9 @@ from events.name_badge_pdf import NameBadgePDF
 from events.forms import RegisterForm, WaiverForm
 from paypal.standard.forms import PayPalPaymentsForm
 
+import datetime
 import uuid
+import collections
 
 # TODO: Throw all this terrible code in a fire where it will burn for all eternity.
 
@@ -195,3 +197,48 @@ def name_badges_pdf(request, event_id):
     nbp.save()
 
     return response
+
+@login_required
+def registration_history(request, event_id):
+
+    event = Event.objects.get(id=event_id)
+    participants = Participant.objects.filter(event=event)
+    data = {}
+    last_count = 0
+    for participant in participants:
+        key = int((participant.signup_time.date().strftime('%s')))*1000
+        if key in data:
+            data[key] += 1
+        else:
+            data[key] = last_count+1
+        last_count = data[key]
+
+    # this is how we set the left boundary
+    # 90 days is a *bit* arbitrary, but who cares?
+    start_date = int((event.start_date - datetime.timedelta(days=90)).date().strftime('%s'))*1000
+    data[start_date] = 0
+
+    # and now the right boundary
+    end_date = int(event.end_date.date().strftime('%s'))*1000
+    data[end_date] = last_count
+
+    # time to sort our dict
+    data = collections.OrderedDict(sorted(data.items(), key=lambda t: t[0]))
+
+    tooltip_date = "%d %b %Y %H:%M:%S %p"
+    extra_serie = {"tooltip": {"y_start": "", "y_end": " participants"},
+                   "date_format": tooltip_date}
+    chartdata = {'x': data.keys(),
+                 'name1': 'Signup Count', 'y1': data.values(), 'extra1': extra_serie,
+                }
+
+    charttype = "lineChart"
+    data = {
+        'charttype': charttype,
+        'chartdata': chartdata,
+        'date_tag' : True,
+    }
+    return render(request, 'events/linechart.html', data)
+    #return render_to_response('linechart.html', data)
+
+
