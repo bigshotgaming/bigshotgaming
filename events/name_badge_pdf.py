@@ -6,12 +6,12 @@ from settings import STATIC_ROOT
 import os
 
 class NameBadgePDF:
-    def __init__(self, filename, names):
+    def __init__(self, filename, event, names):
         self.canvas = canvas.Canvas(filename, pagesize=letter)
         self.names = names
         
-        self.font_name = 'Courier-Bold'
-        self.header_text = 'BSG MegaLAN XVI'
+        self.font_name = 'Helvetica-Bold'
+        self.header_text = event.name
         self.header_font_size = 16
 
         self.bottom_font_size = 28

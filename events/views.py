@@ -193,7 +193,7 @@ def name_badges_pdf(request, event_id):
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="%s - Name Badges.pdf"' % event.name
 
-    nbp = NameBadgePDF(response, names)
+    nbp = NameBadgePDF(response, event, names)
     nbp.save()
 
     return response
