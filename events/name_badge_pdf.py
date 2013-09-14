@@ -46,10 +46,15 @@ class NameBadgePDF:
     
             self.canvas.setFont(self.font_name, self.header_font_size)
             self.canvas.drawString(self.badge_locations[self.location_number][0] + ((self.badge_width - self.canvas.stringWidth(self.header_text)) / 2), self.badge_locations[self.location_number][1] + self.badge_height - self.header_font_size - 7, self.header_text)
-
+            
+            if p_type == "ADMIN":
+                self.canvas.setFillColorRGB(255,0,0)
             self.canvas.setFont(self.font_name, self.bottom_font_size)
             self.canvas.drawString(self.badge_locations[self.location_number][0] + ((self.badge_width - self.canvas.stringWidth(p_type)) / 2), self.badge_locations[self.location_number][1] + self.bottom_font_size - 10, p_type)
             
+            # Reset the FillColor so that it doesn't make the name red too for admins
+            self.canvas.setFillColorRGB(0,0,0)
+
             self.set_biggest_name_size(name)
             
             if self.new_name_size < 14:
