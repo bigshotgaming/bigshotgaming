@@ -5,7 +5,7 @@
     <!-- the charts need to be rendered to                             -->
     {% include_nvd3jscss %}
     {% if date_tag %}
-        {% load_chart charttype chartdata "linechart_container" True "%d %b %Y %H" %}
+        {% load_chart charttype chartdata "linechart_container" True "%d %b %Y" %}
     {% else %}
         {% load_chart charttype chartdata "linechart_container" %}
     {% endif %}

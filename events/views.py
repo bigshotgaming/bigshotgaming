@@ -243,7 +243,7 @@ def registration_history(request, event_id):
     # time to sort our dict
     data = collections.OrderedDict(sorted(data.items(), key=lambda t: t[0]))
 
-    tooltip_date = "%d %b %Y %H:%M:%S %p"
+    tooltip_date = "%d %b %Y"
     extra_serie = {"tooltip": {"y_start": "", "y_end": " participants"},
                    "date_format": tooltip_date}
     chartdata = {'x': data.keys(),
