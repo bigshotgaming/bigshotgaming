@@ -151,6 +151,7 @@ INSTALLED_APPS = (
     'django_nvd3',
     'paypal.standard.ipn',
     'djcelery',
+    'djrill',
     'registration',
     'events',
     'sponsorship',
@@ -160,7 +161,7 @@ INSTALLED_APPS = (
     'schedule',
 )
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'djrill.mail.backends.djrill.DjrillBackend'
 
 try:
     import south
@@ -200,12 +201,16 @@ LOGIN_URL = '/accounts/login/'
 #Cache settings
 CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
 
+# All API keys in this configuration should be for development purposes ONLY.
+
 RECAPTCHA_PUBLIC_KEY = '6Lfgv8ESAAAAAOCwstLnTDgClcfGBVoKuc6pypfu'
 RECAPTCHA_PRIVATE_KEY = '6Lfgv8ESAAAAAHbUjSt1YGoLQgSnX4VYzEJHIvwT'
 
 PAYPAL_RECEIVER_EMAIL = 'wiede1_1297892766_biz@cmich.edu'
 CHALLONGE_USERNAME = 'tomsoverbaghdad'
 CHALLONGE_API_KEY = 'aetvcd2xwyprukz8g6jyx38zc4425dxpzdf2dbxr'
+
+MANDRILL_API_KEY = 'HLxHRFlVtBi6Saq2INoWYQ'
 
 try:
     from local_settings import *

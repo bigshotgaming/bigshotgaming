@@ -13,6 +13,7 @@ django-celery-email==1.0.3
 django-celery-with-redis==3.0
 -e git://github.com/dcramer/django-paypal.git@11835ce17e855200fc4b523c659f34f1d472b5d6#egg=django_paypal-dev
 django-registration==1.0
+djrill==1.1.1
 gunicorn==18.0
 kombu==2.5.13
 -e git+http://github.com/bigshotgaming/pychallonge@d95cfdb57eaa5875dd32d69231bf99e21459659e#egg=pychallonge-dev

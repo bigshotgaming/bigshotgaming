@@ -154,7 +154,7 @@ INSTALLED_APPS = (
     'django_nvd3',
     'raven.contrib.django',
     'djcelery',
-    'djcelery_email',
+    'djrill',
     'gunicorn',
     'registration',
     'events',
@@ -166,7 +166,7 @@ INSTALLED_APPS = (
     'schedule',
 )
 
-EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
+EMAIL_BACKEND = 'djrill.mail.backends.djrill.DjrillBackend'
 
 try:
     import south
@@ -210,6 +210,8 @@ RECAPTCHA_PUBLIC_KEY = None
 RECAPTCHA_PRIVATE_KEY = None
 CHALLONGE_USERNAME = None
 CHALLONGE_API_KEY = None
+
+MANDRILL_API_KEY = None
 
 SERVER_EMAIL = 'bigshot@bigshotgaming.com'
 DEFAULT_FROM_EMAIL = 'bigshot@bigshotgaming.com'
