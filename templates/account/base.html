@@ -1,0 +1,11 @@
+{% extends "pages/master.html" %}
+{% block content %}
+<li>hello</li>
+<h1>fuck</h1>
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}
+
