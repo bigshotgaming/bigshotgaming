@@ -8,6 +8,7 @@ argparse==1.2.1
 billiard==2.7.3.32
 celery==3.0.22
 distribute==0.6.14
+django-allauth==0.18.0
 django-celery==3.0.21
 django-celery-email==1.0.3
 django-celery-with-redis==3.0
