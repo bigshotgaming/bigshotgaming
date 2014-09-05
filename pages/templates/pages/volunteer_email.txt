@@ -5,4 +5,6 @@
 {{real_name}} had the following to say:
 {{comments}}
 
+Reply back to {{real_name}} at {{email}}.
+
 - BSG automated mailer-bot

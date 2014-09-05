@@ -112,6 +112,7 @@ def volunteer(request):
                 'location': form.cleaned_data['location'],
                 'cmu_student': form.cleaned_data['cmu_student'],
                 'comments': form.cleaned_data['comments_and_experience'],
+                'email': request.user.email,
             })
             fr = 'Big Shot Gaming <bigshot@bigshotgaming.com>'
             send_mail(subj, t.render(c), fr, [u.email for u in User.objects.filter(is_superuser=True).exclude(email="").order_by('id')])
