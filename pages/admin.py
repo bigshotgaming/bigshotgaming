@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.core import mail
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
@@ -26,27 +27,38 @@ class PostAdmin(admin.ModelAdmin):
     actions = ['email_post_participants', 'email_post_all']
 
     def email_post_participants(self, request, queryset):
+        # yes, as currently written, this only supports one active event
         from events.models import Event, Participant
-        from django.core.mail import send_mass_mail
-        participants = Participant.objects.filter(event__is_active=True)
+        connection = mail.get_connection()
+        connection.open()
         for obj in queryset:
-            for participant in participants:
-                fr_email = 'Big Shot Gaming <bigshot@bigshotgaming.com>'
-                dt = (obj.title, obj.body, fr_email, [participant.user.email])
-                send_mass_mail((dt,))
+            email = mail.EmailMessage(
+                subject=obj.title,
+                body=obj.body,
+                to=[participant.user.email for participant in Participant.objects.filter(event__is_active=True)],
+                connection=connection,
+            )
+            email.preserve_recipients = False
+            email.send()
+        connection.close()
 
     email_post_participants.short_description = "Email all participants for the current event"
 
     def email_post_all(self, request, queryset):
-        from django.core.mail import send_mass_mail
-        users = User.objects.all()
+        connection = mail.get_connection()
+        connection.open()
         for obj in queryset:
-            for user in users:
-                fr_email = 'Big Shot Gaming <bigshot@bigshotgaming.com>'
-                dt = (obj.title, obj.body, fr_email, [user.email])
-                send_mass_mail((dt,))
+            email = mail.EmailMessage(
+                subject=obj.title,
+                body=obj.body,
+                to=[u.email for u in User.objects.filter(is_active=True)],
+                connection=connection
+            )
+            email.preserve_recipients = False
+            email.send()
+        connection.close()
 
-    email_post_all.short_description = "Email all users"
+    email_post_all.short_description = "Email all active users"
 
 admin.site.unregister(User)   
 admin.site.register(User, ExtendedUserAdmin)

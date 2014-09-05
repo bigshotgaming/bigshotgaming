@@ -212,6 +212,9 @@ CHALLONGE_API_KEY = 'aetvcd2xwyprukz8g6jyx38zc4425dxpzdf2dbxr'
 
 MANDRILL_API_KEY = 'HLxHRFlVtBi6Saq2INoWYQ'
 
+SERVER_EMAIL = 'Big Shot Gaming <bigshot@bigshotgaming.com>'
+DEFAULT_FROM_EMAIL = 'Big Shot Gaming <bigshot@bigshotgaming.com>'
+
 try:
     from local_settings import *
 except ImportError:
