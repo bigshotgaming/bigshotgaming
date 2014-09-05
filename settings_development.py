@@ -136,7 +136,10 @@ TEMPLATE_DIRS = (
 
 ACCOUNT_ACTIVATION_DAYS = 7
 
-AUTHENTICATION_BACKENDS = ('backends.CaseInsensitiveModelBackend',)
+AUTHENTICATION_BACKENDS = (
+    'backends.CaseInsensitiveModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -152,7 +155,10 @@ INSTALLED_APPS = (
     'paypal.standard.ipn',
     'djcelery',
     'djrill',
-    'registration',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    # 'allauth.socialaccount.providers.facebook',
     'events',
     'sponsorship',
     'seatmap',
@@ -180,6 +186,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
     'django.core.context_processors.static',
     'django.contrib.messages.context_processors.messages',
+    'allauth.account.context_processors.account',
+    'allauth.socialaccount.context_processors.socialaccount',
 )
 
 PASSWORD_HASHERS = (
@@ -196,7 +204,17 @@ PASSWORD_HASHERS = (
 # Account settings
 ACCOUNT_ACTIVATION_DAYS = 10
 LOGIN_REDIRECT_URL = '/'
+SOCIALACCOUNT_QUERY_EMAIL = True
+SOCIALACCOUNT_PROVIDERS = {
+    'facebook': {
+        'SCOPE': ['email', 'publish_stream'],
+        'METHOD': 'js_sdk'  # instead of 'oauth2'
+    }
+}
 LOGIN_URL = '/accounts/login/'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_AUTHENTICATION_METHOD = 'username'
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
 #Cache settings
 CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True

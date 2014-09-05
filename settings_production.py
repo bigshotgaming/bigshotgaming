@@ -139,7 +139,10 @@ TEMPLATE_DIRS = (
 
 ACCOUNT_ACTIVATION_DAYS = 7
 
-AUTHENTICATION_BACKENDS = ('backends.CaseInsensitiveModelBackend',)
+AUTHENTICATION_BACKENDS = (
+    'backends.CaseInsensitiveModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -156,7 +159,9 @@ INSTALLED_APPS = (
     'djcelery',
     'djrill',
     'gunicorn',
-    'registration',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
     'events',
     'sponsorship',
     'seatmap',
@@ -201,7 +206,17 @@ PASSWORD_HASHERS = (
 # Account settings
 ACCOUNT_ACTIVATION_DAYS = 10
 LOGIN_REDIRECT_URL = '/'
+SOCIALACCOUNT_QUERY_EMAIL = True
+SOCIALACCOUNT_PROVIDERS = {
+    'facebook': {
+        'SCOPE': ['email', 'publish_stream'],
+        'METHOD': 'js_sdk'  # instead of 'oauth2'
+    }
+}
 LOGIN_URL = '/accounts/login/'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_AUTHENTICATION_METHOD = 'username'
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
 #Cache settings
 CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True

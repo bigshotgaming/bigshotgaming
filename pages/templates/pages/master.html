@@ -13,25 +13,27 @@
 <body>
     <div id="header">
         <h1><a href="{% url 'pages_index' %}" title="Home">Big Shot Gaming</a></h1>
-        <div id="login">
-            {% if not user.is_authenticated %}
-            <form method="post" action="{% url 'auth_login' %}">{% csrf_token %}
+    <div id="login">
+        {% if request.user.is_authenticated %}
+            <h5>Signed in as {{ user.username }}<h5>
+            <li><a href="/accounts/password/change/">Change password</a></li>
+            <li><a href="/accounts/email/">Manage email addresses</a></li>
+            <li><a href="/accounts/logout/">Logout</a></li>
+        {% else %}
+            <form method="post" action="{% url 'account_login' %}">{% csrf_token %}
                 <ul>
                     <li>Username</li>
-                    <li><input id="username" type="text" name="username" /></li>
+                    <li><input id="login" type="text" name="login" /></li>
                     <li>Password</li>
                     <li><input type="password" id="password" name="password" /></li>
                     <li><input type="submit" value="Login" /></li>
-                    <li class="login_help"><a href="{% url 'auth_password_reset' %}" title="">Forgot your password?</a></li>
-                    <li class="login_help"><a href="{% url 'registration_register' %}" title="">Create an account</a></li>	
+                    <li class="login_help"><a href="{% url 'account_reset_password' %}" title="">Forgot your password?</a></li>
+                    <li class="login_help"><a href="{% url 'account_signup' %}" title="">Create an account</a></li> 
                 </ul>
             </form>
-            {% else %}
-            <h5>Signed in as {{ user.username }}<h5>
-            <a href="{% url 'auth_logout' %}?next={{ request.path }}">Sign Out</a>
-            {% endif %}
-            <!-- end login -->				
-        </div>
+        {% endif %}
+        <!-- end login -->  
+    </div>
         <!-- end header -->
     </div>
     <div id="wrapper">
@@ -53,6 +55,7 @@
 						<li><a href="/admin/" title="Administration Page Link">Administration</a></li>
 					{% endif %}
                 </ul>
+
             </div>
             <div id="content">
                 {% load lan_info %}

@@ -34,7 +34,7 @@ urlpatterns = patterns('',
     (r'^sitemap.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': sitemaps}),
     
     # Apps
-    (r'^accounts/', include('registration.backends.default.urls')),
+    (r'^accounts/', include('allauth.urls')),
     (r'^events/', include('events.urls')),
     (r'^seatmap/', include('seatmap.urls')),
     (r'^tournaments/', include('tournaments.urls')),
