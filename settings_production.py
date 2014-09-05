@@ -213,8 +213,8 @@ CHALLONGE_API_KEY = None
 
 MANDRILL_API_KEY = None
 
-SERVER_EMAIL = 'bigshot@bigshotgaming.com'
-DEFAULT_FROM_EMAIL = 'bigshot@bigshotgaming.com'
+SERVER_EMAIL = 'Big Shot Gaming <bigshot@bigshotgaming.com>'
+DEFAULT_FROM_EMAIL = 'Big Shot Gaming <bigshot@bigshotgaming.com>'
 
 try:
     from local_settings import *
