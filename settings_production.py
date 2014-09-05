@@ -64,15 +64,15 @@ USE_I18N = True
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = '/var/www/bigshotgaming/media/'
+MEDIA_ROOT = '/usr/share/nginx/www/media/'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = 'http://www.bigshotgaming.com/media/'
+MEDIA_URL = 'https://www.bigshotgaming.com/media/'
 
-STATIC_ROOT = '/var/www/bigshotgaming/static/'
-STATIC_URL = 'http://www.bigshotgaming.com/static/'
+STATIC_ROOT = '/usr/share/nginx/www/static/'
+STATIC_URL = 'https://www.bigshotgaming.com/static/'
 
 STATICFILES_DIRS = (
     os.path.join(PROJECT_ROOT, 'static/'),
