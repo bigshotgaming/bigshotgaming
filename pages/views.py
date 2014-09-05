@@ -104,11 +104,12 @@ def volunteer(request):
     if request.method == 'POST':
         form = VolunteerForm(request.POST)
         if form.is_valid():
-            subj = "[VOLUNTEER - %s] - %s" % (form.cleaned_data['desired_position'], request.user.username)
+            # Please don't hate me. I hate myself enough already for this.
+            subj = "[VOLUNTEER - %s] - %s" % ([choice[1] for choice in form.VOLUNTEER_CHOICES if (form.cleaned_data['desired_position']==choice[0])].pop(), request.user.username)
             t = loader.get_template('pages/volunteer_email.txt')
             c = Context({
                 'real_name': form.cleaned_data['your_name'],
-                'city': form.cleaned_data['city'],
+                'location': form.cleaned_data['location'],
                 'cmu_student': form.cleaned_data['cmu_student'],
                 'comments': form.cleaned_data['comments_and_experience'],
             })

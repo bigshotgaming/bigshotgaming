@@ -32,7 +32,7 @@ class VolunteerForm(forms.Form):
     )
     
     your_name = forms.CharField(max_length=50)
-    city = forms.CharField(max_length=30)
+    location = forms.CharField(max_length=30)
     comments_and_experience = forms.CharField(widget=forms.widgets.Textarea)
     cmu_student = forms.BooleanField(required=False, label='CMU Student')
     desired_position = forms.ChoiceField(choices=VOLUNTEER_CHOICES)
