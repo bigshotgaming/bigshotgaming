@@ -4,7 +4,7 @@
     {% if event.registration_enabled %}
 		{% if not participant.coupon %}
 			<h1>Event Registration</h1>
-			<p>We no longer allow payment-at-the-door. You can pay via PayPal without having an account - just click "Buy Now" and choose the "Don't have a PayPal account?" option.</p>
+			<p>We no longer allow payment-at-the-door.</p>
 			{% if event.waiver %}
                <p><a href={{ event.waiver.url }} target="_blank">Event Waiver</a></p>
             {% endif %}
