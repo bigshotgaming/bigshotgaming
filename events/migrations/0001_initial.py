@@ -1,121 +1,112 @@
-# encoding: utf-8
-import datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 
-class Migration(SchemaMigration):
-
-    def forwards(self, orm):
-        
-        # Adding model 'Event'
-        db.create_table('events_event', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('description', self.gf('django.db.models.fields.TextField')()),
-            ('start_date', self.gf('django.db.models.fields.DateTimeField')()),
-            ('end_date', self.gf('django.db.models.fields.DateTimeField')()),
-            ('venue', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['events.Venue'])),
-            ('participant_limit', self.gf('django.db.models.fields.IntegerField')()),
-            ('contact_email', self.gf('django.db.models.fields.EmailField')(max_length=75)),
-            ('other_details', self.gf('django.db.models.fields.TextField')()),
-        ))
-        db.send_create_signal('events', ['Event'])
-
-        # Adding model 'Venue'
-        db.create_table('events_venue', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('address', self.gf('django.db.models.fields.CharField')(max_length=150)),
-            ('city', self.gf('django.db.models.fields.CharField')(max_length=30)),
-            ('state', self.gf('django.contrib.localflavor.us.models.USStateField')(max_length=2)),
-            ('zipcode', self.gf('django.db.models.fields.CharField')(max_length=10)),
-        ))
-        db.send_create_signal('events', ['Venue'])
-
-        # Adding model 'Participant'
-        db.create_table('events_participant', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('user', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['auth.User'], unique=True)),
-        ))
-        db.send_create_signal('events', ['Participant'])
+from django.db import models, migrations
+import localflavor.us.models
+from django.conf import settings
+import events.models
 
 
-    def backwards(self, orm):
-        
-        # Deleting model 'Event'
-        db.delete_table('events_event')
+class Migration(migrations.Migration):
 
-        # Deleting model 'Venue'
-        db.delete_table('events_venue')
+    dependencies = [
+        ('ipn', '__first__'),
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+    ]
 
-        # Deleting model 'Participant'
-        db.delete_table('events_participant')
-
-
-    models = {
-        'auth.group': {
-            'Meta': {'object_name': 'Group'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '80'}),
-            'permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'})
-        },
-        'auth.permission': {
-            'Meta': {'ordering': "('content_type__app_label', 'content_type__model', 'codename')", 'unique_together': "(('content_type', 'codename'),)", 'object_name': 'Permission'},
-            'codename': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['contenttypes.ContentType']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
-        },
-        'auth.user': {
-            'Meta': {'object_name': 'User'},
-            'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
-            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'groups': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Group']", 'symmetrical': 'False', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
-            'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'}),
-            'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
-        },
-        'contenttypes.contenttype': {
-            'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
-            'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        'events.event': {
-            'Meta': {'object_name': 'Event'},
-            'contact_email': ('django.db.models.fields.EmailField', [], {'max_length': '75'}),
-            'description': ('django.db.models.fields.TextField', [], {}),
-            'end_date': ('django.db.models.fields.DateTimeField', [], {}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'other_details': ('django.db.models.fields.TextField', [], {}),
-            'participant_limit': ('django.db.models.fields.IntegerField', [], {}),
-            'start_date': ('django.db.models.fields.DateTimeField', [], {}),
-            'venue': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['events.Venue']"})
-        },
-        'events.participant': {
-            'Meta': {'object_name': 'Participant'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'user': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['auth.User']", 'unique': 'True'})
-        },
-        'events.venue': {
-            'Meta': {'object_name': 'Venue'},
-            'address': ('django.db.models.fields.CharField', [], {'max_length': '150'}),
-            'city': ('django.db.models.fields.CharField', [], {'max_length': '30'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'state': ('django.contrib.localflavor.us.models.USStateField', [], {'max_length': '2'}),
-            'zipcode': ('django.db.models.fields.CharField', [], {'max_length': '10'})
-        }
-    }
-
-    complete_apps = ['events']
+    operations = [
+        migrations.CreateModel(
+            name='Coupon',
+            fields=[
+                ('uuid', models.CharField(default=events.models.make_uuid, max_length=36, serialize=False, editable=False, primary_key=True)),
+                ('activated', models.BooleanField()),
+                ('created_time', models.DateTimeField(auto_now_add=True)),
+                ('activated_time', models.DateTimeField(null=True, blank=True)),
+                ('notes', models.TextField(blank=True)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Event',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=100, verbose_name=b'Event Name')),
+                ('start_date', models.DateTimeField()),
+                ('end_date', models.DateTimeField()),
+                ('participant_limit', models.IntegerField()),
+                ('description', models.CharField(max_length=100)),
+                ('is_active', models.BooleanField()),
+                ('registration_enabled', models.BooleanField()),
+                ('prepay_price', models.DecimalField(max_digits=4, decimal_places=2)),
+                ('atd_price', models.DecimalField(verbose_name=b'At-the-Door price', max_digits=4, decimal_places=2)),
+                ('waiver', models.FileField(upload_to=b'events/waivers/', blank=True)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Participant',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('signup_time', models.DateTimeField(auto_now_add=True)),
+                ('checked_in', models.BooleanField(default=False)),
+                ('checkin_time', models.DateTimeField(null=True, blank=True)),
+                ('coupon', models.OneToOneField(null=True, blank=True, to='events.Coupon')),
+                ('event', models.ForeignKey(to='events.Event')),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Venue',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=100)),
+                ('address', models.CharField(max_length=150)),
+                ('city', models.CharField(max_length=30)),
+                ('state', localflavor.us.models.USStateField(max_length=2, choices=[(b'AL', b'Alabama'), (b'AK', b'Alaska'), (b'AS', b'American Samoa'), (b'AZ', b'Arizona'), (b'AR', b'Arkansas'), (b'AA', b'Armed Forces Americas'), (b'AE', b'Armed Forces Europe'), (b'AP', b'Armed Forces Pacific'), (b'CA', b'California'), (b'CO', b'Colorado'), (b'CT', b'Connecticut'), (b'DE', b'Delaware'), (b'DC', b'District of Columbia'), (b'FL', b'Florida'), (b'GA', b'Georgia'), (b'GU', b'Guam'), (b'HI', b'Hawaii'), (b'ID', b'Idaho'), (b'IL', b'Illinois'), (b'IN', b'Indiana'), (b'IA', b'Iowa'), (b'KS', b'Kansas'), (b'KY', b'Kentucky'), (b'LA', b'Louisiana'), (b'ME', b'Maine'), (b'MD', b'Maryland'), (b'MA', b'Massachusetts'), (b'MI', b'Michigan'), (b'MN', b'Minnesota'), (b'MS', b'Mississippi'), (b'MO', b'Missouri'), (b'MT', b'Montana'), (b'NE', b'Nebraska'), (b'NV', b'Nevada'), (b'NH', b'New Hampshire'), (b'NJ', b'New Jersey'), (b'NM', b'New Mexico'), (b'NY', b'New York'), (b'NC', b'North Carolina'), (b'ND', b'North Dakota'), (b'MP', b'Northern Mariana Islands'), (b'OH', b'Ohio'), (b'OK', b'Oklahoma'), (b'OR', b'Oregon'), (b'PA', b'Pennsylvania'), (b'PR', b'Puerto Rico'), (b'RI', b'Rhode Island'), (b'SC', b'South Carolina'), (b'SD', b'South Dakota'), (b'TN', b'Tennessee'), (b'TX', b'Texas'), (b'UT', b'Utah'), (b'VT', b'Vermont'), (b'VI', b'Virgin Islands'), (b'VA', b'Virginia'), (b'WA', b'Washington'), (b'WV', b'West Virginia'), (b'WI', b'Wisconsin'), (b'WY', b'Wyoming')])),
+                ('zipcode', models.CharField(max_length=10)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Waiver',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=255)),
+                ('pname', models.CharField(max_length=255, null=True, blank=True)),
+                ('minor', models.BooleanField()),
+                ('minor_age', models.IntegerField(max_length=2, null=True, blank=True)),
+                ('signed_on', models.DateTimeField(auto_now_add=True)),
+                ('part', models.ForeignKey(to='events.Participant')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.AddField(
+            model_name='event',
+            name='venue',
+            field=models.ForeignKey(to='events.Venue'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='coupon',
+            name='event',
+            field=models.ForeignKey(to='events.Event'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='coupon',
+            name='transaction',
+            field=models.ForeignKey(blank=True, editable=False, to='ipn.PayPalIPN', null=True),
+            preserve_default=True,
+        ),
+    ]
