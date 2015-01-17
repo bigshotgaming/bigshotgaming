@@ -1,7 +1,7 @@
-Django==1.5.2
+Django==1.7.3
 Pillow==2.1.0
 Pillow-PIL==0.1dev
-South < 2.0
+South==1.0.2
 amqp==1.0.13
 anyjson==0.3.3
 argparse==1.2.1
@@ -12,7 +12,7 @@ django-allauth==0.18.0
 django-celery==3.0.21
 django-celery-email==1.0.3
 django-celery-with-redis==3.0
--e git://github.com/dcramer/django-paypal.git@11835ce17e855200fc4b523c659f34f1d472b5d6#egg=django_paypal-dev
+django-paypal==0.2
 django-registration==1.0
 djrill==1.1.1
 gunicorn==18.0
@@ -26,3 +26,21 @@ reportlab==2.7
 setproctitle==1.1.7
 wsgiref==0.1.2
 django-nvd3==0.1.12
+## The following requirements were added by pip --freeze:
+Markdown==2.0
+PIL==1.1.7
+amqplib==1.0.2
+certifi==14.05.14
+-e hg+http://bitbucket.org/benoitc/django-authopenid@864b14361387788c89b45bc7a97c6ba0f5c7e169#egg=django_authopenid-trunk
+django-localflavor==1.1
+-e git://github.com/jtauber/django-mailer.git@af91e3b3556ea1a0ae9cb2c5b6520bacdab6a9fa#egg=django_mailer-dev
+httplib2==0.7.5
+oauth2==1.5.211
+oauthlib==0.6.3
+psycopg2==2.4.6
+python-nvd3==0.8.0
+python-openid==2.2.5
+requests==2.4.0
+requests-oauthlib==0.4.1
+six==1.9.0
+stripe==1.20.1

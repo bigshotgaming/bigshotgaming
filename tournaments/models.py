@@ -61,8 +61,8 @@ class Tournament(models.Model):
     style = models.CharField(max_length=1, choices=STYLE_CHOICES)
     slugified_name = models.SlugField(max_length=80, editable=False)
     is_active = models.BooleanField(default=True)
-    has_started = models.BooleanField()
-    automated = models.BooleanField(help_text="Will periodically check to see if the tournament has been updated to send participants emails.")
+    has_started = models.BooleanField(default=False)
+    automated = models.BooleanField(default=False, help_text="Will periodically check to see if the tournament has been updated to send participants emails.")
     automated_data = models.TextField(blank=True, null=True)
 
 class Team(models.Model):

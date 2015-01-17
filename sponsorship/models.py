@@ -1,6 +1,6 @@
 from datetime import datetime
 from django.db import models
-from django.contrib.localflavor.us.models import PhoneNumberField
+from localflavor.us.models import PhoneNumberField
 from django.contrib.auth.models import User
 
 # class SponsorManager(models.Manager):
@@ -22,7 +22,7 @@ class Sponsor(models.Model):
     contact_form_url = models.URLField(blank=True, verbose_name='Contact Form URL')
     banner_url = models.URLField(blank=True, verbose_name='Banner URL')
     banner = models.ImageField(blank=True, upload_to='sponsor/banners/')
-    featured_sponsor = models.BooleanField()
+    featured_sponsor = models.BooleanField(default=False)
     featured_banner = models.ImageField(blank=True, upload_to='sponsor/featured/')
     # objects = SponsorManager()
     
@@ -71,7 +71,7 @@ class Prize(models.Model):
     eventsponsor = models.ForeignKey(EventSponsor, limit_choices_to={'status':'c', 'event__start_date__gte':datetime.now}, verbose_name="Sponsor/Event")
     name = models.CharField(max_length=100, verbose_name="Prize Name")
     description = models.TextField(blank=True)
-    raffle_prize = models.BooleanField(verbose_name="Raffle Prize?")
+    raffle_prize = models.BooleanField(default=False, verbose_name="Raffle Prize?")
     
 
 

@@ -15,7 +15,20 @@
 			</form>
 		{% else %}
 			<h1>Participant paid</h1>
-			<p>You've already paid for this event.</p>
+			<p>Thanks for registering!</p>
+			{% if coupons %}
+            <h2>Coupons Redeemed/Unredeemed</h2>
+            <p>Send the unredeemed coupon links to your friends to get them registered!</p>
+            <ul>
+            {% for coupon in coupons %}
+            {% if coupon.participant %}
+                <li>{{coupon.participant.user}} - REDEEMED </li>
+            {% else %}
+                <li><a href='http://www.bigshotgaming.com{% url 'events_activate' event.id coupon.uuid %}'>{{coupon.uuid}} - UNREDEEMED</a></li>
+            {% endif %}
+            {% endfor %}
+            </ul>
+            {% endif %}
 		{% endif %}
 	{% else %}
 		<h1>Event registration closed</h1>

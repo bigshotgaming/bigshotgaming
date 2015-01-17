@@ -18,5 +18,17 @@ fb_param.value = '0.00';
 <h1>Payment</h1>
 <p>You will be sent a confirmation email once your payment has been processed.</p>
 <p>If you have purchased multiple tickets, links to activate those tickets will be included in the email.</p>
-{{ form.render }}
+<form action="{% url 'events_payment' %}" method="POST">
+  {% csrf_token %}
+  <script
+    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+    data-key={{ data_key }}
+    data-image="/square-image.png"
+    data-allow-remember-me="false"
+    data-email="{{user.email}}"
+    data-name="Big Shot Gaming"
+    data-description="{{quantity}} LAN ticket(s) (${{price}} ea.)"
+    data-amount="{{total_amount}}">
+  </script>
+</form>
 {% endblock %}

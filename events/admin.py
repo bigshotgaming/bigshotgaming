@@ -39,10 +39,10 @@ class EventAdmin(admin.ModelAdmin):
     search_fields= ('name',)
 
 class CouponAdmin(admin.ModelAdmin):
-    readonly_fields = ('uuid', 'transaction', 'created_time')
-    list_display = ('uuid', 'transaction', 'activated', 'created_time', 'activated_time', 'notes')
+    readonly_fields = ('uuid', 'paypal_transaction', 'stripe_transaction', 'created_time')
+    list_display = ('uuid', 'paypal_transaction', 'activated', 'created_time', 'activated_time', 'notes')
     list_filter = ('event', 'activated')
-    search_fields = ['uuid', 'transaction__txn_id']
+    search_fields = ['uuid']
     
 class WaiverAdmin(admin.ModelAdmin):
     list_display = ('part', 'name', 'signed_on')

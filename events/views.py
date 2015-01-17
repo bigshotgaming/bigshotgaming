@@ -2,10 +2,10 @@ from django.shortcuts import render
 from django.db import IntegrityError
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseServerError
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-from events.models import Event, Participant, Coupon, Waiver, activate_coupon
+from events.models import Event, Participant, Coupon, Waiver, activate_coupon, email_confirmation
 from events.name_badge_pdf import NameBadgePDF
 from events.forms import RegisterForm, WaiverForm
 from paypal.standard.forms import PayPalPaymentsForm
@@ -13,8 +13,11 @@ from paypal.standard.forms import PayPalPaymentsForm
 import datetime
 import uuid
 import collections
+import stripe
 
-# TODO: Throw all this terrible code in a fire where it will burn for all eternity.
+stripe.api_key = settings.STRIPE_SECRET_KEY
+
+# TODO: Throw all this terrible code in a fucking fire where it will burn for all eternity.
 
 def index(request):
     try:
@@ -59,6 +62,7 @@ def register(request, eventid):
             else:
                 # we create a participant regardless of what people want to do
                 # participant = Participant.objects.get_or_create(user=request.user, event_id=eventid)[0]
+                # this shit is fucking broken, that's what, what was I thinking
                 if form.cleaned_data['payment_type'] == 'pp':
                     request.session['qty'] = form.cleaned_data['ticket_quantity']
                     return HttpResponseRedirect(reverse('events_payment'))   
@@ -66,6 +70,7 @@ def register(request, eventid):
                 #     return HttpResponseRedirect('/events/thanks')
 
     else:
+        # okay it turns out that NONE of this shit works if pay ATD is enabled, lol
         form = RegisterForm(initial={'payment_type':'pp'})
         # we do this here because we need a participant for the context
         # need to be able to check if they're paid or not
@@ -75,9 +80,16 @@ def register(request, eventid):
         except ObjectDoesNotExist:
             participant = None
 
+        # hee haw, this is a way we can detect if someone bought multiple coupons
+        if participant and participant.coupon:
+            coupons = Coupon.objects.filter(stripe_transaction=participant.coupon.stripe_transaction).exclude(uuid=participant.coupon)
+        else:
+            coupons = None
+
         return render(request, 'events/register.html', {
             'event': Event.objects.get(id=eventid),
             'participant': participant,
+            'coupons': coupons,
             'form': form,
             })
     return render(request, 'events/register.html', {
@@ -87,23 +99,42 @@ def register(request, eventid):
 
 @login_required
 def payment(request):
-    # hm, not sure if this was the best idea
-    # could do it the opposite way since it's easy to get the participant object
     event = Event.objects.get(is_active=True)
-    paypal_dict = {
-        "business": settings.PAYPAL_RECEIVER_EMAIL,
-        "amount": event.prepay_price,
-        "item_name": '%s ticket' % event.name,
-        "invoice": uuid.uuid4(),
-        "quantity": request.session['qty'],
-        "custom": request.user.username,
-        "notify_url": "http://www.bigshotgaming.com/events/ppnotification",
-        "return_url": "http://www.bigshotgaming.com/events/thanks",
-        "cancel_return": "http://www.bigshotgaming.com",
-    }
-    form = PayPalPaymentsForm(initial=paypal_dict)
+    user = request.user
+    quantity = request.session['qty']
+    total_amount = quantity * event.prepay_price * 100
+    if request.method == 'POST':
+        token = request.POST['stripeToken']
+        try:
+            charge = stripe.Charge.create(
+              amount=total_amount,
+              currency="usd",
+              card=token, # obtained with Stripe.js
+              metadata={'user_email': user.email}
+            )
+        except stripe.CardError, e:
+            return HttpResponseServerError('card failure detected')
+        del request.session['qty']
+        # we do this so that the Coupon objects actually have their correct types
+        coupons = [Coupon(stripe_transaction=charge.id, event=event) for i in xrange(quantity)]
+        for coupon in coupons:
+            coupon.save()
+        # I cannot see a better way to do this at the moment, so here we are
+        # We pop the last coupon off the list to activate the ticket for the original payer
+        participant = Participant.objects.get_or_create(user=user, event=event)[0]
+        coupon = coupons.pop()
+        activate_coupon(participant, coupon)
+        # We need to dispatch off an email...
+        email_confirmation(participant=participant, coupons=coupons)
+        return HttpResponseRedirect(reverse('events_register', args=(event.id,))) 
+
     return render(request, "events/payment.html", {
-        "form": form,
+        'data_key': settings.STRIPE_PUBLISHABLE_KEY,
+        'user': user,
+        'quantity': quantity,
+        'price': event.prepay_price,
+        'total_amount': total_amount,
+        
     })
 
 @login_required    

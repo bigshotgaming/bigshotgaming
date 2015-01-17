@@ -120,7 +120,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.locale.LocaleMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
-    'django.middleware.transaction.TransactionMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
 )
@@ -169,13 +168,6 @@ INSTALLED_APPS = (
 
 EMAIL_BACKEND = 'djrill.mail.backends.djrill.DjrillBackend'
 
-try:
-    import south
-    INSTALLED_APPS += ('south',)
-    SOUTH_TESTS_MIGRATE = False
-except ImportError:
-    pass
-
 FORCE_SCRIPT_NAME = ''
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -200,6 +192,8 @@ PASSWORD_HASHERS = (
     'django.contrib.auth.hashers.CryptPasswordHasher',
     'joomla_password_hasher.JoomlaPasswordHasher' 
 )
+
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 # Account settings
 ACCOUNT_ACTIVATION_DAYS = 10
@@ -230,8 +224,13 @@ CHALLONGE_API_KEY = 'aetvcd2xwyprukz8g6jyx38zc4425dxpzdf2dbxr'
 
 MANDRILL_API_KEY = 'HLxHRFlVtBi6Saq2INoWYQ'
 
+STRIPE_SECRET_KEY = 'sk_test_ViTBDqReF6Y3dDmKgVFzomvH' 
+STRIPE_PUBLISHABLE_KEY = 'pk_test_oj0oFdaaIkroXMhwqXeJA55C'
+
 SERVER_EMAIL = 'Big Shot Gaming <bigshot@bigshotgaming.com>'
 DEFAULT_FROM_EMAIL = 'Big Shot Gaming <bigshot@bigshotgaming.com>'
+
+
 
 try:
     from local_settings import *

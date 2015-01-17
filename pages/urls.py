@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, url, include
 
 urlpatterns = patterns('pages.views',
     (r'^reviews', 'reviews', {}, 'pages_reviews'),

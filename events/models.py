@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.mail import send_mail
-from django.contrib.localflavor.us.models import USStateField
+from localflavor.us.models import USStateField
 from django.contrib.auth.models import User
 from django.forms import ModelForm
 from django.db.models.signals import post_save
@@ -10,6 +10,9 @@ from paypal.standard.ipn.signals import payment_was_successful, payment_was_flag
 from paypal.standard.ipn.models import PayPalIPN
 import uuid
 import datetime
+
+def make_uuid():
+        return unicode(uuid.uuid4())
 
 class Event(models.Model):
 
@@ -31,8 +34,8 @@ class Event(models.Model):
     venue = models.ForeignKey('Venue')
     participant_limit = models.IntegerField()
     description = models.CharField(max_length=100)
-    is_active = models.BooleanField()
-    registration_enabled = models.BooleanField()
+    is_active = models.BooleanField(default=False)
+    registration_enabled = models.BooleanField(default=False)
     prepay_price = models.DecimalField(max_digits=4, decimal_places=2)
     atd_price = models.DecimalField(max_digits=4, decimal_places=2, verbose_name='At-the-Door price')
     waiver = models.FileField(upload_to='events/waivers/', blank=True)
@@ -71,9 +74,6 @@ class Coupon(models.Model):
     
     def __unicode__(self):
         return self.uuid
-           
-    def make_uuid():
-        return unicode(uuid.uuid4())
     
     def activate(self):
         self.activated = True
@@ -82,8 +82,9 @@ class Coupon(models.Model):
         
     uuid = models.CharField(max_length=36, primary_key=True, default=make_uuid, editable=False)
     event = models.ForeignKey(Event)
-    transaction = models.ForeignKey(PayPalIPN, blank=True, null=True, editable=False)
-    activated = models.BooleanField()
+    paypal_transaction = models.ForeignKey(PayPalIPN, blank=True, null=True, editable=False)
+    stripe_transaction = models.CharField(max_length=128, blank=True, null=True, editable=False)
+    activated = models.BooleanField(default=False)
     created_time = models.DateTimeField(auto_now_add=True)
     activated_time = models.DateTimeField(null=True, blank=True)
     notes = models.TextField(blank=True)
@@ -95,7 +96,7 @@ class Waiver(models.Model):
     part = models.ForeignKey(Participant)
     name = models.CharField(max_length=255)
     pname = models.CharField(max_length=255, blank=True, null=True)
-    minor = models.BooleanField()
+    minor = models.BooleanField(default=False)
     minor_age = models.IntegerField(max_length=2, blank=True, null=True)
     signed_on = models.DateTimeField(auto_now_add=True)
 
