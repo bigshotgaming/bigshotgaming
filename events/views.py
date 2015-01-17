@@ -102,7 +102,7 @@ def payment(request):
     event = Event.objects.get(is_active=True)
     user = request.user
     quantity = request.session['qty']
-    total_amount = quantity * event.prepay_price * 100
+    total_amount = int(quantity * event.prepay_price * 100) # this is how we deal with sqlite's bullshit
     if request.method == 'POST':
         token = request.POST['stripeToken']
         try:
