@@ -1,13 +1,13 @@
 Django==1.7.3
 Pillow==2.1.0
-Pillow-PIL==0.1dev
+Pillow-PIL==0.1.dev0
 South==1.0.2
 amqp==1.0.13
 anyjson==0.3.3
 argparse==1.2.1
 billiard==2.7.3.32
 celery==3.0.22
-distribute==0.6.14
+distribute==0.7.3
 django-allauth==0.18.0
 django-celery==3.0.21
 django-celery-email==1.0.3
@@ -19,27 +19,32 @@ gunicorn==18.0
 kombu==2.5.13
 -e git+http://github.com/bigshotgaming/pychallonge@d95cfdb57eaa5875dd32d69231bf99e21459659e#egg=pychallonge-dev
 python-dateutil==1.5
-pytz==2013b
+pytz==2013b0
 raven==3.4.1
 redis==2.7.6
 reportlab==2.7
 setproctitle==1.1.7
 wsgiref==0.1.2
-django-nvd3==0.1.12
+django-nvd3==0.7.7
 ## The following requirements were added by pip --freeze:
 Markdown==2.0
 PIL==1.1.7
 amqplib==1.0.2
-certifi==14.05.14
+certifi==14.5.14
 django-localflavor==1.1
 -e git://github.com/jtauber/django-mailer.git@af91e3b3556ea1a0ae9cb2c5b6520bacdab6a9fa#egg=django_mailer-dev
 httplib2==0.7.5
 oauth2==1.5.211
 oauthlib==0.6.3
 psycopg2==2.4.6
-python-nvd3==0.8.0
+python-nvd3==0.13.5
 python-openid==2.2.5
 requests==2.4.0
 requests-oauthlib==0.4.1
 six==1.9.0
 stripe==1.20.1
+## The following requirements were added by pip --freeze:
+Jinja2==2.7.3
+MarkupSafe==0.23
+Unidecode==0.4.17
+python-slugify==0.0.9
