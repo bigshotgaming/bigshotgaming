@@ -282,10 +282,14 @@ def registration_history(request, event_id):
                 }
 
     charttype = "lineChart"
+    print chartdata
     data = {
         'charttype': charttype,
         'chartdata': chartdata,
-        'date_tag' : True,
+        'date_tag': True,
+        'extra': {
+            'x_is_date': True,
+        }
     }
     return render(request, 'events/linechart.html', data)
     #return render_to_response('linechart.html', data)

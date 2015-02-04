@@ -31,7 +31,6 @@ Markdown==2.0
 PIL==1.1.7
 amqplib==1.0.2
 certifi==14.05.14
--e hg+http://bitbucket.org/benoitc/django-authopenid@864b14361387788c89b45bc7a97c6ba0f5c7e169#egg=django_authopenid-trunk
 django-localflavor==1.1
 -e git://github.com/jtauber/django-mailer.git@af91e3b3556ea1a0ae9cb2c5b6520bacdab6a9fa#egg=django_mailer-dev
 httplib2==0.7.5
