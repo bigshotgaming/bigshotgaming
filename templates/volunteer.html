@@ -1,0 +1,29 @@
+{% extends "master.html" %}
+{% block title %} - Volunteer{% endblock title %}
+{% block content %}
+<h1>Volunteer with BSG</h1>
+{% if success %}
+<p><strong>Thank you for your interest! We will be in touch.</strong></p>
+{% endif %}
+<form action="/volunteer" method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+    {% for error in errors %}<p class="error">{{ error }}</p>{% endfor %}
+    <table>
+        <tr><td><label>Name</label></td><td><input type="text" name="name" size="40" /></td></tr>
+        <tr><td><label>Location</label></td><td><input type="text" name="location" size="40" /></td></tr>
+        <tr><td><label>CMU Student?</label></td><td><input type="checkbox" name="cmu_student" value="yes" /></td></tr>
+        <tr><td><label>Desired Position</label></td>
+            <td>
+                <select name="desired_position">
+                    <option value="IT">IT</option>
+                    <option value="Tournament Admin">Tournament Admin</option>
+                    <option value="General Help">General Help</option>
+                    <option value="Marketing">Marketing</option>
+                </select>
+            </td>
+        </tr>
+        <tr><td><label>Comments</label></td><td><textarea name="comments" rows="5" cols="40"></textarea></td></tr>
+        <tr><td><input type="submit" value="Submit" /></td></tr>
+    </table>
+</form>
+{% endblock content %}

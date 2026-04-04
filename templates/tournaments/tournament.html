@@ -1,0 +1,46 @@
+{% extends "master.html" %}
+{% block content %}
+{% if event %}
+<h1>{{ event.name }}</h1>
+<h2>{{ tournament.name }} &ndash; {{ style_display }}</h2>
+<h3>Rules</h3>
+<p>
+{% if tournament.html_rules %}
+    {{ tournament.html_rules | safe }}
+{% elif tournament.rules %}
+    {{ tournament.rules | replace(from="\n", to="<br>") }}
+{% else %}
+    No rules posted yet.
+{% endif %}
+</p>
+<h3>Teams ({{ team_count }}/{{ tournament.max_teams }})</h3>
+<ul>
+{% for t in teams %}
+    <li>
+        <a href="/tournaments/team/{{ t.id }}">{{ t.name }}</a>
+        &ndash; {{ t.member_count }} member(s), captain: {{ t.owner_username }}
+    </li>
+{% else %}
+    <li>No teams yet.</li>
+{% endfor %}
+</ul>
+
+{% if has_coupon %}
+<h3>Create a Team</h3>
+{% for error in errors %}<p class="error">{{ error }}</p>{% endfor %}
+<form action="/tournaments/tournament/{{ tournament.id }}" method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+    <p><label>Team Name: <input type="text" name="name" required /></label></p>
+    <p><label>Password (share with teammates): <input type="text" name="password" maxlength="10" required /></label></p>
+    <input type="submit" value="Create Team" />
+</form>
+{% endif %}
+
+{% if tournament.has_started %}
+<p><a href="http://www.challonge.com/{{ tournament.slugified_name }}">View bracket on Challonge</a></p>
+{% endif %}
+<p><a href="/tournaments">Back to all tournaments</a></p>
+{% else %}
+<h2>No events are active at this time.</h2>
+{% endif %}
+{% endblock content %}

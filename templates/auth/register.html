@@ -1,0 +1,29 @@
+{% extends "master.html" %}
+{% block title %} - Register{% endblock title %}
+{% block content %}
+<h1>Create an account</h1>
+{% for error in errors %}<p class="error">{{ error }}</p>{% endfor %}
+<form method="post" action="/accounts/register">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+    <table>
+        <tr>
+            <td><label for="username">Username</label></td>
+            <td><input type="text" name="username" id="username" value="{{ form_username | default(value='') }}" /></td>
+        </tr>
+        <tr>
+            <td><label for="email">Email</label></td>
+            <td><input type="email" name="email" id="email" value="{{ form_email | default(value='') }}" /></td>
+        </tr>
+        <tr>
+            <td><label for="password1">Password</label></td>
+            <td><input type="password" name="password1" id="password1" /></td>
+        </tr>
+        <tr>
+            <td><label for="password2">Confirm password</label></td>
+            <td><input type="password" name="password2" id="password2" /></td>
+        </tr>
+    </table>
+    <p>Passwords are case sensitive and must be at least 8 characters.</p>
+    <input type="submit" value="Register" />
+</form>
+{% endblock content %}

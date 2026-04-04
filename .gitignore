@@ -1,8 +1,19 @@
+# Python
 *.pyc
 .DS_Store
 ._*
-*.db
 djangobb_index
 db.json
 settings.py
 secret.txt
+
+# Rust / Cargo
+/target/
+Cargo.lock
+
+# Database
+*.db
+
+# Environment
+.env
+

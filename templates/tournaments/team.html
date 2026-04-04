@@ -1,0 +1,45 @@
+{% extends "master.html" %}
+{% block content %}
+{% if event %}
+<h1>{{ event.name }}</h1>
+<h2>{{ tournament.name }}</h2>
+<h3>{{ team.name }} &ndash; Captain: {{ owner_username }}</h3>
+<p>Members:</p>
+<ul>
+{% for m in members %}
+    <li>{{ m.username }}</li>
+{% endfor %}
+</ul>
+
+{% for error in errors %}<p class="error">{{ error }}</p>{% endfor %}
+
+{% if participant %}
+    {% if on_team %}
+        <form action="/tournaments/team/{{ team.id }}" method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+            <input type="hidden" name="action" value="leave" />
+            <input type="submit" value="Leave Team" />
+        </form>
+        {% if participant.id == team.owner_id %}
+        <form action="/tournaments/team/{{ team.id }}" method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+            <input type="hidden" name="action" value="delete" />
+            <input type="submit" value="Delete Team" />
+        </form>
+        {% endif %}
+    {% elif not team_full %}
+        <form action="/tournaments/team/{{ team.id }}" method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+            <input type="hidden" name="action" value="join" />
+            <p><label>Team Password: <input type="text" name="password" maxlength="10" /></label></p>
+            <input type="submit" value="Join Team" />
+        </form>
+    {% else %}
+        <p>This team is full.</p>
+    {% endif %}
+{% endif %}
+<p><a href="/tournaments/tournament/{{ tournament.id }}">Back to tournament</a></p>
+{% else %}
+<h2>No events are active at this time.</h2>
+{% endif %}
+{% endblock content %}

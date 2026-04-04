@@ -1,0 +1,17 @@
+{% extends "master.html" %}
+{% block title %} - Contact{% endblock title %}
+{% block content %}
+<h1>Contact us</h1>
+{% if success %}
+<p><strong>Thank you! Your message has been sent.</strong></p>
+{% endif %}
+<form action="/contact" method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+    {% for error in errors %}<p class="error">{{ error }}</p>{% endfor %}
+    <table>
+        <tr><td><label for="subject">Subject</label></td><td><input type="text" name="subject" id="subject" size="40" /></td></tr>
+        <tr><td><label for="message">Message</label></td><td><textarea name="message" id="message" rows="8" cols="40"></textarea></td></tr>
+        <tr><td><input type="submit" value="Submit" /></td></tr>
+    </table>
+</form>
+{% endblock content %}

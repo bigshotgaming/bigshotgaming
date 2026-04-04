@@ -1,0 +1,21 @@
+{% extends "master.html" %}
+{% block content %}
+<h2>Coupon Activation</h2>
+<h3>Complete this to finish your registration for {{ event.name }}.</h3>
+{% if event.waiver_url %}
+    <p><a href="{{ event.waiver_url }}" target="_blank">Read the Event Waiver</a></p>
+{% endif %}
+{% for error in errors %}<p class="error">{{ error }}</p>{% endfor %}
+<form action="/events/activate/{{ event.id }}/{{ coupon.uuid }}" method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+    <p>
+        <label for="waiver_name">Full name (for waiver):</label>
+        <input type="text" name="waiver_name" id="waiver_name" required />
+    </p>
+    <p>
+        <input type="checkbox" name="waiver_accepted" id="waiver_accepted" value="yes" required />
+        <label for="waiver_accepted">I accept the event waiver and release of liability.</label>
+    </p>
+    <input type="submit" value="Activate Ticket" />
+</form>
+{% endblock content %}

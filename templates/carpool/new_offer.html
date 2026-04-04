@@ -1,0 +1,54 @@
+{% extends "master.html" %}
+{% block title %} - Offer a Ride{% endblock title %}
+{% block content %}
+<h1>Offer a Carpool Ride</h1>
+<p>Let other registered participants know you have seats available from your area.</p>
+{% for error in errors %}<p class="error">{{ error }}</p>{% endfor %}
+<form action="/carpool/offer/new" method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+    <table>
+        <tr>
+            <td><label for="origin_city">Departing city *</label></td>
+            <td><input type="text" name="origin_city" id="origin_city" required size="30" /></td>
+        </tr>
+        <tr>
+            <td><label for="origin_state">Departing state *</label></td>
+            <td>
+                <select name="origin_state" id="origin_state" required>
+                    <option value="">-- Select state --</option>
+                    {% for s in ["AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY","DC"] %}
+                        <option value="{{ s }}">{{ s }}</option>
+                    {% endfor %}
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td><label for="total_seats">Seats available *</label></td>
+            <td>
+                <select name="total_seats" id="total_seats">
+                    {% for n in range(end=8) %}
+                        {% if n > 0 %}<option value="{{ n }}">{{ n }}</option>{% endif %}
+                    {% endfor %}
+                </select>
+                <small>(not counting yourself)</small>
+            </td>
+        </tr>
+        <tr>
+            <td><label for="contact_email">Contact email</label></td>
+            <td>
+                <input type="email" name="contact_email" id="contact_email" size="40"
+                       placeholder="Leave blank to use your account email" />
+            </td>
+        </tr>
+        <tr>
+            <td><label for="notes">Notes</label></td>
+            <td>
+                <textarea name="notes" id="notes" rows="4" cols="40"
+                          placeholder="Departure time, pickup locations, etc."></textarea>
+            </td>
+        </tr>
+    </table>
+    <input type="submit" value="Post Offer" />
+</form>
+<p><a href="/carpool">Back to carpool list</a></p>
+{% endblock content %}
