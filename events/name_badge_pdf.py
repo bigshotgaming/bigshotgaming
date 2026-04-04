@@ -2,8 +2,10 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4, letter
 from reportlab.platypus import SimpleDocTemplate, Image
 from reportlab.lib.units import inch
-from settings import STATIC_ROOT
+from django.conf import settings
 import os
+
+STATIC_ROOT = settings.STATIC_ROOT
 
 class NameBadgePDF:
     def __init__(self, filename, event, names):

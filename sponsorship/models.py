@@ -1,6 +1,5 @@
 from datetime import datetime
 from django.db import models
-from localflavor.us.models import PhoneNumberField
 from django.contrib.auth.models import User
 
 # class SponsorManager(models.Manager):
@@ -9,14 +8,14 @@ from django.contrib.auth.models import User
 
 class Sponsor(models.Model):
     
-    def __unicode__(self):
+    def __str__(self):
         return self.name     
     
     name = models.CharField(max_length=100, verbose_name="Sponsor Name")
     contact_name = models.CharField(max_length=50, blank=True)
     contact_email = models.EmailField(blank=True)
-    contact_phone = PhoneNumberField(blank=True)
-    lan_rep = models.ForeignKey(User, limit_choices_to={'is_staff':True}, verbose_name="LAN Representative")
+    contact_phone = models.CharField(max_length=20, blank=True)
+    lan_rep = models.ForeignKey(User, limit_choices_to={'is_staff': True}, verbose_name="LAN Representative", on_delete=models.PROTECT)
     notes = models.TextField(blank=True)
     event = models.ManyToManyField('events.Event', through='EventSponsor')
     contact_form_url = models.URLField(blank=True, verbose_name='Contact Form URL')
@@ -43,11 +42,11 @@ class EventSponsor(models.Model):
         ('e', 'Dead Contact'),
     )
     
-    def __unicode__(self):
+    def __str__(self):
         return '%s - %s' % (self.sponsor.name, self.event.name)
         
-    sponsor = models.ForeignKey(Sponsor)
-    event = models.ForeignKey('events.Event')
+    sponsor = models.ForeignKey(Sponsor, on_delete=models.CASCADE)
+    event = models.ForeignKey('events.Event', on_delete=models.CASCADE)
     status = models.CharField(max_length=1, choices=STATUS_TYPES, default='n')
     
 
@@ -55,7 +54,7 @@ class Prize(models.Model):
     # TODO: Add support for Tournaments.
     # TODO: Add image support.
     
-    def __unicode__(self):
+    def __str__(self):
         return self.name
         
     def get_event_name(self):
@@ -68,7 +67,7 @@ class Prize(models.Model):
     get_event_name.admin_order_field = 'eventsponsor__event__name'
     get_sponsor_name.short_description = 'Sponsor Name'
 
-    eventsponsor = models.ForeignKey(EventSponsor, limit_choices_to={'status':'c', 'event__start_date__gte':datetime.now}, verbose_name="Sponsor/Event")
+    eventsponsor = models.ForeignKey(EventSponsor, limit_choices_to={'status': 'c', 'event__start_date__gte': datetime.now}, verbose_name="Sponsor/Event", on_delete=models.CASCADE)
     name = models.CharField(max_length=100, verbose_name="Prize Name")
     description = models.TextField(blank=True)
     raffle_prize = models.BooleanField(default=False, verbose_name="Raffle Prize?")

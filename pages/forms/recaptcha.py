@@ -1,17 +1,19 @@
 from django import forms
 from django.utils.safestring import mark_safe
-from django.utils.encoding import smart_unicode
+from django.utils.encoding import smart_str
 from django.conf import settings
-import urllib2, urllib
+import urllib.request
+import urllib.parse
+
 
 class ReCaptcha(forms.widgets.Widget):
     recaptcha_challenge_name = 'recaptcha_challenge_field'
     recaptcha_response_name = 'recaptcha_response_field'
 
     def render(self, name, value, attrs=None):
-        widget = u"""
+        widget = """
         <script type="text/javascript">
-        var RecaptchaOptions = {{}};
+        var RecaptchaOptions = {};
         RecaptchaOptions.theme = 'custom';
         RecaptchaOptions.custom_theme_widget = 'recaptcha_widget';
         </script>
@@ -34,10 +36,10 @@ class ReCaptcha(forms.widgets.Widget):
          </div>
 
          <script type="text/javascript"
-            src="http://www.google.com/recaptcha/api/challenge?k={public_key}">
+            src="https://www.google.com/recaptcha/api/challenge?k={public_key}">
          </script>
          <noscript>
-           <iframe src="http://www.google.com/recaptcha/api/noscript?k={public_key}"
+           <iframe src="https://www.google.com/recaptcha/api/noscript?k={public_key}"
                 height="300" width="500" frameborder="0"></iframe><br>
            <textarea name="recaptcha_challenge_field" rows="3" cols="40">
            </textarea>
@@ -48,13 +50,13 @@ class ReCaptcha(forms.widgets.Widget):
         return mark_safe(widget.format(public_key=settings.RECAPTCHA_PUBLIC_KEY))
 
     def value_from_datadict(self, data, files, name):
-        return [data.get(self.recaptcha_challenge_name, None), 
+        return [data.get(self.recaptcha_challenge_name, None),
         data.get(self.recaptcha_response_name, None)]
 
 
 class ReCaptchaField(forms.CharField):
     default_error_messages = {
-        'captcha_invalid': u'Invalid captcha'
+        'captcha_invalid': 'Invalid captcha'
     }
 
     def __init__(self, remote_ip, *args, **kwargs):
@@ -65,26 +67,28 @@ class ReCaptchaField(forms.CharField):
 
     def clean(self, values):
         super(ReCaptchaField, self).clean(values[1])
-        recaptcha_challenge_value = smart_unicode(values[0])
-        recaptcha_response_value = smart_unicode(values[1])
-        
-        check_captcha = self.verify_captcha(recaptcha_challenge_value, 
+        recaptcha_challenge_value = smart_str(values[0])
+        recaptcha_response_value = smart_str(values[1])
+
+        check_captcha = self.verify_captcha(recaptcha_challenge_value,
         recaptcha_response_value)
         if not check_captcha:
-            raise forms.util.ValidationError(u'Incorrect captcha value.')
+            raise forms.ValidationError('Incorrect captcha value.')
             return values[0]
-            
+
     def verify_captcha(self, challenge, response):
-        url = 'http://www.google.com/recaptcha/api/verify'
-        
+        url = 'https://www.google.com/recaptcha/api/verify'
+
         values = {
             'privatekey': settings.RECAPTCHA_PRIVATE_KEY,
             'remoteip': self.remote_ip,
             'challenge': challenge,
             'response': response,
         }
-        
-        request = urllib2.urlopen(url, data=urllib.urlencode(values))
-        result = request.read().split('\n')
-        
+
+        data = urllib.parse.urlencode(values).encode('utf-8')
+        req = urllib.request.urlopen(url, data=data, timeout=10)
+        result = req.read().decode('utf-8').split('\n')
+
         return result[0] == 'true'
+

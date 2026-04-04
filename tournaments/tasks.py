@@ -1,8 +1,13 @@
-import challonge, json
+import challonge
+import json
+import logging
+
 from django.conf import settings
-from urllib2 import HTTPError
+from urllib.error import HTTPError
 from celery import task
 from threading import Timer
+
+logger = logging.getLogger(__name__)
 
 # this is here because it's a global that the challonge tasks require
 challonge.set_credentials(settings.CHALLONGE_USERNAME, settings.CHALLONGE_API_KEY)
@@ -11,8 +16,8 @@ challonge.set_credentials(settings.CHALLONGE_USERNAME, settings.CHALLONGE_API_KE
 def create_tournament(name, url, tournament_type):
     try:
         challonge.tournaments.create(name=name, url=url, tournament_type=tournament_type)
-    except Exception, e:
-        print e
+    except Exception as e:
+        logger.error("Failed to create Challonge tournament: %s", e)
 
 @task()
 def delete_tournament(tournament):
@@ -28,7 +33,7 @@ def destroy_participant(tournament, team):
         for p in challonge.participants.index(tournament=tournament.slugified_name):
             if p['name'] == team.name:
                 challonge.participants.destroy(tournament=tournament.slugified_name, participant_id=p['id'])
-    except HTTPError, err:
+    except HTTPError as err:
         if err.code == 404:
             pass
         else:
@@ -50,7 +55,7 @@ def automate_tournament(tournament):
         # Look up the old match info
         try:
             info = json.loads(tournament.automated_data)
-        except:
+        except (TypeError, ValueError):
             info = { 'matches' : {}, 'emails' : {} }
         match_info = info.get('matches')
         email_info = info.get('emails')
@@ -88,7 +93,7 @@ def automate_tournament(tournament):
                         fr = "Big Shot Gaming <bigshot@bigshotgaming.com>"
 
                         send_mail(subject, t.render(c), fr, [p1_info.get('email')])
-                        print "Sending %s an email: %s" % (p1_info.get('name'), p1_info.get('email'))
+                        logger.info("Sending %s an email: %s", p1_info.get('name'), p1_info.get('email'))
                     if p2_info.get('email') not in ['', None]:
                         subject = "BSG Match Notification for %s" % tournament.name
 
@@ -102,21 +107,21 @@ def automate_tournament(tournament):
 
                         send_mail(subject, t.render(c), fr, [p2_info.get('email')]) 
 
-                        print "Sending %s an email: %s" % (p2_info.get('name'), p2_info.get('email'))
+                        logger.info("Sending %s an email: %s", p2_info.get('name'), p2_info.get('email'))
                     match_info[match['id']] = 1
                 elif match['state'] in ['closed', 'complete']:
-                    print "Updating an already closed match."
+                    logger.debug("Updating an already closed match.")
                     match_info[match['id']] = 1
                 changed = True
         if changed:
             if len(match_info.keys()) == len(ct):
                 tournament.automated = False
                 tournament.automated_active = False
-                print "All matches have been reported."
+                logger.info("All matches have been reported.")
             tournament.automated_data = json.dumps({ 'matches' : match_info, 'emails' : email_info })
             tournament.save()
         
-        print 'automate_tournamant called.'
+        logger.debug('automate_tournament called.')
     
         t = Timer(5.0, automate_tournament, args=[tournament])
         t.start()

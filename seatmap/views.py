@@ -1,14 +1,19 @@
+import logging
+import json
+
 from seatmap.models import SeatMap, Seat, Table, STATUS_LIST
 from events.models import Event, Participant, Coupon
-from django.shortcuts import render_to_response, render, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, HttpResponseForbidden
-from django.template import RequestContext
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
 from datetime import datetime
-import json
+
+logger = logging.getLogger(__name__)
+
+staff_required = user_passes_test(lambda u: u.is_staff, login_url='/accounts/login/')
 
 @csrf_exempt
 def seatmap_data(request):
@@ -100,7 +105,7 @@ def seat_display(request, seat, event=None):
 @login_required
 def seatmap_admin(request, event=None):
     if not request.user.is_staff:
-        return HttpResponse('GTFO NOOBLORD', 403)
+        return HttpResponseForbidden('Access restricted to staff only.')
 
     if event is None:
         sm = SeatMap.objects.get(event=Event.objects.get(is_active=True))
@@ -111,7 +116,7 @@ def seatmap_admin(request, event=None):
     for seat in seats:
         seat.status_full = seat.get_status_display()
 
-    return render_to_response('seatmap/seatmap_admin.html', {'tables':Table.objects.filter(seatmap=sm), 'seats':seats, 'seat_size':sm.seat_size})
+    return render(request, 'seatmap/seatmap_admin.html', {'tables': Table.objects.filter(seatmap=sm), 'seats': seats, 'seat_size': sm.seat_size})
 
 @csrf_exempt
 @login_required
@@ -122,13 +127,25 @@ def seat_admin(request, seat):
         return HttpResponse('Seat not found', status=404)
     
     if request.method == 'POST':
-        seat.x = request.POST['x-edit']
-        seat.y = request.POST['y-edit']
-        seat.status = request.POST['status-edit']
-        if request.POST['part-edit'] == '':
+        try:
+            x = int(request.POST['x-edit'])
+            y = int(request.POST['y-edit'])
+        except (KeyError, ValueError):
+            return HttpResponseBadRequest('Invalid seat coordinates.')
+        status = request.POST.get('status-edit', '')
+        valid_statuses = [s[0] for s in STATUS_LIST]
+        if status not in valid_statuses:
+            return HttpResponseBadRequest('Invalid status value.')
+        seat.x = x
+        seat.y = y
+        seat.status = status
+        if request.POST.get('part-edit', '') == '':
             seat.participant = None
         else:
-            seat.participant = Participant.objects.get(pk=request.POST['part-edit'])
+            try:
+                seat.participant = Participant.objects.get(pk=request.POST['part-edit'])
+            except (Participant.DoesNotExist, ValueError):
+                return HttpResponseBadRequest('Invalid participant ID.')
         seat.save()
         return HttpResponse('success')
     elif request.method == 'DELETE':
@@ -143,7 +160,7 @@ def seat_admin(request, seat):
         return HttpResponse('success')
     else:
         parts = Participant.objects.filter(event=seat.seatmap.event)
-        return render_to_response('seatmap/seat_admin.html', {'seat':seat, 'parts':parts, 'statuses':STATUS_LIST})
+        return render(request, 'seatmap/seat_admin.html', {'seat': seat, 'parts': parts, 'statuses': STATUS_LIST})
         
 @csrf_exempt
 @login_required
@@ -156,10 +173,12 @@ def seat_create(request):
 def table_create(request):
     sm = SeatMap.objects.get(event=Event.objects.get(is_active=True))
     ss = sm.seat_size
-    w = int(request.POST['w-create']) * ss
-    h = int(request.POST['h-create']) * ss
-    print w, h
-    Table.objects.create(seatmap=sm, name=request.POST['name-create'], x=request.POST['x-create'], y=request.POST['y-create'], w=w, h=h).save()
+    try:
+        w = int(request.POST['w-create']) * ss
+        h = int(request.POST['h-create']) * ss
+    except (KeyError, ValueError):
+        return HttpResponseBadRequest('Invalid table dimensions.')
+    Table.objects.create(seatmap=sm, name=request.POST.get('name-create', ''), x=request.POST['x-create'], y=request.POST['y-create'], w=w, h=h).save()
     return HttpResponse('success')
 
 @csrf_exempt
@@ -173,7 +192,6 @@ def seatmap_save(request):
         Seat.objects.filter(seatmap=seatmap).delete()
         Table.objects.filter(seatmap=seatmap).delete()
         for seat in seat_data:
-            print seat
             s = Seat()
             s.seatmap = seatmap
             s.x = seat['x']
@@ -193,7 +211,6 @@ def seatmap_save(request):
             s.save()
             
         for table in table_data:
-            print table
             t = Table()
             t.seatmap = seatmap
             t.x = table['x']
@@ -208,17 +225,16 @@ def seatmap_save(request):
 @login_required
 def seatmap_user(request):
     if request.GET.get('q'):
-        users = User.objects.filter(username__contains=request.GET.get('q'))
+        users = User.objects.filter(username__icontains=request.GET.get('q'))[:20]
         return HttpResponse(json.dumps([user.username for user in users]), content_type='application/json', status=200)
     return HttpResponseBadRequest('fail')
     
 @csrf_exempt
 @login_required
 def seatmap_sitdown(request):
-    if not request.user.is_authenticated():
+    if not request.user.is_authenticated:
         return HttpResponseForbidden('log in to sit down')
     if None in [request.POST.get('x'), request.POST.get('y'), request.POST.get('seatmap_id')]:
-        print 
         return HttpResponseBadRequest('missing a variable in the query string: ' + str([request.POST.get('x'), request.POST.get('y'), request.POST.get('seatmap_id')]))
     seat = Seat.objects.filter(x=request.POST.get('x'), y=request.POST.get('y'), seatmap__id=request.POST.get('seatmap_id'))
     if len(seat) != 1:

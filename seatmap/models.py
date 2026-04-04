@@ -2,30 +2,30 @@ from django.db import models
 from events.models import Event, Participant
 
 class SeatMap(models.Model):
-    event = models.OneToOneField(Event)
+    event = models.OneToOneField(Event, on_delete=models.CASCADE)
     seat_size = models.SmallIntegerField()
     
-    def __unicode__(self):
+    def __str__(self):
         return 'Seatmap for %s' % self.event
 
 STATUS_LIST = (('O','Open'),('T','Taken'),('C', 'Checked In'),('A','Admin'),('N', 'None'))
 class Seat(models.Model):
-    seatmap = models.ForeignKey(SeatMap)
+    seatmap = models.ForeignKey(SeatMap, on_delete=models.CASCADE)
     x = models.SmallIntegerField()
     y = models.SmallIntegerField()
     status = models.CharField(max_length=1, choices=STATUS_LIST)
-    participant = models.ForeignKey(Participant, blank=True, null=True)
+    participant = models.ForeignKey(Participant, blank=True, null=True, on_delete=models.SET_NULL)
     
-    def __unicode__(self):
+    def __str__(self):
         return 'Seat at (%d, %d): %s' % (self.x, self.y, self.status)
         
 class Table(models.Model):
-    seatmap = models.ForeignKey(SeatMap)
+    seatmap = models.ForeignKey(SeatMap, on_delete=models.CASCADE)
     x = models.SmallIntegerField()
     y = models.SmallIntegerField()
     w = models.SmallIntegerField(default=160)
     h = models.SmallIntegerField(default=80)
     name = models.CharField(max_length=200, blank=True)
     
-    def __unicode__(self):
+    def __str__(self):
         return 'Table %s' % self.name

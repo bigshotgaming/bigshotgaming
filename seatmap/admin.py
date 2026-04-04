@@ -1,9 +1,8 @@
 from seatmap.models import SeatMap, Seat, Table
 from events.models import Event
 from django.contrib import admin
-from django.shortcuts import render_to_response
+from django.shortcuts import render, get_object_or_404
 from django.http import Http404
-from django.shortcuts import get_object_or_404
 
 def seatmap_display(request, sm=None):
     size = 30 if sm is None else sm.size
@@ -21,7 +20,7 @@ def seatmap_display(request, sm=None):
             if xx == seat.column:
                 y[seat.row].update({seat.column: seat})
     
-    return render_to_response('seatmap/seatmap.html', {'grid':y})
+    return render(request, 'seatmap/seatmap.html', {'grid': y})
     
 def seat_display(request, x, y):
     seat = None
@@ -32,11 +31,11 @@ def seat_display(request, x, y):
     
     try:
         user = seat.ticket
-    except all:
+    except Exception:
         user = None
     
     
-    return render_to_response('seatmap/seat.html', {'seat':seat, 'user':user, 'status':seat.get_status_display()})
+    return render(request, 'seatmap/seat.html', {'seat': seat, 'user': user, 'status': seat.get_status_display()})
 
 admin.site.register(SeatMap)
 admin.site.register(Seat)

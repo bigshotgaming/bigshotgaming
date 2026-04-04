@@ -12,7 +12,7 @@ PLATFORM_CHOICES = (('P','PC'),('C','Console'))
 
 class Game(models.Model):
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     name = models.CharField(max_length=60)
@@ -29,7 +29,7 @@ class Tournament(models.Model):
         super(Tournament, self).__init__(*args, **kwargs)
         self.automated_active = False
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     # thanks to dittoed for the following
@@ -50,8 +50,8 @@ class Tournament(models.Model):
         return False
 
     name = models.CharField(max_length=60)
-    game = models.ForeignKey(Game)
-    event = models.ForeignKey(Event)
+    game = models.ForeignKey(Game, on_delete=models.PROTECT)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
     # sponsors = models.ManyToMany(Sponsor)
     # prizes   = models.ManyToMany(Prize)
     team_size = models.IntegerField()
@@ -67,14 +67,14 @@ class Tournament(models.Model):
 
 class Team(models.Model):
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     name = models.CharField(max_length=60)
     members = models.ManyToManyField(Participant, blank=True)
     password = models.CharField(max_length=10)
-    tournament = models.ForeignKey(Tournament)
-    owner = models.ForeignKey(Participant, related_name='owned_by')
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
+    owner = models.ForeignKey(Participant, related_name='owned_by', on_delete=models.CASCADE)
 
 def team_full(tournament, team):
     if team.members.count() >= tournament.team_size:
