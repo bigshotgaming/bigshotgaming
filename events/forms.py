@@ -1,7 +1,4 @@
 from django import forms
-from django.shortcuts import render_to_response
-from django.template import RequestContext
-from django.http import HttpResponseRedirect
 from events.models import Participant
 from paypal.standard.forms import PayPalPaymentsForm
 

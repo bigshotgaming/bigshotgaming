@@ -1,7 +1,4 @@
 from django import forms
-from django.shortcuts import render_to_response
-from django.template import RequestContext
-from django.http import HttpResponseRedirect
 from tournaments.models import Team, Tournament, team_full, password_correct, tournament_full
 
 class JoinTeamForm(forms.Form):

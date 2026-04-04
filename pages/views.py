@@ -1,9 +1,9 @@
 import datetime
 from django.core.mail import send_mail
-from django.shortcuts import render_to_response, render, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
-from django.template import RequestContext, loader, Context
+from django.template import loader, Context
 from django.contrib.syndication.views import Feed
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
@@ -41,7 +41,7 @@ def index(request):
     #     posts = paginator.page(1)
     # except EmptyPage:
     #     posts = paginator.page(paginator.num_pages)
-    return render_to_response("index.html", {'posts':posts}, context_instance=RequestContext(request))
+    return render(request, "index.html", {'posts': posts})
 
 def reviews(request):
     posts_list = Post.objects.filter(category__exact='R').order_by("-created_time")
@@ -56,17 +56,11 @@ def reviews(request):
         posts = paginator.page(page)
     except (EmptyPage, InvalidPage):
         posts = paginator.page(paginator.num_pages)
-    # try: 
-    #     posts = paginator.page(page)
-    # except PageNotAnInteger:
-    #     posts = paginator.page(1)
-    # except EmptyPage:
-    #     posts = paginator.page(paginator.num_pages)
-    return render_to_response("index.html", {'posts':posts}, context_instance=RequestContext(request))
+    return render(request, "index.html", {'posts': posts})
 
 def post(request, pk):
     post = get_object_or_404(Post, pk=int(pk))
-    return render_to_response('pages/post.html', {'post':post}, context_instance=RequestContext(request))
+    return render(request, 'pages/post.html', {'post': post})
 
 def sponsors(request):
     ''' 
@@ -81,7 +75,7 @@ def sponsors(request):
         # we do this so that if no events are returned, the below code does not throw an exception
         event = None
     sponsors = Sponsor.objects.filter(event=event, eventsponsor__status__in=['p', 'c', 'r', 'f']).exclude(banner='')
-    return render_to_response('sponsors.html', {'sponsors':sponsors}, context_instance=RequestContext(request))
+    return render(request, 'sponsors.html', {'sponsors': sponsors})
 
 @login_required
 def contact(request):
@@ -97,7 +91,7 @@ def contact(request):
             return HttpResponseRedirect('/thanks/')
     else:
         form = ContactForm()
-    return render_to_response('contact.html', {'form': form}, context_instance=RequestContext(request))
+    return render(request, 'contact.html', {'form': form})
 
 @login_required
 def volunteer(request):
@@ -127,22 +121,21 @@ class NewsFeed(Feed):
     title = "Big Shot Gaming News Feed"
     description = "News from your friends at Big Shot Gaming"
     link = '/rss/'
-    
+
     def items(self):
-        posts = Category.objects.get(name='News').forums.get(name='News').topics.select_related().order_by('-created')[:3]
-        return posts
-        
+        return Post.objects.filter(category='N').order_by('-created_time')[:10]
+
     def item_title(self, item):
-        return item.name
-        
+        return item.title
+
     def item_description(self, item):
-        return item.posts.all()[0].body_html
-        
+        return item.body
+
     def item_link(self, item):
-        return item.get_absolute_url()
-        
+        return '/news/%s/' % item.pk
+
     def item_author_name(self, item):
-        return item.posts.all()[0].user.username
-        
+        return item.author.username
+
     def item_pubdate(self, item):
-        return item.posts.all()[0].updated or item.posts.all()[0].created
+        return item.created_time

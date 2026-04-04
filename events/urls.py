@@ -1,19 +1,16 @@
-from django.conf.urls import patterns, url, include
-# from events.forms import RegisterForm1, RegisterForm2, RegisterForm3, RegisterWizard
+from django.urls import path, re_path, include
+import events.views as views
 
+urlpatterns = [
+    path('', views.index, name='events_index'),
+    re_path(r'^register/(\d+)/$', views.register, name='events_register'),
+    re_path(r'^participants/(\d+)/', views.participants, name='events_participants'),
+    path('payment/', views.payment, name='events_payment'),
+    re_path(r'^activate/(\d+)/([\w]{8}-[\w]{4}-[\w]{4}-[\w]{4}-[\w]{12})/', views.activate, name='events_activate'),
+    re_path(r'^ppnotification', include('paypal.standard.ipn.urls')),
+    re_path(r'^waiver/(\d+)', views.waiver, name='events_waiver'),
+    path('waiver/sign/', views.waiver_sign, name='events_waiver_sign'),
+    re_path(r'^admin/events/(?P<event_id>\d+)/name_badges_pdf/$', views.name_badges_pdf),
+    re_path(r'^admin/events/(?P<event_id>\d+)/registration_history/$', views.registration_history),
+]
 
-
-urlpatterns = patterns('events.views',
-    (r'^$', 'index', {}, 'events_index'),
-    # fix me
-    # 
-    (r'^register/(\d+)/$', 'register', {}, 'events_register'),
-    (r'^participants/(\d+)/', 'participants', {}, 'events_participants'),
-    (r'^payment/', 'payment', {}, 'events_payment'),
-    (r'^activate/(\d+)/([\w]{8}-[\w]{4}-[\w]{4}-[\w]{4}-[\w]{12})/', 'activate', {}, 'events_activate'),
-    (r'^ppnotification', include('paypal.standard.ipn.urls')),
-    (r'^waiver/(\d+)', 'waiver', {}, 'events_waiver'),
-    (r'^waiver/sign/', 'waiver_sign', {}, 'events_waiver_sign'),
-    (r'^admin/events/(?P<event_id>\d+)/name_badges_pdf/$', 'name_badges_pdf'),
-    (r'^admin/events/(?P<event_id>\d+)/registration_history/$', 'registration_history'),
-)

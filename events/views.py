@@ -1,7 +1,14 @@
+import logging
+import datetime
+import uuid
+import collections
+
+import stripe
+
 from django.shortcuts import render
-from django.db import IntegrityError
+from django.db import IntegrityError, transaction
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseServerError
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
@@ -10,14 +17,9 @@ from events.name_badge_pdf import NameBadgePDF
 from events.forms import RegisterForm, WaiverForm
 from paypal.standard.forms import PayPalPaymentsForm
 
-import datetime
-import uuid
-import collections
-import stripe
+logger = logging.getLogger(__name__)
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
-
-# TODO: Throw all this terrible code in a fucking fire where it will burn for all eternity.
 
 def index(request):
     try:
@@ -112,20 +114,21 @@ def payment(request):
               card=token, # obtained with Stripe.js
               metadata={'user_email': user.email}
             )
-        except stripe.CardError, e:
+        except stripe.error.CardError as e:
             return HttpResponseServerError('card failure detected')
         del request.session['qty']
-        # we do this so that the Coupon objects actually have their correct types
-        coupons = [Coupon(stripe_transaction=charge.id, event=event) for i in xrange(quantity)]
-        for coupon in coupons:
-            coupon.save()
-        # I cannot see a better way to do this at the moment, so here we are
-        # We pop the last coupon off the list to activate the ticket for the original payer
-        participant = Participant.objects.get_or_create(user=user, event=event)[0]
-        coupon = coupons.pop()
-        activate_coupon(participant, coupon)
-        # We need to dispatch off an email...
-        email_confirmation(participant=participant, coupons=coupons)
+        with transaction.atomic():
+            # we do this so that the Coupon objects actually have their correct types
+            coupons = [Coupon(stripe_transaction=charge.id, event=event) for i in range(quantity)]
+            for coupon in coupons:
+                coupon.save()
+            # I cannot see a better way to do this at the moment, so here we are
+            # We pop the last coupon off the list to activate the ticket for the original payer
+            participant = Participant.objects.get_or_create(user=user, event=event)[0]
+            coupon = coupons.pop()
+            activate_coupon(participant, coupon)
+            # We need to dispatch off an email...
+            email_confirmation(participant=participant, coupons=coupons)
         return HttpResponseRedirect(reverse('events_register', args=(event.id,))) 
 
     return render(request, "events/payment.html", {
@@ -153,7 +156,7 @@ def activate(request, eventid, uuid):
     if request.method == 'POST':
         form = WaiverForm(request.POST)
         if form.is_valid():
-            print uuid
+            print(uuid)
             coupon = Coupon.objects.get(uuid=uuid)
             try:
                 activate_coupon(participant, coupon)
@@ -177,7 +180,7 @@ def waiver(request, part_id):
     if not request.user.is_staff:
         return HttpResponse(status=403)
     part = Participant.objects.get(id=part_id)
-    return render_to_response('events/waiver_popup.html', {'waiver_form': WaiverForm(), 'part_id': part_id, 'username':part.user}, context_instance=RequestContext(request))
+    return render(request, 'events/waiver_popup.html', {'waiver_form': WaiverForm(), 'part_id': part_id, 'username': part.user})
 
 def waiver_sign(request):
     if not request.user.is_staff:
@@ -186,7 +189,7 @@ def waiver_sign(request):
     if request.method == "POST":
         p = Participant.objects.get(pk=request.POST['part_id'])
         w = Waiver(part=p, name=request.POST['name'])
-        p.checkin_time = datetime.now()
+        p.checkin_time = datetime.datetime.now()
         p.checked_in = True
         p.save()
         #s = Seat.objects.get(participant=p)
@@ -282,7 +285,7 @@ def registration_history(request, event_id):
                 }
 
     charttype = "lineChart"
-    print chartdata
+    logger.debug("Registration history chart data: %s", chartdata)
     data = {
         'charttype': charttype,
         'chartdata': chartdata,

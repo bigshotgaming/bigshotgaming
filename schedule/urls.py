@@ -1,8 +1,6 @@
-from django.conf.urls import patterns, url, include
-# from events.forms import RegisterForm1, RegisterForm2, RegisterForm3, RegisterWizard
+from django.urls import path
+import schedule.views as views
 
-
-
-urlpatterns = patterns('schedule.views',
-    (r'^$', 'index', {}, 'schedule_index'),
-)
+urlpatterns = [
+    path('', views.index, name='schedule_index'),
+]

@@ -1,3 +1,7 @@
+import logging
+import uuid
+import datetime
+
 from django.db import models
 from django.core.mail import send_mail
 from localflavor.us.models import USStateField
@@ -6,17 +10,18 @@ from django.forms import ModelForm
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.template import loader, Context
-from paypal.standard.ipn.signals import payment_was_successful, payment_was_flagged
+from paypal.standard.ipn.signals import valid_ipn_received, invalid_ipn_received
 from paypal.standard.ipn.models import PayPalIPN
-import uuid
-import datetime
+
+logger = logging.getLogger(__name__)
+
 
 def make_uuid():
-        return unicode(uuid.uuid4())
+        return str(uuid.uuid4())
 
 class Event(models.Model):
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
         
     def number_pending(self):
@@ -31,7 +36,7 @@ class Event(models.Model):
     name = models.CharField(max_length=100, verbose_name='Event Name')
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
-    venue = models.ForeignKey('Venue')
+    venue = models.ForeignKey('Venue', on_delete=models.PROTECT)
     participant_limit = models.IntegerField()
     description = models.CharField(max_length=100)
     is_active = models.BooleanField(default=False)
@@ -42,7 +47,7 @@ class Event(models.Model):
     
 class Venue(models.Model):
     
-    def __unicode__(self):
+    def __str__(self):
         return self.name
         
     name = models.CharField(max_length=100)
@@ -57,22 +62,22 @@ class ParticipantManager(models.Manager):
 
 class Participant(models.Model):
     
-    def __unicode__(self):
+    def __str__(self):
         return '%s - %s' % (self.user.username, self.event)
 
     def natural_key(self):
         return (self.user.username, self.event.name)
     
-    user = models.ForeignKey(User)
-    event = models.ForeignKey(Event)
-    coupon = models.OneToOneField('Coupon', blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    coupon = models.OneToOneField('Coupon', blank=True, null=True, on_delete=models.SET_NULL)
     signup_time = models.DateTimeField(auto_now_add=True)
     checked_in = models.BooleanField(default=False)
     checkin_time = models.DateTimeField(blank=True, null=True)
 
 class Coupon(models.Model):
     
-    def __unicode__(self):
+    def __str__(self):
         return self.uuid
     
     def activate(self):
@@ -81,8 +86,8 @@ class Coupon(models.Model):
         self.save()
         
     uuid = models.CharField(max_length=36, primary_key=True, default=make_uuid, editable=False)
-    event = models.ForeignKey(Event)
-    paypal_transaction = models.ForeignKey(PayPalIPN, blank=True, null=True, editable=False)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    paypal_transaction = models.ForeignKey(PayPalIPN, blank=True, null=True, editable=False, on_delete=models.SET_NULL)
     stripe_transaction = models.CharField(max_length=128, blank=True, null=True, editable=False)
     activated = models.BooleanField(default=False)
     created_time = models.DateTimeField(auto_now_add=True)
@@ -90,14 +95,14 @@ class Coupon(models.Model):
     notes = models.TextField(blank=True)
 
 class Waiver(models.Model):
-    def __unicode__(self):
+    def __str__(self):
         return '%s\'s waiver signed %s' % (self.part.user.username, self.signed_on)
 
-    part = models.ForeignKey(Participant)
+    part = models.ForeignKey(Participant, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     pname = models.CharField(max_length=255, blank=True, null=True)
     minor = models.BooleanField(default=False)
-    minor_age = models.IntegerField(max_length=2, blank=True, null=True)
+    minor_age = models.IntegerField(blank=True, null=True)
     signed_on = models.DateTimeField(auto_now_add=True)
 
 @receiver(post_save, sender=Event)
@@ -106,12 +111,12 @@ def one_active(sender, **kwargs):
     if instance.is_active is True:
         Event.objects.exclude(pk=instance.pk).update(is_active=False)
     
-@receiver(payment_was_successful)
+@receiver(valid_ipn_received)
 def payment_complete(sender, **kwargs):
     user = User.objects.get(username=sender.custom)
     event = Event.objects.get(is_active=True)
     # we do this so that the Coupon objects actually have their correct types
-    coupons = [Coupon(transaction=sender, event=event) for i in xrange(sender.quantity)]
+    coupons = [Coupon(transaction=sender, event=event) for i in range(sender.quantity)]
     for coupon in coupons:
         coupon.save()
     # I cannot see a better way to do this at the moment, so here we are
@@ -122,10 +127,9 @@ def payment_complete(sender, **kwargs):
     # We need to dispatch off an email...
     email_confirmation(participant=participant, coupons=coupons)
 
-@receiver(payment_was_flagged)
+@receiver(invalid_ipn_received)
 def payment_flagged(sender, **kwargs):
-    print sender
-    print "Something went wrong..."
+    logger.warning("Payment flagged: %s", sender)
     
 def activate_coupon(participant, coupon):
     participant.coupon = coupon

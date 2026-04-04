@@ -8,9 +8,10 @@ import datetime
 class PrizeAdminForm(forms.ModelForm):
     class Meta:
         model = Prize
+        fields = '__all__'
     
     def clean_event(self):
-        print self.cleaned_data
+        print(self.cleaned_data)
         if self.cleaned_data['eventsponsor__event'].end_date < datetime.datetime.now():
             raise forms.ValidationError("Prizes cannot be added to events in the past.")
         return self.cleaned_data['eventsponsor__event']
