@@ -1,0 +1,50 @@
+{% extends "master.html" %}
+{% block title %} - Carpool{% endblock title %}
+{% block content %}
+<h1>Carpool</h1>
+{% if event %}
+<p>Find a ride or offer one for <strong>{{ event.name }}</strong>.</p>
+<p>
+    {% if is_authenticated %}
+        <a href="/carpool/offer/new" class="button">Offer a Ride</a>
+    {% else %}
+        <a href="/accounts/login?next=/carpool/offer/new">Log in to offer a ride</a>
+    {% endif %}
+</p>
+{% if offers %}
+<table>
+    <thead>
+        <tr>
+            <th>Driver</th>
+            <th>From</th>
+            <th>Seats Left</th>
+            <th>Notes</th>
+            <th>Contact</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for o in offers %}
+        {% set seats_left = o.total_seats - o.rider_count %}
+        <tr>
+            <td><a href="/carpool/offer/{{ o.id }}">{{ o.driver_username }}</a></td>
+            <td>{{ o.origin_city }}, {{ o.origin_state }}</td>
+            <td>
+                {% if seats_left > 0 %}
+                    {{ seats_left }} / {{ o.total_seats }}
+                {% else %}
+                    <em>Full</em>
+                {% endif %}
+            </td>
+            <td>{{ o.notes }}</td>
+            <td><a href="mailto:{{ o.contact_email }}">{{ o.contact_email }}</a></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No carpool offers yet. Be the first to offer a ride!</p>
+{% endif %}
+{% else %}
+<h2>No events are active at this time.</h2>
+{% endif %}
+{% endblock content %}

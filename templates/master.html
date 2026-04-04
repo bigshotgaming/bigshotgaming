@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+    <link rel="image_src" href="{{ STATIC_URL }}images/bsg_square_small.png" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bsg.css" title="default" media="Screen" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery-ui-1.9.1.css" />
+    <script src="//code.jquery.com/jquery-1.8.2.js"></script>
+    <script src="//code.jquery.com/ui/1.9.1/jquery-ui.js"></script>
+    {% block header %}{% endblock header %}
+    <title>Big Shot Gaming{% block title %}{% endblock title %}</title>
+</head>
+<body>
+    <div id="header">
+        <h1><a href="/" title="Home">Big Shot Gaming</a></h1>
+        <div id="login">
+            {% if is_authenticated %}
+                <h5>Signed in as {{ user.username }}</h5>
+                <ul>
+                    <li><a href="/accounts/password/change">Change password</a></li>
+                    <li><a href="/accounts/logout">Logout</a></li>
+                </ul>
+            {% else %}
+                <form method="post" action="/accounts/login">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token | default(value='') }}" />
+                    <ul>
+                        <li>Username</li>
+                        <li><input id="login" type="text" name="username" /></li>
+                        <li>Password</li>
+                        <li><input type="password" id="password" name="password" /></li>
+                        <li><input type="submit" value="Login" /></li>
+                        <li class="login_help"><a href="/accounts/register">Create an account</a></li>
+                    </ul>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+    <div id="wrapper">
+        <div id="container">
+            <div id="side-a">
+                <h3>Main Menu</h3>
+                <ul>
+                    <li><a href="/" title="Home Page Link">Home</a></li>
+                    <li><a href="/volunteer" title="Volunteer Page Link">Volunteer</a></li>
+                    <li><a href="/sponsors" title="Sponsors Page Link">Sponsors</a></li>
+                    <li><a href="/contact" title="Contact Us Page Link">Contact Us</a></li>
+                    <li><a href="/events" title="Events Page Link">Events</a></li>
+                    <li><a href="/carpool" title="Carpool Page Link">Carpool</a></li>
+                    {% if is_authenticated and user.is_staff %}
+                        <li><a href="/admin" title="Administration Page Link">Administration</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div id="content">
+                {% if active_event_id %}
+                <div class="lan_info">
+                    <h2>{{ active_event_name }}</h2>
+                    <p>Event date/time: {{ active_event_start }} &ndash; {{ active_event_end }}</p>
+                    <p>
+                        <a href="/events/participants/{{ active_event_id }}">{{ active_event_num_paid }} seats paid</a>
+                        &nbsp;&ndash;&nbsp; {{ active_event_num_pending }} pending
+                        &nbsp;&ndash;&nbsp; {{ active_event_num_remaining }} remaining
+                    </p>
+                    <p>
+                        <a href="/events">Event info</a>&nbsp;&nbsp;
+                        {% if active_event_registration_enabled %}
+                            <a href="/events/register/{{ active_event_id }}">Register</a>&nbsp;&nbsp;
+                        {% endif %}
+                        <a href="/tournaments">Tournaments</a>&nbsp;&nbsp;
+                        <a href="/schedule">Schedule</a>&nbsp;&nbsp;
+                        <a href="/seatmap">Seatmap</a>&nbsp;&nbsp;
+                        <a href="/carpool">Carpool</a>
+                    </p>
+                </div>
+                {% endif %}
+                {% block content %}{% endblock content %}
+            </div>
+            <div id="side-b">
+                <div id="social_media">
+                    <a href="http://facebook.com/bigshotgaming"><img src="{{ STATIC_URL }}images/facebook.png" alt="Facebook" /></a>
+                    <a href="http://twitter.com/bigshotgaming"><img src="{{ STATIC_URL }}images/twitter.png" alt="Twitter" /></a>
+                    <a href="http://steamcommunity.com/groups/bigshot"><img src="{{ STATIC_URL }}images/steam.png" alt="Steam Community" /></a>
+                    <a href="http://www.twitch.tv/bigshotgaming"><img src="{{ STATIC_URL }}images/twitch.png" alt="Twitch.TV" /></a>
+                </div>
+            </div>
+            <div id="footer"></div>
+        </div>
+    </div>
+</body>
+</html>

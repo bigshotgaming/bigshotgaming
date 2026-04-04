@@ -1,0 +1,18 @@
+{% extends "master.html" %}
+{% block content %}
+{% for post in posts %}
+<h3>{{ post.title }}</h3>
+<h4>Written by {{ post.author_username }}</h4>
+<h5>{{ post.created_time }}</h5>
+<p>{{ post.body | replace(from="\n\n", to="</p><p>") | replace(from="\n", to="<br>") }}</p>
+<div class="postlink"><a href="/post/{{ post.id }}#disqus_thread">Comments</a></div>
+{% if not loop.last %}<hr />{% endif %}
+{% endfor %}
+<div class="pagination">
+    <span class="step-links">
+        {% if has_previous %}<a href="?page={{ prev_page }}">previous</a>{% endif %}
+        <span class="current">Page {{ page }} of {{ num_pages }}.</span>
+        {% if has_next %}<a href="?page={{ next_page }}">next</a>{% endif %}
+    </span>
+</div>
+{% endblock content %}

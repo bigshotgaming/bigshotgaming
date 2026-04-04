@@ -1,0 +1,48 @@
+{% extends "master.html" %}
+{% block title %} - Carpool Offer{% endblock title %}
+{% block content %}
+<h1>Carpool from {{ offer.origin_city }}, {{ offer.origin_state }}</h1>
+<p><strong>Driver:</strong> {{ driver_username }}</p>
+<p><strong>Event:</strong> {{ event.name }}</p>
+<p><strong>Seats available:</strong> {{ seats_remaining }} of {{ offer.total_seats }}</p>
+{% if offer.notes %}<p><strong>Notes:</strong> {{ offer.notes }}</p>{% endif %}
+<p><strong>Contact:</strong> <a href="mailto:{{ offer.contact_email }}">{{ offer.contact_email }}</a></p>
+
+<h3>Riders ({{ rider_count }} / {{ offer.total_seats }})</h3>
+<ul>
+{% for r in riders %}
+    <li>{{ r.username }}</li>
+{% else %}
+    <li>No riders yet.</li>
+{% endfor %}
+</ul>
+
+{% if participant %}
+    {% if is_driver %}
+        <p><em>This is your offer.</em></p>
+        <form action="/carpool/offer/{{ offer.id }}/delete" method="post" onsubmit="return confirm('Delete this offer?');">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+            <input type="submit" value="Delete Offer" />
+        </form>
+    {% elif is_rider %}
+        <p><em>You have a seat in this carpool.</em></p>
+        <form action="/carpool/offer/{{ offer.id }}/leave" method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+            <input type="submit" value="Leave Carpool" />
+        </form>
+    {% elif not is_full %}
+        <form action="/carpool/offer/{{ offer.id }}/join" method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+            <input type="submit" value="Claim a Seat" />
+        </form>
+    {% else %}
+        <p><em>This carpool is full.</em></p>
+    {% endif %}
+{% elif not is_authenticated %}
+    <p><a href="/accounts/login?next=/carpool/offer/{{ offer.id }}">Log in to join this carpool.</a></p>
+{% else %}
+    <p><em>You must be registered for this event to join a carpool.</em></p>
+{% endif %}
+
+<p><a href="/carpool">Back to all carpool offers</a></p>
+{% endblock content %}

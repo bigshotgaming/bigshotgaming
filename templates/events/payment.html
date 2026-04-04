@@ -1,0 +1,20 @@
+{% extends "master.html" %}
+{% block title %} - Payment{% endblock title %}
+{% block content %}
+<h1>Payment for {{ event.name }}</h1>
+<p>You will receive a confirmation once your payment is processed.</p>
+<p>{{ quantity }} ticket(s) &times; ${{ price }} = ${{ quantity * price }}</p>
+<form action="/events/payment/{{ event.id }}" method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+    <script
+        src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+        data-key="{{ data_key }}"
+        data-image="/static/images/bsg_square_small.png"
+        data-allow-remember-me="false"
+        data-email="{{ user.email }}"
+        data-name="Big Shot Gaming"
+        data-description="{{ quantity }} LAN ticket(s) (${{ price }} ea.)"
+        data-amount="{{ total_amount }}">
+    </script>
+</form>
+{% endblock content %}

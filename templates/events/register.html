@@ -1,0 +1,52 @@
+{% extends "master.html" %}
+{% block content %}
+{% if event.is_active %}
+    {% if event.registration_enabled %}
+        {% if not participant or not participant.id %}
+            <h1>Event Registration</h1>
+            {% if event.waiver_url %}
+                <p><a href="{{ event.waiver_url }}" target="_blank">View Event Waiver</a></p>
+            {% endif %}
+            <form action="/events/register/{{ event.id }}" method="post">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+                {% for error in errors %}<p class="error">{{ error }}</p>{% endfor %}
+                <p>
+                    <label for="quantity">Number of tickets:</label>
+                    <select name="quantity" id="quantity">
+                        {% for n in range(end=21) %}
+                            {% if n > 0 %}<option value="{{ n }}">{{ n }}</option>{% endif %}
+                        {% endfor %}
+                    </select>
+                </p>
+                <p>
+                    <input type="checkbox" name="waiver_accepted" id="waiver_accepted" value="yes" required />
+                    <label for="waiver_accepted">I accept the event waiver and terms.</label>
+                </p>
+                <input type="submit" value="Proceed to Payment" />
+            </form>
+        {% else %}
+            <h1>You are registered!</h1>
+            <p>Thank you for registering.</p>
+            {% if coupons %}
+            <h2>Your Tickets</h2>
+            <p>Share unredeemed links with friends so they can check in:</p>
+            <ul>
+                {% for coupon in coupons %}
+                    {% if coupon.participant_id %}
+                        <li>Ticket {{ coupon.uuid }} &ndash; REDEEMED</li>
+                    {% else %}
+                        <li><a href="/events/activate/{{ event.id }}/{{ coupon.uuid }}">{{ coupon.uuid }} &ndash; UNREDEEMED</a></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+            {% endif %}
+        {% endif %}
+    {% else %}
+        <h1>Registration Closed</h1>
+        <p>Sorry, registration for this event is currently closed.</p>
+    {% endif %}
+{% else %}
+    <h1>Event Inactive</h1>
+    <p>Sorry, this event is currently inactive.</p>
+{% endif %}
+{% endblock content %}

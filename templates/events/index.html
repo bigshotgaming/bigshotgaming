@@ -1,0 +1,24 @@
+{% extends "master.html" %}
+{% block title %} - Events{% endblock title %}
+{% block content %}
+{% if event %}
+<h1>{{ event.name }}</h1>
+{% if venue %}<p>Venue: {{ venue.name }}, {{ venue.city }}, {{ venue.state }}</p>{% endif %}
+<p>{{ event.description }}</p>
+<p>Event starts: {{ event.start_date }}</p>
+<p>Event ends: {{ event.end_date }}</p>
+<p>Pre-pay price: ${{ event.prepay_price }}</p>
+<p>Participant limit: {{ event.participant_limit }}</p>
+<p>Seats paid: {{ num_paid }} / Pending: {{ num_pending }} / Remaining: {{ num_remaining }}</p>
+{% if event.registration_enabled %}
+<p><a href="/events/register/{{ event.id }}">Register for this event</a></p>
+{% endif %}
+<p><a href="/events/participants/{{ event.id }}">View participants</a></p>
+<p><a href="/seatmap">View seatmap</a></p>
+<p><a href="/schedule">View schedule</a></p>
+<p><a href="/tournaments">Tournaments</a></p>
+<p><a href="/carpool">Carpool</a></p>
+{% else %}
+<h2>No events are active at this time.</h2>
+{% endif %}
+{% endblock content %}

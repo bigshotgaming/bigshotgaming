@@ -1,0 +1,10 @@
+{% extends "master.html" %}
+{% block title %} - Participants{% endblock title %}
+{% block content %}
+<h1>Participants &ndash; {{ event.name }}</h1>
+<ol>
+{% for p in participants %}
+    <li>{{ p.username }} {% if p.coupon_count and p.coupon_count > 0 %}[paid]{% endif %}</li>
+{% endfor %}
+</ol>
+{% endblock content %}

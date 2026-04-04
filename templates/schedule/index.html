@@ -1,0 +1,30 @@
+{% extends "master.html" %}
+{% block header %}
+<style>
+.schedule_table td, .schedule_table th { width: 176px; text-align: center; margin: 0; padding: 5px 0; }
+th, td, table { border-collapse: collapse; border: 1px solid #fff; }
+tbody tr:nth-child(odd) { background-color: #444; }
+.schedule_table th { background-color: #444; }
+</style>
+{% endblock header %}
+{% block content %}
+{% if event %}
+<h1>{{ event.name }}</h1>
+<h2>Schedule</h2>
+{% for day, items in days %}
+    <h3>{{ day }}</h3>
+    <table class="schedule_table">
+        <thead><tr><th>Event</th><th>Start</th><th>End</th></tr></thead>
+        <tbody>
+        {% for item in items %}
+            <tr><th>{{ item.name }}</th><td>{{ item.start_time }}</td><td>{{ item.end_time }}</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No schedule items yet.</p>
+{% endfor %}
+{% else %}
+<h2>No events are active at this time.</h2>
+{% endif %}
+{% endblock content %}

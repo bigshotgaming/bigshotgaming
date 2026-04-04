@@ -1,0 +1,18 @@
+{% extends "master.html" %}
+{% block title %} - Sponsors{% endblock title %}
+{% block content %}
+<h3>Please take a moment to visit our sponsors!</h3>
+{% for sponsor in sponsors %}
+<div id="banner">
+    <a href="{{ sponsor.banner_url }}" target="_blank">
+        {% if sponsor.banner_path %}
+            <img src="{{ STATIC_URL }}{{ sponsor.banner_path }}" alt="{{ sponsor.name }}" />
+        {% else %}
+            {{ sponsor.name }}
+        {% endif %}
+    </a>
+</div>
+{% else %}
+<p>No sponsors to display at this time.</p>
+{% endfor %}
+{% endblock content %}
