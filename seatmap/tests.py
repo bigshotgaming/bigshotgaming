@@ -102,7 +102,7 @@ class SeatAdminViewTest(TestCase):
     def test_seat_admin_invalid_status_returns_400(self):
         self.client.login(username='admin', password='admin123')
         response = self.client.post(
-            '/seatmap/seat/%d/admin/' % self.seat.id,
+            '/seatmap/admin/seat/%d/' % self.seat.id,
             {'x-edit': '5', 'y-edit': '5', 'status-edit': 'Z', 'part-edit': ''},
         )
         self.assertEqual(response.status_code, 400)
@@ -110,7 +110,7 @@ class SeatAdminViewTest(TestCase):
     def test_seat_admin_valid_update(self):
         self.client.login(username='admin', password='admin123')
         response = self.client.post(
-            '/seatmap/seat/%d/admin/' % self.seat.id,
+            '/seatmap/admin/seat/%d/' % self.seat.id,
             {'x-edit': '10', 'y-edit': '10', 'status-edit': 'T', 'part-edit': ''},
         )
         self.assertEqual(response.status_code, 200)

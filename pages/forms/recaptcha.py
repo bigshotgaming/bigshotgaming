@@ -74,7 +74,6 @@ class ReCaptchaField(forms.CharField):
         recaptcha_response_value)
         if not check_captcha:
             raise forms.ValidationError('Incorrect captcha value.')
-            return values[0]
 
     def verify_captcha(self, challenge, response):
         url = 'https://www.google.com/recaptcha/api/verify'
